@@ -1,0 +1,51 @@
+# KitsbyElba — Security & Performance Headers
+
+<IfModule mod_headers.c>
+    # Prevent clickjacking (embedding in iframes on other sites)
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Prevent MIME-type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Control referrer information
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Basic XSS protection for older browsers
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Restrict browser features
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+    # CSP: tighten further by moving inline JS to files and dropping 'unsafe-inline'
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self' https://wa.me; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://api.emailjs.com; upgrade-insecure-requests"
+
+    # Enforce HTTPS after first secure visit (enable preload only when fully ready)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# Prevent directory listing
+Options -Indexes
+
+# Force HTML files to always reload fresh (no browser cache)
+<FilesMatch "\.(html)$">
+    Header always set Cache-Control "no-cache, no-store, must-revalidate"
+    Header always set Pragma "no-cache"
+    Header always set Expires "0"
+</FilesMatch>
+
+# Block HTTP access to PHP includes (not used for normal URLs; prevents accidental probing)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Force HTTPS (supports direct HTTPS and reverse-proxy TLS via X-Forwarded-Proto)
+  RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+  RewriteRule ^includes(/|$) - [F,L]
+</IfModule>
+
+# Block direct access to sensitive files
+<FilesMatch "(\.env|\.sql|config\.php)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

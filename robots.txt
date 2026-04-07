@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Uses public_site_url in sitemap.php — submit full URL in Google Search Console, e.g. https://yoursite.com/sitemap.php
+Sitemap: /sitemap.php

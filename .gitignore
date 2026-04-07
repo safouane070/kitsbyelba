@@ -1,0 +1,16 @@
+# Secrets & local env (never commit)
+.env
+.env.local
+.env.*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Logs & caches (if added later)
+*.log
+cache/
