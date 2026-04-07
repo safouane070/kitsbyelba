@@ -1,0 +1,5 @@
+# api/config.php is a public endpoint — override root block
+<Files "config.php">
+    Order allow,deny
+    Allow from all
+</Files>

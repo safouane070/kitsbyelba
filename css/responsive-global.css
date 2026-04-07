@@ -1,0 +1,601 @@
+/**
+ * KitsByElbaa — gedeelde responsive polish (alle pagina’s).
+ * Laadt ná pagina-specifieke CSS zodat deze regels mogen overrulen.
+ *
+ * Doel: elke gangbare viewport (kleine telefoon t/m breed desktop) zonder
+ * horizontaal scrollen, met leesbare typografie en bruikbare tikzones.
+ */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: clip;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Voorkom horizontaal scrollen door brede kinderen */
+body {
+  overflow-x: clip;
+}
+
+/* Flex/grid kinderen mogen krimpen i.p.v. de pagina te verbreden */
+main,
+.pcard,
+.hcard,
+.shop-header .sh-left {
+  min-width: 0;
+}
+
+/* Product drawer: betrouwbare hoogte op mobiel (browser-UI, Samsung enz.) */
+.drawer {
+  max-height: min(92dvh, 92vh);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Winkelwagen-zijpaneel: nooit breder dan viewport (notch / zoom) */
+@media (max-width: 520px) {
+  .cpanel,
+  .pdp-cart {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.cfoot,
+.pdp-cart-foot {
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+}
+
+/* Checkout-modal: past op elk scherm, veilig binnen safe area */
+.mbg {
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px))
+    max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  align-items: center;
+}
+
+.modal {
+  max-height: min(90dvh, 92vh);
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  max-width: min(560px, 100%);
+}
+
+/* Kortingscode-regels: onder elkaar op smalle schermen */
+@media (max-width: 520px) {
+  .coupon-input-row,
+  .cart-coupon-row,
+  .pdp-coupon-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .coupon-apply-btn,
+  .cart-coupon-row button,
+  .pdp-coupon-row button {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+/* Shop-kop: titel en aantal netjes gestapeld */
+@media (max-width: 640px) {
+  .shop-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sh-count {
+    align-self: flex-start;
+  }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.shop-page-head {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Promo-popup */
+.promo-popup-bg {
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
+    max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+
+.promo-popup {
+  max-width: min(430px, calc(100vw - 24px));
+}
+
+/* Filter-tabs: horizontaal scrollen zonder lelijke scrollbar + lichte snap */
+@media (max-width: 960px) {
+  .filter-type-tabs {
+    max-width: 100%;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .filter-type-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ftab {
+    scroll-snap-align: start;
+  }
+}
+
+/* Productgrid: iets kleinere minimumkaart op zeer smalle schermen */
+@media (max-width: 360px) {
+  .pgrid {
+    gap: 10px;
+  }
+}
+
+/* Bedrukking-opties: geen te smalle knoppen naast elkaar op smalle schermen */
+@media (max-width: 480px) {
+  .print-row {
+    flex-direction: column;
+  }
+
+  .print-row .popt {
+    width: 100%;
+    text-align: center;
+    min-height: 48px;
+  }
+
+  .print-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .toast {
+    white-space: normal;
+    max-width: calc(100vw - 24px);
+    text-align: center;
+    line-height: 1.35;
+    padding: 12px 20px;
+  }
+}
+
+/* Geen hover: grotere tikzones (WCAG-richting) */
+@media (hover: none) and (pointer: coarse) {
+  .qbtn,
+  .pdp-qty button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .padd-btn {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+/* Productpagina (product.php): binnenklemmen + sticky CTA-ruimte */
+@media (max-width: 600px) {
+  body:has(.wrap) {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .wrap {
+    padding-left: max(12px, env(safe-area-inset-left, 0px));
+    padding-right: max(12px, env(safe-area-inset-right, 0px));
+  }
+
+  .sticky {
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  }
+
+  .stock-notify-panel input.inp {
+    min-width: 0;
+  }
+}
+
+/* Announcement iets compact op klein scherm */
+@media (max-width: 400px) {
+  .announce {
+    padding-left: max(8px, env(safe-area-inset-left, 0px));
+    padding-right: max(8px, env(safe-area-inset-right, 0px));
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* Winkelwagen: actieknoppen stapelen op heel smal */
+@media (max-width: 380px) {
+  .cart-actions {
+    flex-direction: column;
+  }
+
+  .cart-continue-btn,
+  .cart-clear-btn {
+    width: 100%;
+  }
+}
+
+/* Account: horizontaal scrollen voor brede bestelling-tabellen */
+.orders-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  margin-left: -4px;
+  margin-right: -4px;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+@media (max-width: 768px) {
+  .orders-table-scroll .orders-table {
+    min-width: 520px;
+  }
+}
+
+/* Safe area: iPhone notch / home indicator */
+@supports (padding: max(0px)) {
+  .account-page .page {
+    padding-left: max(24px, env(safe-area-inset-left));
+    padding-right: max(24px, env(safe-area-inset-right));
+    padding-bottom: max(80px, env(safe-area-inset-bottom));
+  }
+
+  .wa-float {
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(18px, env(safe-area-inset-bottom));
+  }
+
+  .back-to-top {
+    right: max(20px, env(safe-area-inset-right));
+    bottom: max(90px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 480px) {
+  .account-page .page {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+
+  .account-page .modal-bg {
+    padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+}
+
+/* Productpagina: lightbox pijlen binnen safe area */
+@supports (padding: max(0px)) {
+  .lb-arr.prev {
+    left: max(18px, env(safe-area-inset-left));
+  }
+  .lb-arr.next {
+    right: max(18px, env(safe-area-inset-right));
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Desktop navbar: veel categorieën — meer ruimte tussen links, geen afgebroken tekst
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 1025px) {
+  .nav-top {
+    justify-content: flex-start !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 16px 28px !important;
+    row-gap: 14px !important;
+    min-height: 80px !important;
+    height: auto !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .nav-top .logo {
+    flex-shrink: 0 !important;
+  }
+
+  .nav-links {
+    flex: 1 1 auto !important;
+    flex-wrap: wrap !important;
+    gap: 10px 24px !important;
+    row-gap: 12px !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    align-content: center !important;
+    min-width: 0 !important;
+  }
+
+  .nav-links li {
+    flex: 0 0 auto !important;
+  }
+
+  .nav-links a {
+    white-space: nowrap !important;
+    padding-bottom: 4px !important;
+    letter-spacing: 0.11em !important;
+  }
+
+  /* Mand / hamburger-blok rechts (ook anonieme wrapper op account.php) */
+  .nav-top > ul.nav-links ~ * {
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Mobiele header (mand + logo): deze regels staan bewust ONDERAAN en gebruiken
+   waar nodig !important zodat ze altijd winnen (ook na oudere inline CSS of cache).
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  html {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Alleen site-header; .dash-nav mag niet clippen (horizontaal scrollende tabs) */
+  nav:not(.dash-nav) {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    box-sizing: border-box;
+  }
+
+  .nav-top {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: max(10px, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(10px, env(safe-area-inset-right, 0px)) !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+
+  .nav-top .logo {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
+  }
+
+  .nav-right {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Mand: alleen icoon + teller — verberg woord “Winkelwagen” */
+  .nav-cart {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    padding: 8px 10px !important;
+    gap: 5px !important;
+    letter-spacing: 0.03em !important;
+    text-transform: none !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    line-height: 1 !important;
+    max-width: none !important;
+  }
+
+  .nav-cart-label {
+    display: none !important;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .nav-cart-ico {
+    font-size: 1.3rem !important;
+    line-height: 1 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .nav-cart-num {
+    flex-shrink: 0 !important;
+  }
+
+  /* Verberg losse tekst in oude markup (geen spans): kinderen krijgen weer font-size */
+  .nav-cart:has(.nav-cart-ico) {
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+
+  .nav-cart:has(.nav-cart-ico) .nav-cart-ico {
+    font-size: 1.3rem !important;
+    line-height: 1 !important;
+  }
+
+  .nav-cart:has(.nav-cart-ico) .nav-cart-num {
+    font-size: 10px !important;
+    line-height: 1 !important;
+  }
+
+  .ham {
+    flex-shrink: 0 !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Uitklapmenu: echte viewport-breedte — alleen homepage/shop (<nav> zonder .site-nav). account.php gebruikt <nav class="site-nav"> + hamburger zoals index. */
+  nav:not(.site-nav) .nav-links {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    left: 50% !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    transform: translateX(-50%) !important;
+    box-sizing: border-box !important;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(16px, env(safe-area-inset-right, 0px)) !important;
+    background: var(--cream, #faf8f4) !important;
+  }
+}
+
+/* Account-dashboard: horizontale tabrij zonder zichtbare scrollbar (zoals shop-ftabs) */
+@media (max-width: 768px) {
+  .account-page .dash-nav {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .account-page .dash-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* account.php — zelfde header als index: hamburger + uitklapmenu vanaf 960px */
+@media (max-width: 960px) {
+  .site-nav .nav-top {
+    position: relative;
+    gap: 10px;
+    height: auto;
+    min-height: 64px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .site-nav .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--cream, #faf8f4);
+    border-bottom: 1px solid var(--line, #d9d3c6);
+    flex-direction: column;
+    padding: 8px 20px 14px;
+    gap: 0;
+    box-shadow: 0 8px 24px rgba(28, 26, 23, 0.08);
+    z-index: 89;
+    max-height: calc(100dvh - 74px);
+    overflow: auto;
+    list-style: none;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    transform: none;
+    box-sizing: border-box;
+  }
+
+  .site-nav .nav-links.open {
+    display: flex;
+  }
+
+  .site-nav .nav-links li {
+    padding: 0;
+  }
+
+  .site-nav .nav-links a {
+    font-size: 13px;
+    padding: 10px 0;
+    display: block;
+    border-bottom: 1px solid var(--line, #d9d3c6);
+    letter-spacing: 0.1em;
+  }
+
+  .site-nav .nav-links a::after {
+    display: none;
+  }
+
+  .site-nav .nav-links li:last-child a {
+    border-bottom: none;
+  }
+
+  .site-nav .ham {
+    display: flex;
+  }
+
+  .site-nav .nav-top .logo {
+    font-size: clamp(17px, 4.2vw, 24px);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .site-nav .ham {
+    align-self: center;
+    flex-shrink: 0;
+    min-width: 44px;
+    min-height: 44px;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .site-nav .nav-cart {
+    padding: 8px 11px;
+    gap: 6px;
+    letter-spacing: 0.05em;
+    text-transform: none;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .site-nav .nav-cart-label {
+    display: none;
+  }
+
+  .site-nav .nav-cart-ico {
+    font-size: 1.28rem;
+    line-height: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-nav .nav-top {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* Shop: brede knoppen netjes op smal scherm */
+@media (max-width: 640px) {
+  .shop-toolbar .btn-sec,
+  .no-results .btn-sec {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Upsell (afreken-modal): bij 2 kolommen + oneven aantal geen lege helft naast laatste kaart */
+  .upsell-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .upsell-grid .upsell-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}

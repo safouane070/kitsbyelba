@@ -1,0 +1,76 @@
+<!--
+  KitsByElbaa — Weer op voorraad (EmailJS). Variabelen: {{to_name}}, {{to_email}}, {{product_name}}, {{size}}, {{product_url}}, {{site_url}}, {{logo_url}}, {{product_image}}
+  Mobiel: @media max-width 600px — uitlijning/stacking waar clients <style> ondersteunen.
+-->
+<style type="text/css">
+@media only screen and (max-width: 600px) {
+  .kbe-shell { padding: 16px 10px !important; }
+  .kbe-card { width: 100% !important; max-width: 100% !important; }
+  .kbe-head { padding: 18px 16px !important; }
+  .kbe-intro { padding: 20px 18px !important; }
+  .kbe-rest-wrap { padding: 0 16px 20px !important; }
+  .kbe-rest-row tr td { display: block !important; width: 100% !important; box-sizing: border-box !important; }
+  .kbe-rest-row .kbe-rest-img { text-align: center !important; padding: 16px 16px 8px !important; width: auto !important; }
+  .kbe-rest-row .kbe-rest-txt { padding: 8px 16px 16px !important; }
+  .kbe-btn-cell { padding: 0 16px 22px !important; text-align: center !important; }
+  .kbe-foot { padding: 14px 10px 24px !important; font-size: 11px !important; }
+}
+</style>
+<div style="margin:0;padding:0;background:#f0efe9;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f0efe9;">
+    <tr>
+      <td class="kbe-shell" align="center" style="padding:24px 12px;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5;color:#1c1a17;">
+        <table role="presentation" class="kbe-card" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(28,26,23,.08);">
+          <tr>
+            <td class="kbe-head" style="background:#1c1a17;padding:22px 24px;">
+              <a href="{{site_url}}" target="_blank" style="text-decoration:none;color:#faf8f4;display:inline-block;">
+                {{#logo_url}}<img src="{{logo_url}}" alt="KitsByElbaa" width="140" style="display:block;max-height:44px;width:auto;height:auto;border:0;outline:none;" />{{/logo_url}}
+                {{^logo_url}}<span style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;color:#faf8f4;">KitsByElbaa</span>{{/logo_url}}
+              </a>
+              <p style="margin:14px 0 0;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#d4ab38;">Weer op voorraad</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="kbe-intro" style="padding:24px;">
+              <p style="margin:0 0 8px;">Hoi {{to_name}},</p>
+              <p style="margin:0;color:#5c574f;">Goed nieuws: het tenue dat je wilde is weer beschikbaar.</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="kbe-rest-wrap" style="padding:0 24px 24px;">
+              <table role="presentation" class="kbe-rest-row" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #e6e2db;border-radius:8px;background:#faf9f6;">
+                <tr>
+                  <td class="kbe-rest-img" style="padding:16px;" valign="top" width="110">
+                    {{#product_image}}<img src="{{product_image}}" alt="{{product_name}}" width="92" style="display:block;width:92px;max-width:100%;height:auto;border-radius:6px;background:#efede7;margin:0 auto;" />{{/product_image}}
+                    {{^product_image}}<div style="width:92px;max-width:100%;height:116px;border-radius:6px;background:#efede7;margin:0 auto;"></div>{{/product_image}}
+                  </td>
+                  <td class="kbe-rest-txt" style="padding:16px 16px 16px 0;" valign="top">
+                    <div style="font-size:17px;font-weight:700;color:#1c1a17;margin:0 0 6px;">{{product_name}}</div>
+                    <div style="font-size:14px;color:#5c574f;">Maat <strong>{{size}}</strong> is weer op voorraad.</div>
+                    <p style="font-size:13px;color:#7a746b;margin:10px 0 0;">Maten kunnen snel uitverkocht zijn — bestel op tijd.</p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="kbe-btn-cell" style="padding:0 24px 28px;">
+              <a href="{{product_url}}" target="_blank" style="display:inline-block;background:#1c1a17;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:6px;">Nu bestellen</a>
+            </td>
+          </tr>
+        </table>
+
+        <table role="presentation" class="kbe-card" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;width:100%;">
+          <tr>
+            <td class="kbe-foot" style="padding:18px 12px 30px;text-align:center;color:#8a857b;font-size:12px;">
+              Je ontvangt dit omdat je een melding wilde toen dit product weer op voorraad zou zijn.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
