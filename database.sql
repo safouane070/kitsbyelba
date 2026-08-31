@@ -12,6 +12,7 @@ USE kitsbyelba;
 -- ── ORDERS ────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS orders (
   id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id       INT UNSIGNED NULL,
   order_id      VARCHAR(20)   NOT NULL UNIQUE,
   customer_name VARCHAR(120)  NOT NULL,
   email         VARCHAR(180)  NOT NULL,
@@ -21,6 +22,10 @@ CREATE TABLE IF NOT EXISTS orders (
   city          VARCHAR(100)  NOT NULL,
   country       CHAR(2)       NOT NULL DEFAULT 'NL',
   notes         TEXT          DEFAULT NULL,
+  admin_note    TEXT          DEFAULT NULL,
+  tracking_number VARCHAR(64) DEFAULT NULL,
+  coupon_code   VARCHAR(50)   DEFAULT NULL,
+  discount      DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   subtotal      DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   shipping      DECIMAL(10,2) NOT NULL DEFAULT 4.99,
   total         DECIMAL(10,2) NOT NULL DEFAULT 0.00,
@@ -92,6 +97,7 @@ INSERT INTO products (name, league, cat, emoji, price, badge, sort_order) VALUES
 -- ── INDEXES ───────────────────────────────────────────
 CREATE INDEX idx_orders_email   ON orders(email);
 CREATE INDEX idx_orders_status  ON orders(status);
+CREATE INDEX idx_orders_user_id ON orders(user_id);
 CREATE INDEX idx_items_order    ON order_items(order_id);
 CREATE INDEX idx_products_cat   ON products(cat);
 CREATE INDEX idx_products_active ON products(active);
@@ -100,4 +106,40 @@ CREATE INDEX idx_products_active ON products(active);
 CREATE TABLE IF NOT EXISTS site_settings (
   `key`   VARCHAR(64) NOT NULL PRIMARY KEY,
   `value` MEDIUMTEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ── USERS ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS users (
+  id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name          VARCHAR(120)  NOT NULL,
+  email         VARCHAR(254)  NOT NULL UNIQUE,
+  password_hash VARCHAR(255)  NOT NULL,
+  phone         VARCHAR(30)   DEFAULT NULL,
+  street        VARCHAR(200)  DEFAULT NULL,
+  zip           VARCHAR(20)   DEFAULT NULL,
+  city          VARCHAR(100)  DEFAULT NULL,
+  created_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at    DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ── STOCK NOTIFICATIONS ───────────────────────────────
+CREATE TABLE IF NOT EXISTS stock_notifications (
+  id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email      VARCHAR(254) NOT NULL,
+  product_id INT UNSIGNED NOT NULL,
+  size       VARCHAR(10)  NOT NULL DEFAULT '',
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_stock_notify (email, product_id, size),
+  KEY idx_stock_notify_product (product_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ── COUPONS ───────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS coupons (
+  id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  code       VARCHAR(50)  NOT NULL UNIQUE,
+  type       ENUM('percent','fixed') NOT NULL DEFAULT 'percent',
+  value      DECIMAL(10,2) NOT NULL DEFAULT 10.00,
+  active     TINYINT(1)   NOT NULL DEFAULT 1,
+  uses_count INT UNSIGNED NOT NULL DEFAULT 0,
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

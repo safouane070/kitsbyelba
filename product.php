@@ -7,13 +7,15 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
 
 $publicBase = rtrim((string)($cfg['public_site_url'] ?? ''), '/');
 $seoTitle = 'Voetbaltenue | KitsByElbaa';
-$seoDesc = 'Premium voetbaltenues bij KitsByElbaa. Snelle levering, veilig afrekenen en bedrukking met naam & nummer.';
+$seoDesc = 'Voetbalshirts en tenues bij KitsByElbaa. Snelle levering, veilig afrekenen en bedrukking met naam & nummer.';
 $seoImage = '';
 $seoCanonical = $publicBase !== '' ? $publicBase . '/product.php' : '';
 $seoPrice = null;
 $seoName = '';
 $slugQ = isset($_GET['slug']) ? (string)$_GET['slug'] : '';
-$pdpWaDigits = preg_replace('/\D/', '', (string)($cfg['whatsapp'] ?? ''));
+$contactEmail = 'KitsByElbaa@outlook.com';
+$pdpWaDigits = preg_replace('/\D/', '', (string)($cfg['whatsapp'] ?? '31684446255')) ?: '31684446255';
+$pdpWaDisplay = '+31 6 84446255';
 $pdpWaHref = $pdpWaDigits !== '' ? 'https://wa.me/' . $pdpWaDigits : '';
 
 if ($slugQ !== '' && preg_match('/^(\d+)/', $slugQ, $m)) {
@@ -92,33 +94,41 @@ if ($seoImage !== '') {
 <script type="application/ld+json"><?= json_encode($ldProduct, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
 <?php endif; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --cream:#faf8f4;--cream2:#f3f0ea;--line:#d9d3c6;--line2:#ccc6b8;--ink:#1c1a17;--ink2:#3d3a34;--ink3:#6b6760;--accent:#2d5a27;
+  --cream:#f9faf7;--cream2:#f2f4ef;--cream3:#eaece6;--parchment:#e6e8e2;--line:#e4e6df;--line2:#d4d7cd;
+  --ink:#181a17;--ink2:#3a3d38;--ink3:#6a6d66;--ink4:#9a9d95;--accent:#2d5a27;--accent2:#3a7232;
   --accent-light:#edf5eb;
-  --gold:#b8962e;--gold2:#d4ab38;
-  --white:#fff;
-  --shadow-sm:0 1px 8px rgba(28,26,23,.07);
-  --shadow-lg:0 12px 48px rgba(28,26,23,.14);
+  --gold:#b8962e;--gold2:#d4ab38;--wa:#25D366;--red:#c0392b;
+  --white:#ffffff;
+  --font-display:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-body:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --r-sm:8px;--r:12px;--r-lg:16px;--ease-out:cubic-bezier(.23,1,.32,1);
+  --shadow-sm:0 1px 3px rgba(24,26,23,.05),0 1px 2px rgba(24,26,23,.04);
+  --shadow:0 6px 24px rgba(24,26,23,.08);
+  --shadow-lg:0 16px 48px rgba(24,26,23,.12);
 }
-html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
 *{box-sizing:border-box}
-body{margin:0;font-family:'Jost',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden}
+body{margin:0;font-family:var(--font-body);background:var(--cream);color:var(--ink);overflow-x:hidden}
 a{text-decoration:none;color:inherit}
 .announce{
   background:var(--ink);color:var(--cream);
-  text-align:center;padding:10px 24px;
-  font-size:12px;font-weight:500;
-  letter-spacing:.12em;text-transform:uppercase;
+  text-align:center;padding:8px 24px;
+  font-size:11px;font-weight:500;
+  letter-spacing:.08em;
   position:relative;overflow:hidden;
 }
 .announce-inner{
-  display:inline-flex;gap:48px;
-  animation:marquee 28s linear infinite;white-space:nowrap;
+  display:inline-flex;gap:40px;
+  animation:marquee 36s linear infinite;white-space:nowrap;
 }
-.announce-inner span{opacity:.9}
-.announce-inner span::before{content:'✦';margin-right:48px;color:var(--gold2);font-size:8px}
+.announce-inner span{opacity:.8;display:inline-flex;align-items:center;gap:40px}
+.announce-inner span::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:.7}
+.announce-inner .announce-promo{opacity:1;color:var(--gold2);font-weight:700;letter-spacing:.1em}
+.announce-inner .announce-promo strong{color:#fff;font-weight:700}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 nav{
   background:var(--cream);border-bottom:1px solid var(--line);
@@ -140,15 +150,16 @@ nav{
   display:flex;align-items:center;justify-content:space-between;
 }
 .logo{
-  font-family:'Playfair Display',serif;font-size:26px;font-weight:700;
+  font-family:var(--font-display);font-size:26px;font-weight:700;
   letter-spacing:.02em;color:var(--ink);text-decoration:none;
   display:flex;align-items:center;gap:10px;
   min-width:0;
 }
-.logo-mark{
-  width:32px;height:32px;background:var(--ink);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;color:var(--cream);font-weight:700;letter-spacing:.04em;
+.logo-img{height:64px;width:auto;display:block;object-fit:contain}
+.logo-text{
+  position:absolute!important;width:1px!important;height:1px!important;padding:0!important;
+  margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;border:0!important;
 }
 .nav-links{display:flex;list-style:none;gap:36px;margin:0;padding:0}
 .nav-links a{
@@ -164,11 +175,49 @@ nav{
 .nav-links a:hover::after{transform:scaleX(1)}
 .nav-links a.active{color:var(--ink)}
 .nav-links a.active::after{transform:scaleX(1)}
+.nav-links>li{position:relative}
+.nav-links .has-mega>.top-link{display:inline-flex;align-items:center;gap:6px}
+.nav-links .has-mega>.top-link::before{content:''}
+.nav-links .has-mega>.top-link::after{
+  content:'▾';font-size:10px;line-height:1;opacity:.65;position:static;background:none;transform:none;height:auto;transition:transform .2s ease;
+}
+.nav-mega{
+  position:absolute;top:100%;left:50%;transform:translate(-50%,6px);
+  min-width:240px;background:#fff;border:1px solid #e2dbcf;
+  box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:260;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .2s ease,visibility .18s;
+}
+.nav-mega a{
+  display:flex;align-items:center;gap:10px;padding:8px 12px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);border-bottom:1px solid #eee7da;white-space:nowrap;border-radius:8px;
+}
+.nav-mega a:last-child{border-bottom:none}
+.nav-mega a::after{display:none}
+.nav-mega a:hover{background:var(--cream2);color:var(--ink)}
+.nav-mega a::before{
+  content:'';width:26px;height:26px;flex-shrink:0;
+  background-color:#fff;border:1px solid var(--line);border-radius:6px;
+  background-repeat:no-repeat;background-position:center;background-size:18px 18px;
+}
+.nav-mega a[href*="league=premier"]::before{background-image:url("images/leagues/premier.png")}
+.nav-mega a[href*="league=laliga"]::before{background-image:url("images/leagues/laliga.png")}
+.nav-mega a[href*="league=bundesliga"]::before{background-image:url("images/leagues/bundesliga.png")}
+.nav-mega a[href*="league=seriea"]::before{background-image:url("images/leagues/seriea.png")}
+.nav-mega a[href*="league=ligue1"]::before{background-image:url("images/leagues/ligue1.png")}
+.nav-mega a[href*="league=eredivisie"]::before{background-image:url("images/leagues/eredivisie.png")}
+.nav-mega a[href*="league=national"]::before{background-image:none;content:"🌍";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-mega a[href*="league=overig"]::before{background-image:none;content:"⚽";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-links .has-mega:hover .nav-mega,
+.nav-links .has-mega:focus-within .nav-mega{
+  opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);
+}
+.nav-links .has-mega:hover>.top-link::after,
+.nav-links .has-mega:focus-within>.top-link::after{transform:rotate(180deg)}
 .nav-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
 .nav-cart{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   background:var(--ink);color:var(--cream);
-  border:none;padding:11px 22px;font-family:'Jost',sans-serif;
+  border:none;padding:11px 22px;font-family:var(--font-body);
   font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
   cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;
 }
@@ -188,7 +237,7 @@ nav{
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .crumbs{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a857b;margin-bottom:10px}
 .crumbs a{color:#6f6b63}
-.brand{font-family:'Playfair Display',serif;font-weight:700;font-size:28px}
+.brand{font-family:var(--font-display);font-weight:700;font-size:28px}
 .back{font-size:13px;color:var(--ink3)}
 .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;background:#fff;padding:20px;border:1px solid #eaeaea}
 .gallery{position:relative}
@@ -200,10 +249,25 @@ nav{
 .thumb{border:1px solid #ddd;background:#fff;aspect-ratio:1/1;overflow:hidden;cursor:pointer}
 .thumb.on{outline:2px solid var(--ink)}
 .thumb img{width:100%;height:100%;object-fit:cover}
-.info h1{margin:0 0 8px;font-family:'Playfair Display',serif;font-size:40px;line-height:1.05}
-.price{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;margin-bottom:14px}
+.info h1{margin:0 0 8px;font-family:var(--font-display);font-size:40px;line-height:1.05}
+.price{font-family:var(--font-display);font-size:34px;font-weight:700;margin-bottom:14px}
 .lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666;margin:14px 0 8px}
 .sizes{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.versie-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.versie-btn{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:9px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:1px;font-family:var(--font-body);transition:all .16s;min-width:96px}
+.versie-btn:hover{border-color:var(--ink)}
+.versie-btn.on{background:var(--ink);border-color:var(--ink)}
+.versie-name{font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--ink)}
+.versie-btn.on .versie-name{color:var(--cream)}
+.versie-price{font-size:12px;font-weight:600;color:var(--ink3)}
+.versie-btn.on .versie-price{color:rgba(255,255,255,.72)}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--cream);padding:12px 22px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.01em;z-index:9000;transition:transform .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:var(--shadow-lg);display:inline-flex;align-items:center;gap:9px;max-width:min(90vw,520px)}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.toast-ico{display:inline-flex;flex-shrink:0}
+.toast-ico svg{width:16px;height:16px;display:block}
+.toast-msg{overflow:hidden;text-overflow:ellipsis}
+.toast--success{background:var(--accent);color:#fff}
+.toast--error{background:var(--red);color:#fff}
 .sz-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:4px}
 .sz-notify-btn{
   border:none;background:transparent;color:var(--accent);font-size:10px;font-weight:700;
@@ -223,6 +287,21 @@ nav{
 .sz.out .sz-stock{color:#991b1b;text-decoration:none}
 .inp{width:100%;padding:11px;border:1px solid #ddd;background:#fff}
 .qtyrow{display:flex;gap:10px;align-items:center;margin-top:12px}
+.pdp-wish-btn{
+  width:44px;height:44px;border-radius:50%;border:1px solid rgba(28,26,23,.14);
+  background:rgba(255,255,255,.96);color:#a3a3a3;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:18px;line-height:1;box-shadow:0 6px 16px rgba(28,26,23,.1);
+  transition:color .2s,border-color .2s,background .2s,transform .15s,box-shadow .2s;
+}
+.main-img-box .pdp-wish-btn{position:absolute;top:12px;right:12px;z-index:4}
+.pdp-wish-btn:hover{border-color:rgba(185,28,28,.35);color:#b91c1c}
+.pdp-wish-btn:active{transform:scale(.95)}
+.pdp-wish-btn.on{
+  background:linear-gradient(180deg,#ef4444,#b91c1c);
+  border-color:#b91c1c;color:#fff;
+  box-shadow:0 8px 18px rgba(185,28,28,.28);
+}
+.pdp-wish-fb{margin:8px 0 0;font-size:12px;color:#2d5a27;font-weight:600;line-height:1.4;min-height:0}
 .qty{display:flex;border:1px solid #ddd}
 .qty button{width:34px;height:34px;border:none;background:#fff;cursor:pointer}
 .qty span{width:34px;display:flex;align-items:center;justify-content:center}
@@ -246,7 +325,7 @@ nav{
   padding:14px 16px 12px;
 }
 .kids-jersey-pdp .kids-maten-title{
-  font-family:'Playfair Display',serif;font-size:clamp(18px,2.6vw,24px);font-weight:700;color:var(--ink);margin:0 0 6px;
+  font-family:var(--font-display);font-size:clamp(18px,2.6vw,24px);font-weight:700;color:var(--ink);margin:0 0 6px;
 }
 .kids-jersey-pdp .kids-maten-remark{margin:0;font-size:11px;font-weight:600;color:var(--ink3);line-height:1.45}
 .kids-jersey-pdp .kids-maten-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
@@ -306,13 +385,14 @@ nav{
   }
   .kids-jersey-pdp .maten-scroll-hint{display:block}
 }
-.sections{margin-top:20px;background:#fff;padding:20px;border:1px solid #ececec}
-.sec{margin-bottom:18px}
-.sec h3{font-size:14px;margin:0 0 8px;text-transform:uppercase;letter-spacing:.09em;color:#444}
-.sec p{margin:0;color:#444;line-height:1.65}
+.sections{margin-top:20px;background:#fff;padding:24px 22px;border:1px solid #ececec;border-radius:6px}
+.sec{margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid #f1f1f1}
+.sec:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.sec h3{font-size:13px;margin:0 0 10px;text-transform:uppercase;letter-spacing:.12em;color:#111;font-weight:700}
+.sec p{margin:0;color:#3a3a3a;line-height:1.75;font-size:15px}
 .reco{margin-top:20px;background:var(--white);padding:20px 12px 28px;border:1px solid var(--line);max-width:100%}
 .reco-h{
-  text-align:center;font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,30px);
+  text-align:center;font-family:var(--font-display);font-size:clamp(22px,4vw,30px);
   font-weight:700;letter-spacing:.03em;color:var(--ink);margin:0 0 20px;line-height:1.2;
 }
 .reco-strip{
@@ -355,17 +435,18 @@ nav{
   overflow:hidden;flex-shrink:0;position:relative;
 }
 .cimg--empty::after{
-  content:'📷';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:28px;opacity:.35;
+  content:'';position:absolute;inset:0;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a9d95' stroke-width='1.2' stroke-linejoin='round'%3E%3Cpath d='M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:center;background-size:42px 42px;
 }
 .cimg img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
 .reco-track .card:hover .cimg img{transform:scale(1.03)}
 .ctxt{padding:14px 16px 18px;flex:1;display:flex;flex-direction:column;gap:8px}
 .cn{
-  font-family:'Playfair Display',serif;font-size:15px;font-weight:600;line-height:1.3;color:var(--ink);
+  font-family:var(--font-display);font-size:15px;font-weight:600;line-height:1.3;color:var(--ink);
   display:-webkit-box;line-clamp:2;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.6em;
 }
-.cp{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;color:var(--ink);margin-top:auto}
+.cp{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--ink);margin-top:auto}
 .reco-arr{
   flex-shrink:0;width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);background:var(--cream2);
   font-size:22px;line-height:1;color:var(--ink);cursor:pointer;z-index:1;
@@ -376,6 +457,8 @@ nav{
 .reco-arr:disabled{opacity:.35;cursor:default;pointer-events:none}
 .sticky{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #ddd;padding:8px 10px;display:none;gap:8px;z-index:20}
 .sticky .cta{padding:10px}
+.sticky .cta-wa{background:#25D366}
+.sticky .cta-wa:hover{filter:brightness(1.05)}
 .pdp-cart-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:.2s;z-index:220}
 .pdp-cart-bg.on{opacity:1;pointer-events:auto}
 .pdp-cart{
@@ -385,16 +468,16 @@ nav{
 .pdp-cart.on{transform:translateX(0)}
 .pdp-cart-head{padding:16px 16px 14px;background:var(--cream);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative}
 .pdp-cart-back{
-  flex-shrink:0;border:none;background:transparent;cursor:pointer;font-family:'Jost',sans-serif;
+  flex-shrink:0;border:none;background:transparent;cursor:pointer;font-family:var(--font-body);
   font-size:13px;font-weight:600;color:var(--accent);padding:8px 6px;min-height:44px;line-height:1.2;text-align:left;
 }
 .pdp-cart-back:hover{color:#1c1a17}
 @media (min-width:769px){
   .pdp-cart-back{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 }
-.pdp-cart-title{font-family:'Playfair Display',serif;font-size:clamp(18px,4.5vw,34px);line-height:1;color:var(--ink);font-weight:700;flex:1;min-width:0}
+.pdp-cart-title{font-family:var(--font-display);font-size:clamp(18px,4.5vw,34px);line-height:1;color:var(--ink);font-weight:700;flex:1;min-width:0}
 .pdp-cart-head .pdp-cart-close{border:1px solid var(--line);background:#fff;color:var(--ink3);font-size:20px;width:34px;height:34px;cursor:pointer;flex-shrink:0}
-.pdp-empty-cta{margin-top:14px;padding:12px 20px;font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:#fff;border:none;cursor:pointer;width:100%;max-width:280px}
+.pdp-empty-cta{margin-top:14px;padding:12px 20px;font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:#fff;border:none;cursor:pointer;width:100%;max-width:280px}
 .pdp-empty-cta:hover{background:#3d3a34}
 .pdp-cart-body{padding:12px 14px;overflow:auto;flex:1}
 .pdp-empty{color:#777;text-align:center;padding:26px 6px}
@@ -438,18 +521,29 @@ a.pdp-line-name:hover{color:var(--accent)}
 /* ── GALLERY CROSSFADE ── */
 .main-img{transition:opacity .22s ease}
 .main-img.switching{opacity:0}
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:50}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:500}
 .lightbox.on{display:flex}.lightbox img{max-width:92vw;max-height:88vh;object-fit:contain}
 .lb-arr{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;border-radius:50%;background:#fff;cursor:pointer}
 .lb-arr.prev{left:18px}.lb-arr.next{right:18px}
 .close{position:absolute;top:16px;right:16px;background:#fff;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer}
+/* ── FOOTER — shared markup from includes/footer.php (same as every other page) ── */
+footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:28px}
+.foot-inner{max-width:1360px;margin:0 auto;padding:64px 48px 40px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px}
+.foot-logo{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
+footer p,footer a{display:block;font-size:13px;color:rgba(250,248,244,.5);text-decoration:none;margin-bottom:10px;line-height:1.7;transition:color .18s}
+footer a:hover{color:var(--cream)}
+footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
+.foot-bottom{border-top:1px solid rgba(250,248,244,.08);padding:20px 48px;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;font-size:11px;color:rgba(250,248,244,.3);letter-spacing:.06em}
+@media(max-width:960px){.foot-inner{grid-template-columns:1fr 1fr;padding:40px 24px 24px;gap:28px}.foot-bottom{padding-left:24px;padding-right:24px}}
+@media(max-width:480px){.foot-inner{grid-template-columns:1fr;gap:28px}.foot-bottom{flex-direction:column;gap:6px;text-align:center;padding:16px 24px}}
 /* ── TABLET / MOBILE NAV (zelfde als index.html) ── */
 @media(max-width:960px){
-  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--line);flex-direction:column;padding:8px 20px 14px;gap:0;box-shadow:0 8px 24px rgba(28,26,23,.08);z-index:89;max-height:calc(100vh - 100%);overflow:auto}
-  .nav-links.open{display:flex}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--line);flex-direction:column;padding:8px 20px 14px;gap:0;box-shadow:0 8px 24px rgba(28,26,23,.08);z-index:89;max-height:min(82dvh,82vh);overflow:auto}
   .nav-links li{padding:0}
   .nav-links a{font-size:13px;padding:10px 0;display:block;border-bottom:1px solid var(--line);letter-spacing:.1em}
   .nav-links li:last-child a{border-bottom:none}
+  .nav-mega{display:none !important}
+  .nav-links .has-mega>.top-link::after{display:none}
   .ham{display:flex}
   .nav-top{
     gap:10px;height:auto;min-height:64px;padding-top:6px;padding-bottom:6px;
@@ -460,6 +554,7 @@ a.pdp-line-name:hover{color:var(--accent)}
     flex:1;min-width:0;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
+  .logo-img{height:50px}
   .ham{align-self:center;flex-shrink:0;min-width:44px;min-height:44px;justify-content:center;box-sizing:border-box}
   .nav-cart{
     padding:8px 11px;
@@ -485,11 +580,38 @@ a.pdp-line-name:hover{color:var(--accent)}
 @media(max-width:600px){
   .nav-top{padding:6px 14px;min-height:56px}
   .logo{font-size:18px;gap:8px}
-  .logo-mark{width:28px;height:28px;font-size:12px}
+  .logo-img{height:46px}
   .nav-cart{padding:7px 10px}
   .nav-cart-num{width:16px;height:16px;font-size:9px}
   .info h1{font-size:26px}
   .price{font-size:26px}
+  .gallery{position:relative}
+  .main-img-box{
+    aspect-ratio:auto;
+    min-height:340px;
+    max-height:72vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8px;
+  }
+  .main-img{
+    width:100%;
+    height:100%;
+    max-height:calc(72vh - 16px);
+    object-fit:contain;
+    object-position:center center;
+  }
+  .garr{
+    width:34px;
+    height:34px;
+    top:auto;
+    bottom:10px;
+    transform:none;
+    opacity:.95;
+  }
+  .garr.prev{left:10px}
+  .garr.next{right:10px}
   .thumbs{grid-template-columns:repeat(4,1fr)}
   .reco{padding:20px 8px 24px}
   .reco-strip{grid-template-columns:40px minmax(0,1fr) 40px;gap:0 8px}
@@ -501,10 +623,16 @@ a.pdp-line-name:hover{color:var(--accent)}
 @media(max-width:400px){
   .nav-top{padding:6px 12px}
   .logo{font-size:17px}
-  .logo-mark{width:30px;height:30px;font-size:12px}
+  .logo-img{height:42px}
   .nav-cart{padding:7px 9px}
   .info h1{font-size:22px}
   .price{font-size:22px}
+  .main-img-box{
+    min-height:280px;
+    max-height:66vh;
+    padding:6px;
+  }
+  .main-img{max-height:calc(66vh - 12px)}
   .thumbs{grid-template-columns:repeat(3,1fr)}
   .reco-h{font-size:clamp(18px,5.5vw,26px);margin-bottom:16px}
   .reco-track .card{width:min(232px,calc(100cqw - 16px));max-width:min(232px,calc(100vw - 92px))}
@@ -514,57 +642,24 @@ a.pdp-line-name:hover{color:var(--accent)}
   .cta{width:100%;padding:14px}
 }
 </style>
-<link rel="stylesheet" href="css/responsive-global.css?v=10">
+<link rel="stylesheet" href="css/responsive-global.css?v=15">
+<script defer src="js/kbe-ios-helpers.js?v=2"></script>
 </head>
 <body>
-<div class="announce">
-  <div class="announce-inner">
-    <span id="announceFreeShipA">Gratis verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?></span>
-    <span>Nieuwe 25/26 tenues op voorraad</span>
-    <span>Bestellen via WhatsApp</span>
-    <span>Betaal eenvoudig met Tikkie</span>
-    <span>Levering binnen 5–7 dagen</span>
-    <span id="announceFreeShipB">Gratis verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?></span>
-    <span>Nieuwe 25/26 tenues op voorraad</span>
-    <span>Bestellen via WhatsApp</span>
-    <span>Betaal eenvoudig met Tikkie</span>
-    <span>Levering binnen 5–7 dagen</span>
-  </div>
-</div>
-<nav>
-  <div class="promo-banner">10% KORTING — code <strong>KITSBYELBA</strong> · <strong>KitsByElbaa</strong></div>
-  <div class="nav-top">
-    <a class="logo" href="index.html"><span class="logo-mark">KBE</span>KitsByElbaa</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html?type=shirts#shop">Shirts</a></li>
-      <li><a href="index.html?type=sets#shop">Sets</a></li>
-      <li><a href="index.html?type=hemdsetjes#shop">Hemdsetjes</a></li>
-      <li><a href="index.html?type=retro#shop">Retro</a></li>
-      <li><a href="index.html?type=kids#shop">Kids</a></li>
-      <li><a href="index.html#sizeguide">Maattabel</a></li>
-      <li><a href="index.html#faq">FAQ</a></li>
-      <li><a href="account.php" id="nav-account-link">Inloggen / registreren</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="ham" id="ham" type="button" onclick="toggleNav()" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-      <button type="button" class="nav-cart" onclick="openPdpCart()" aria-label="Winkelwagen" title="Winkelwagen — aantal artikelen">
-        <span class="nav-cart-ico" aria-hidden="true">🛒</span><span class="nav-cart-label">Winkelwagen</span><span class="nav-cart-num" id="cartNProduct" title="Aantal in winkelwagen">0</span>
-      </button>
-    </div>
-  </div>
-</nav>
+<?php include __DIR__ . '/includes/announce.php'; ?>
+<?php $navCartOnclick = 'openPdpCart()'; $navCartNumId = 'cartNProduct'; include __DIR__ . '/includes/nav.php'; ?>
 <div class="wrap">
   <div class="top"><a class="back" id="backLink" href="index.html#shop">← Terug naar shop</a></div>
 
   <div class="grid">
     <div class="gallery">
       <div class="main-img-box" id="mainBox">
-        <button class="garr prev" onclick="shiftImg(-1)" aria-label="Vorige productafbeelding">‹</button>
+        <button type="button" class="garr prev" onclick="shiftImg(-1)" aria-label="Vorige productafbeelding">‹</button>
         <img class="main-img" id="mainImg" alt="Product image">
-        <button class="garr next" onclick="shiftImg(1)" aria-label="Volgende productafbeelding">›</button>
+        <button type="button" class="garr next" onclick="shiftImg(1)" aria-label="Volgende productafbeelding">›</button>
+        <button type="button" class="pdp-wish-btn" id="pdpWishBtn" onclick="togglePdpWishlist()" aria-pressed="false" aria-label="Toevoegen aan wishlist" title="Wishlist">♥</button>
       </div>
+      <p class="pdp-wish-fb" id="pdpWishFb" hidden></p>
       <div class="thumbs" id="thumbs"></div>
     </div>
     <div class="info">
@@ -582,29 +677,31 @@ a.pdp-line-name:hover{color:var(--accent)}
         <?php endif; ?>
       </div>
 
+      <div class="lbl" id="versieLbl" hidden>Versie</div>
+      <div class="versie-row" id="versieRow" hidden></div>
       <div class="lbl">Maat</div>
       <div class="sizes" id="sizes"></div>
       <div id="kidsJerseyChartPdp" class="kids-jersey-pdp" hidden>
         <div class="maten-table-wrap">
           <div class="kids-maten-banner">
-            <h3 class="kids-maten-title">KIDS Jersey Size Chart</h3>
-            <p class="kids-maten-remark">Remarks: 1-2 cm error is acceptable because of the Elastic.</p>
+            <h3 class="kids-maten-title">Maattabel kids jersey</h3>
+            <p class="kids-maten-remark">Let op: door rek in de stof kan de afwijking ongeveer 1–2 cm zijn.</p>
           </div>
           <div class="kids-maten-scroll">
             <table class="maten-table">
               <thead>
                 <tr>
-                  <th>&nbsp;</th>
+                  <th>Maat</th>
                   <th>16</th><th>18</th><th>20</th><th>22</th><th>24</th><th>26</th><th>28</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td>Age</td><td>2-3</td><td>4-5</td><td>5-6</td><td>7-8</td><td>8-9</td><td>10-11</td><td>12-13</td></tr>
-                <tr><td>Height (CM)</td><td>95-105</td><td>105-115</td><td>115-125</td><td>125-135</td><td>135-145</td><td>145-155</td><td>155-165</td></tr>
-                <tr><td>Clothes length (CM)</td><td>44</td><td>47</td><td>50</td><td>53</td><td>56</td><td>59</td><td>62</td></tr>
-                <tr><td>1/2 Bust</td><td>35</td><td>37</td><td>39</td><td>41</td><td>43</td><td>45</td><td>47</td></tr>
-                <tr><td>Shorts length (CM)</td><td>32</td><td>34</td><td>36</td><td>38</td><td>39</td><td>40</td><td>43</td></tr>
-                <tr><td>1/2 Waistline (CM)</td><td>20-37</td><td>21-39</td><td>22-41</td><td>23-42</td><td>24-44</td><td>25-47</td><td>26-50</td></tr>
+                <tr><td>Leeftijd</td><td>2-3</td><td>4-5</td><td>5-6</td><td>7-8</td><td>8-9</td><td>10-11</td><td>12-13</td></tr>
+                <tr><td>Lichaamslengte (cm)</td><td>95-105</td><td>105-115</td><td>115-125</td><td>125-135</td><td>135-145</td><td>145-155</td><td>155-165</td></tr>
+                <tr><td>Lengte shirt (cm)</td><td>44</td><td>47</td><td>50</td><td>53</td><td>56</td><td>59</td><td>62</td></tr>
+                <tr><td>½ borst (cm)</td><td>35</td><td>37</td><td>39</td><td>41</td><td>43</td><td>45</td><td>47</td></tr>
+                <tr><td>Lengte short (cm)</td><td>32</td><td>34</td><td>36</td><td>38</td><td>39</td><td>40</td><td>43</td></tr>
+                <tr><td>½ taille (cm)</td><td>20-37</td><td>21-39</td><td>22-41</td><td>23-42</td><td>24-44</td><td>25-47</td><td>26-50</td></tr>
               </tbody>
             </table>
             <p class="maten-scroll-hint" aria-hidden="true">← Veeg voor alle maten →</p>
@@ -627,19 +724,13 @@ a.pdp-line-name:hover{color:var(--accent)}
       <div class="lbl">Badges (optioneel)</div>
       <select class="inp" id="printBadges">
         <option value="">Geen badge</option>
-        <option value="Champions League">Champions League</option>
-        <option value="Premier League">Premier League</option>
-        <option value="La Liga">La Liga</option>
-        <option value="Serie A">Serie A</option>
-        <option value="Bundesliga">Bundesliga</option>
-        <option value="Eredivisie">Eredivisie</option>
       </select>
 
       <div class="qtyrow">
         <div class="qty"><button type="button" onclick="chgQty(-1)" aria-label="Aantal verlagen">−</button><span id="qtyV">1</span><button type="button" onclick="chgQty(1)" aria-label="Aantal verhogen">+</button></div>
-        <button class="cta" id="addBtn" onclick="addToCart()">In winkelwagen</button>
+        <button type="button" class="cta" id="addBtn" onclick="addToCart()">In winkelwagen</button>
       </div>
-      <div class="small" id="addMsg">Bedrukking: naam, nummer of allebei samen is <strong>één</strong> meerprijs van €<?= number_format((float)$cfg['custom_printing_price'],2,',','') ?> per shirt. Gratis verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?>.</div>
+      <div class="small" id="addMsg">Bedrukking (naam en/of nummer): <strong>één</strong> meerprijs van €<?= number_format((float)$cfg['custom_printing_price'],2,',','') ?> per shirt. Badge/patch (indien gekozen): +€<?= number_format((float)($cfg['badge_extra_price'] ?? 3),2,',','') ?> per shirt. Gratis verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?>.</div>
     </div>
   </div>
 
@@ -649,8 +740,6 @@ a.pdp-line-name:hover{color:var(--accent)}
     <div class="sec"><h3>Maatadvies</h3><p id="sSizeAdvice">—</p></div>
     <div class="sec"><h3>Materiaal</h3><p id="sMaterial">—</p></div>
     <div class="sec"><h3>Verzending</h3><p id="sShipping">—</p></div>
-    <div class="sec"><h3>Retour</h3><p id="sReturns">—</p></div>
-    <div class="sec"><h3>Beleid personalisatie</h3><p id="sPolicy">—</p></div>
     <div class="sec"><h3>Verzorging</h3><p id="sCare">—</p></div>
   </div>
 
@@ -668,6 +757,7 @@ a.pdp-line-name:hover{color:var(--accent)}
 
 <div class="sticky">
   <button type="button" class="cta" id="stickyAddBtn" onclick="document.getElementById('addBtn').click()">In winkelwagen</button>
+  <button type="button" class="cta cta-wa" id="stickyWaBtn" onclick="openStickyWhatsApp()">WhatsApp</button>
 </div>
 
 <div class="pdp-cart-bg" id="pcbg" onclick="closePdpCart()"></div>
@@ -682,40 +772,107 @@ a.pdp-line-name:hover{color:var(--accent)}
     <div class="pdp-coupon">
       <div class="pdp-coupon-row">
         <input id="pcCouponInput" placeholder="Kortingscode">
-        <button onclick="applyPdpCoupon()">Toepassen</button>
+        <button type="button" onclick="applyPdpCoupon()">Toepassen</button>
       </div>
       <div class="pdp-coupon-fb" id="pcCouponFb"></div>
       <button type="button" id="pcCouponRemoveBtn" class="pdp-coupon-remove" onclick="removePdpCoupon()">Korting wijzigen of verwijderen</button>
     </div>
     <div class="pdp-discount" id="pcDiscount" style="display:none"><span id="pcDiscountLabel">Korting</span><span id="pcDiscountAmt">-€0.00</span></div>
     <div class="pdp-total"><span>Totaal</span><span id="pcartTotal">€0.00</span></div>
-    <button class="pdp-check" onclick="goToCart()">🛒 Naar afrekenen</button>
-    <button class="pdp-note" onclick="closePdpCart()" style="background:none;border:none;cursor:pointer;width:100%;padding:10px 0;font-family:inherit;font-size:12px;color:#888;font-weight:700">← Verder winkelen</button>
+    <button type="button" class="pdp-check" onclick="goToCart()" style="display:inline-flex;align-items:center;justify-content:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>Naar afrekenen</button>
+    <button type="button" class="pdp-note" onclick="closePdpCart()" style="background:none;border:none;cursor:pointer;width:100%;padding:10px 0;font-family:inherit;font-size:12px;color:#888;font-weight:700">← Verder winkelen</button>
   </div>
 </aside>
 
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <button class="lb-arr prev" onclick="event.stopPropagation();shiftImg(-1);openLightbox()" aria-label="Vorige afbeelding">‹</button>
-  <button class="lb-arr next" onclick="event.stopPropagation();shiftImg(1);openLightbox()" aria-label="Volgende afbeelding">›</button>
-  <button class="close" onclick="closeLightbox();event.stopPropagation()" aria-label="Lightbox sluiten">✕</button>
+  <button type="button" class="lb-arr prev" onclick="event.stopPropagation();shiftImg(-1);openLightbox()" aria-label="Vorige afbeelding">‹</button>
+  <button type="button" class="lb-arr next" onclick="event.stopPropagation();shiftImg(1);openLightbox()" aria-label="Volgende afbeelding">›</button>
+  <button type="button" class="close" onclick="closeLightbox();event.stopPropagation()" aria-label="Lightbox sluiten">✕</button>
   <img id="lbImg" alt="Vergrote afbeelding">
 </div>
 
+<?php include __DIR__ . '/includes/footer.php'; // shared 4-column footer, identical to the rest of the site ?>
+
 <script>
-let CONFIG = { whatsapp:'<?= $cfg['whatsapp'] ?>', customPrintingPrice: <?= (float)$cfg['custom_printing_price'] ?> };
+let CONFIG = {
+  whatsapp:'<?= htmlspecialchars($pdpWaDigits, ENT_QUOTES, 'UTF-8') ?>',
+  customPrintingPrice: <?= (float)$cfg['custom_printing_price'] ?>,
+  badgeExtraPrice: <?= (float)($cfg['badge_extra_price'] ?? 3) ?>
+};
+function kbeWaDigits() {
+  const d = String(CONFIG.whatsapp || '31684446255').replace(/\D/g, '');
+  return d || '31684446255';
+}
 let PRODUCTS = [];
 let P = null;
 let gallery = [];
 let gi = 0;
 let qty = 1;
 let pickedSize = '';
+let pickedVersion = 'fan';
 let pdpCart = [];
 let __kbePdpCartHistory = 0;
 const CART_STORAGE_KEY = 'kbe_cart_main';
+/** Zelfde sleutel als index.html / shop.html — array van product-id’s */
+const WISHLIST_STORAGE_KEY = 'kbe_wishlist_main';
+let wishlist = [];
 
-function toggleNav() {
-  const el = document.getElementById('navLinks');
-  if (el) el.classList.toggle('open');
+function isWishlisted(id) {
+  return wishlist.includes(Number(id));
+}
+function saveWishlistState() {
+  try { localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist)); } catch (_) {}
+}
+function syncPdpWishlistButton() {
+  const btn = document.getElementById('pdpWishBtn');
+  if (!btn || !P) return;
+  const on = isWishlisted(P.id);
+  btn.classList.toggle('on', on);
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.setAttribute('aria-label', on ? 'Verwijderen van wishlist' : 'Toevoegen aan wishlist');
+}
+function togglePdpWishlist() {
+  if (!P) return;
+  const pid = Number(P.id);
+  const i = wishlist.indexOf(pid);
+  const on = i < 0;
+  if (on) wishlist.push(pid);
+  else wishlist.splice(i, 1);
+  saveWishlistState();
+  syncPdpWishlistButton();
+  const fb = document.getElementById('pdpWishFb');
+  if (fb) {
+    fb.textContent = on
+      ? 'Toegevoegd aan je wishlist. Open Wishlist in het menu om alles te zien.'
+      : 'Verwijderd uit je wishlist.';
+    fb.hidden = false;
+    clearTimeout(window.__pdpWishFbT);
+    window.__pdpWishFbT = setTimeout(() => {
+      fb.hidden = true;
+      fb.textContent = '';
+    }, 2600);
+  }
+}
+
+function initKbeNavToggleAria() {
+  const cb = document.getElementById('kbeNavToggle');
+  const ham = document.getElementById('ham');
+  const nav = document.getElementById('navLinks');
+  if (!cb || !ham || !nav) return;
+  const sync = () => ham.setAttribute('aria-expanded', cb.checked ? 'true' : 'false');
+  cb.addEventListener('change', sync);
+  nav.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', () => {
+      cb.checked = false;
+      sync();
+    });
+  });
+  sync();
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initKbeNavToggleAria);
+} else {
+  initKbeNavToggleAria();
 }
 
 // Vaste site-promo: 10% / KITSBYELBA in banner; extra codes via admin + api/coupon_validate.php
@@ -738,7 +895,7 @@ async function validateCouponCode(raw) {
 function couponAppliedLabel(c) {
   if (!c) return '';
   const bit = c.type === 'percent' ? c.value + '%' : '€' + Number(c.value).toFixed(2).replace(/\.00$/, '');
-  return '✓ Kortingscode toegepast — ' + bit + ' korting';
+  return 'Kortingscode toegepast — ' + bit + ' korting';
 }
 
 function calcPdpDiscount(sub) {
@@ -758,10 +915,11 @@ function getStockState(stock){
 /** Zelfde `in_voorraad`-logica als shop: alleen bij snelle voorraad groene “op voorraad”-tekst; anders nabestelling 7–12 dagen. */
 function getPdpStockState(p){
   if (!p) return { key:'out', label:'Niet op voorraad' };
-  const ss = p.stock_sizes || null;
-  const totalOut = ss ? Object.values(ss).every(q => Number(q) <= 0) : Number(p.stock || 0) <= 0;
-  if (totalOut) return getStockState(p.stock);
-  if (parseInt(p.in_voorraad, 10) === 1) return getStockState(p.stock);
+  const ss = versionStockSizes(p, pickedVersion);
+  const units = ss ? Object.values(ss).reduce((a, q) => a + Math.max(0, Number(q) || 0), 0) : Number(p.stock || 0);
+  if (units <= 0) return { key:'out', label:'Niet op voorraad' };
+  // Op voorraad → snelle levering 1–2 werkdagen; anders nabestelling 7–12 werkdagen.
+  if (parseInt(p.in_voorraad, 10) === 1) return getStockState(units);
   return { key:'slow', label:'Nabestelling — levering 7 tot 12 werkdagen' };
 }
 /** Zelfde logica als shop / index: kids-tenues tonen de KIDS Jersey Size Chart bij maat. */
@@ -774,17 +932,74 @@ function isKidsProduct(p){
   if (/\bkids\b/.test(desc)) return true;
   return false;
 }
+/**
+ * Fan vs player — gelijk aan shop/index: eerst `version` uit admin, daarna tekst (EN/NL).
+ * Spelerskits: geen 3XL/4XL op de PDP (zie renderProduct → allSizes).
+ */
+function detectPdpProductVersion(p) {
+  if (!p) return 'fan';
+  const v = String(p.version || '').trim().toLowerCase();
+  if (v === 'player' || v === 'fan') return v;
+  const hay = `${p.name || ''} ${p.description || ''} ${p.fit_info || ''} ${p.size_advice || ''}`.toLowerCase();
+  if (
+    hay.includes('player version') ||
+    hay.includes('player fit') ||
+    hay.includes('players version') ||
+    /\bplayer\b/.test(hay)
+  ) {
+    return 'player';
+  }
+  if (
+    hay.includes('spelersversie') ||
+    hay.includes('spelerversie') ||
+    hay.includes('spelers versie') ||
+    hay.includes('speler versie') ||
+    hay.includes('spelers kit') ||
+    hay.includes('spelerseditie') ||
+    hay.includes('spelers editie')
+  ) {
+    return 'player';
+  }
+  if (hay.includes('fan version') || hay.includes('fan fit') || /\bfan\b/.test(hay)) return 'fan';
+  if (hay.includes('fanversie') || hay.includes('fan versie') || hay.includes('fansversie')) return 'fan';
+  return 'fan';
+}
+/* Fan = basis (price / stock_sizes); Player = aparte prijs + aparte per-maat voorraad. */
+function versionStockSizes(p, version){
+  if (!p) return null;
+  if (version === 'player') {
+    const ps = p.player_stock_sizes;
+    // Aparte player-voorraad indien ingesteld; anders deelt Player de gewone voorraad.
+    if (ps && typeof ps === 'object' && Object.keys(ps).length) return ps;
+  }
+  return (p.stock_sizes && typeof p.stock_sizes === 'object') ? p.stock_sizes : null;
+}
+function versionPrice(p, version){
+  if (version === 'player' && p && p.player_price != null && p.player_price !== '') return Number(p.player_price);
+  return Number((p && p.price) || 0);
+}
+function productHasPlayer(p){
+  if (!p) return false;
+  if (p.player_price != null && p.player_price !== '') return true;
+  const ps = p.player_stock_sizes;
+  return !!(ps && typeof ps === 'object' && Object.values(ps).some(q => Number(q) > 0));
+}
 function maxQtyForProductSize(p, sizeStr){
   if (!p || !sizeStr) return 0;
-  const ss = p.stock_sizes;
-  if (ss && typeof ss === 'object' && Object.prototype.hasOwnProperty.call(ss, sizeStr)) {
-    return Math.max(0, Math.floor(Number(ss[sizeStr]) || 0));
+  const ss = versionStockSizes(p, pickedVersion);
+  if (ss && typeof ss === 'object') {
+    if (sizeStr === 'XXL') {
+      return Math.max(0, Math.floor(Number(ss.XXL || 0) + Number(ss['2XL'] || 0)));
+    }
+    if (Object.prototype.hasOwnProperty.call(ss, sizeStr)) {
+      return Math.max(0, Math.floor(Number(ss[sizeStr]) || 0));
+    }
   }
   return Math.max(0, Math.floor(Number(p.stock) || 0));
 }
 function productHasSellableStock(p){
   if (!p) return false;
-  const ss = p.stock_sizes;
+  const ss = versionStockSizes(p, pickedVersion);
   if (ss && typeof ss === 'object' && Object.keys(ss).length) {
     return Object.values(ss).some(q => Number(q) > 0);
   }
@@ -796,9 +1011,10 @@ function pdpPrintingMatch(i, po, pn, pnum, pb){
     (i.print_number || '') === pnum &&
     (i.print_badges || '') === pb;
 }
-function pdpQtyUsedForVariant(pId, sizeStr, po, pn, pnum, pb){
+function pdpQtyUsedForVariant(pId, sizeStr, po, pn, pnum, pb, version){
+  const ver = version || 'fan';
   return pdpCart.reduce((s, i) => {
-    if (i.id !== pId || i.size !== sizeStr || !pdpPrintingMatch(i, po, pn, pnum, pb)) return s;
+    if (i.id !== pId || i.size !== sizeStr || (i.version || 'fan') !== ver || !pdpPrintingMatch(i, po, pn, pnum, pb)) return s;
     return s + Number(i.qty || 0);
   }, 0);
 }
@@ -822,6 +1038,10 @@ function clampPdpCartToStock(){
     try { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(pdpCart)); } catch (_) {}
   }
 }
+function unitBadgeExtraPdp() {
+  const v = Number(CONFIG.badgeExtraPrice);
+  return Number.isFinite(v) && v >= 0 ? v : 3;
+}
 function getPendingPrintFields(){
   const pn = (document.getElementById('printName').value || '').trim().slice(0,15);
   const num = (document.getElementById('printNumber').value || '').trim().replace(/\D/g,'').slice(0,4);
@@ -833,6 +1053,28 @@ function getPendingPrintFields(){
     print_number: custom ? num : '',
     print_badges: custom ? badges : ''
   };
+}
+function getLeagueBadgeForProduct(p){
+  const league = String(p?.league || '').toLowerCase();
+  if (league.includes('premier')) return 'Premier League';
+  if (league.includes('la liga')) return 'La Liga';
+  if (league.includes('serie a')) return 'Serie A';
+  if (league.includes('bundesliga')) return 'Bundesliga';
+  if (league.includes('erediv')) return 'Eredivisie';
+  if (league.includes('ligue 1') || league.includes('ligue1')) return 'Ligue 1';
+  return '';
+}
+function renderBadgeOptions(p){
+  const sel = document.getElementById('printBadges');
+  if (!sel) return;
+  const current = (sel.value || '').trim();
+  const options = [''];
+  const leagueBadge = getLeagueBadgeForProduct(p);
+  if (leagueBadge) options.push(leagueBadge);
+  options.push('Champions League');
+  const unique = Array.from(new Set(options));
+  sel.innerHTML = unique.map(v => `<option value="${v}">${v || 'Geen badge'}</option>`).join('');
+  if (unique.includes(current)) sel.value = current;
 }
 function productImgSrc(file){
   if(!file) return '';
@@ -858,17 +1100,18 @@ function parseIdFromQuery(){
 // ── BACK TO TOP ──
 (function(){
   const btn = document.createElement('button');
+  btn.type = 'button';
   btn.className = 'back-to-top';
   btn.title = 'Terug naar boven';
   btn.innerHTML = '↑';
-  btn.onclick = () => window.scrollTo({top:0, behavior:'smooth'});
+  btn.onclick = () => (typeof kbeScrollToTop === 'function' ? kbeScrollToTop() : window.scrollTo(0, 0));
   document.body.appendChild(btn);
   window.addEventListener('scroll', () => btn.classList.toggle('on', window.scrollY > 300), {passive:true});
 })();
 
 Promise.all([
   fetch('api/config.php').then(r=>r.json()).catch(()=>({})),
-  fetch('api/products.php').then(async r => {
+  fetch('api/products.php?view=detail').then(async r => {
     const j = await r.json().catch(() => []);
     return Array.isArray(j) ? j : [];
   }).catch(() => [])
@@ -878,6 +1121,13 @@ Promise.all([
   const id = parseIdFromQuery();
   P = PRODUCTS.find(x=>x.id===id) || PRODUCTS[0] || null;
   if(!P){ document.getElementById('pName').textContent='Product niet gevonden'; return; }
+  // Default versie: Fan, tenzij Fan geen voorraad heeft maar Player wel.
+  pickedVersion = (function(){
+    const fanOk = (P.stock_sizes && typeof P.stock_sizes === 'object')
+      ? Object.values(P.stock_sizes).some(q => Number(q) > 0)
+      : Number(P.stock || 0) > 0;
+    return (!fanOk && productHasPlayer(P)) ? 'player' : 'fan';
+  })();
   // Shared cart key with index.html (with fallback migration from legacy key)
   try {
     pdpCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
@@ -894,11 +1144,43 @@ Promise.all([
       }
     } catch (_) {}
   }
+  try {
+    const wr = localStorage.getItem(WISHLIST_STORAGE_KEY);
+    const parsed = wr ? JSON.parse(wr) : [];
+    wishlist = Array.isArray(parsed) ? parsed.map(Number).filter(Number.isFinite) : [];
+  } catch (_) {
+    wishlist = [];
+  }
   await restoreCouponState();
+  recalcPdpCartLinePrices();
   clampPdpCartToStock();
   renderProduct();
   renderPdpCart();
 });
+
+/** Zelfde prijslogica als place-order.php: bedrukking (naam/nummer) + optionele badge. */
+function recalcPdpCartLinePrices() {
+  if (!Array.isArray(pdpCart) || !PRODUCTS.length) return;
+  let changed = false;
+  pdpCart.forEach(i => {
+    const p = PRODUCTS.find(x => x.id === i.id);
+    if (!p) return;
+    const opt = (i.printing_option || 'none') === 'custom' ? 'custom' : 'none';
+    const pn = String(i.print_name || '').trim();
+    const num = String(i.print_number || '').trim();
+    const bd = String(i.print_badges || '').trim();
+    const printAdd = opt === 'custom' && (pn || num) ? Number(CONFIG.customPrintingPrice || 5) : 0;
+    const badgeAdd = opt === 'custom' && bd ? unitBadgeExtraPdp() : 0;
+    const expected = Number(p.price) + printAdd + badgeAdd;
+    if (Math.abs(Number(i.price) - expected) > 0.005) {
+      i.price = expected;
+      changed = true;
+    }
+  });
+  if (changed) {
+    try { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(pdpCart)); } catch (_) {}
+  }
+}
 
 async function restoreCouponState(){
   try{
@@ -930,6 +1212,7 @@ function orderedImages(p){
 }
 
 let stockNotifySize = '';
+let stockNotifyCsrf = '';
 
 function openStockNotify(sz) {
   stockNotifySize = sz;
@@ -964,10 +1247,11 @@ async function submitStockNotify() {
   }
   if (!P || !stockNotifySize) return;
   try {
+    const csrf = await ensureStockNotifyCsrf();
     const r = await fetch('api/stock_notify.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, product_id: P.id, size: stockNotifySize }),
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf },
+      body: JSON.stringify({ email, product_id: P.id, size: stockNotifySize, csrf_token: csrf }),
       credentials: 'same-origin'
     });
     const j = await r.json();
@@ -990,9 +1274,18 @@ async function submitStockNotify() {
   }
 }
 
+async function ensureStockNotifyCsrf() {
+  if (stockNotifyCsrf) return stockNotifyCsrf;
+  const r = await fetch('api/checkout_csrf.php', { credentials: 'same-origin' });
+  const j = await r.json();
+  if (!r.ok || !j || !j.ok || !j.csrf) throw new Error('csrf');
+  stockNotifyCsrf = String(j.csrf);
+  return stockNotifyCsrf;
+}
+
 function syncPdpAddButtons() {
   if (!P) return;
-  const ss = P.stock_sizes || null;
+  const ss = versionStockSizes(P, pickedVersion);
   const totalOut = ss ? Object.values(ss).every(q => Number(q) <= 0) : Number(P.stock || 0) <= 0;
   const addBtn = document.getElementById('addBtn');
   const stickyBtn = document.getElementById('stickyAddBtn');
@@ -1019,6 +1312,31 @@ function syncPdpAddButtons() {
   }
 }
 
+function renderVersionToggle(){
+  const row = document.getElementById('versieRow');
+  const lbl = document.getElementById('versieLbl');
+  if (!row || !lbl) return;
+  // Fan/Player is overal beschikbaar: toggle altijd tonen.
+  lbl.hidden = false; row.hidden = false;
+  const opts = [{ key: 'fan', label: 'Fan' }, { key: 'player', label: 'Player' }];
+  row.innerHTML = opts.map(o => {
+    const on = pickedVersion === o.key ? ' on' : '';
+    const price = versionPrice(P, o.key);
+    return `<button type="button" class="versie-btn${on}" onclick="pickVersion('${o.key}')">`
+      + `<span class="versie-name">${o.label}</span>`
+      + `<span class="versie-price">€${price.toFixed(2)}</span>`
+      + `</button>`;
+  }).join('');
+}
+function pickVersion(v){
+  const nv = (v === 'player') ? 'player' : 'fan';
+  if (nv === pickedVersion) return;
+  pickedVersion = nv;
+  pickedSize = '';        // maat resetten: maten en voorraad verschillen per versie
+  qty = 1;
+  const qv = document.getElementById('qtyV'); if (qv) qv.textContent = '1';
+  renderProduct();
+}
 function renderProduct(){
   const snp = document.getElementById('stockNotifyPanel');
   if (snp) {
@@ -1033,19 +1351,29 @@ function renderProduct(){
   document.title = `${P.name} — KitsByElbaa`;
   document.getElementById('pName').textContent = P.name;
   document.getElementById('mainImg').alt = P.name;
-  document.getElementById('pPrice').textContent = `€${Number(P.price).toFixed(2)}`;
+  document.getElementById('pPrice').textContent = `€${versionPrice(P, pickedVersion).toFixed(2)}`;
+  renderVersionToggle();
   const stock = getPdpStockState(P);
   const stockEl = document.getElementById('pStock');
   stockEl.className = 'stock-note ' + stock.key;
   stockEl.textContent = stock.label;
-  const allSizes = ['XS','S','M','L','XL','XXL'];
-  const ss = P.stock_sizes || null;
+  const ss = versionStockSizes(P, pickedVersion);
+  const baseSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  /* 2XL = zelfde maat als XXL in voorraad-JSON; één knop, voorraad optellen */
+  const fanOnlyLarge = ['3XL', '4XL'];
+  const isPlayer = (pickedVersion === 'player');
+  const allSizes = ss && !isPlayer
+    ? [...baseSizes, ...fanOnlyLarge]
+    : baseSizes;
   syncPdpAddButtons();
+  renderBadgeOptions(P);
   const kChart = document.getElementById('kidsJerseyChartPdp');
   if (kChart) kChart.hidden = !isKidsProduct(P);
 
   document.getElementById('sizes').innerHTML = allSizes.map(sz => {
-    const qty = ss ? (Number(ss[sz] ?? 0)) : (Number(P.stock||0) > 0 ? 99 : 0);
+    const qty = ss
+      ? (sz === 'XXL' ? (Number(ss.XXL ?? 0) + Number(ss['2XL'] ?? 0)) : Number(ss[sz] ?? 0))
+      : (isPlayer ? 0 : (Number(P.stock||0) > 0 ? 99 : 0));
     const isOut = qty <= 0;
     const isLow = !isOut && qty <= 5;
     const stockLabel = isOut ? 'Uit' : isLow ? `${qty} over` : '';
@@ -1062,13 +1390,12 @@ function renderProduct(){
   renderGallery();
   document.getElementById('sDesc').textContent = P.description || 'Nog geen productomschrijving.';
   document.getElementById('sFit').textContent = P.fit_info || 'Standaard pasvorm.';
-  document.getElementById('sSizeAdvice').textContent = P.size_advice || 'Twijfel je? Neem bij voorkeur één maat groter.';
+  document.getElementById('sSizeAdvice').textContent = P.size_advice || 'Bekijk de maattabel op de site. Twijfel je over je maat? App ons gerust via WhatsApp, dan helpen we je persoonlijk de juiste maat te kiezen.';
   document.getElementById('sMaterial').textContent = P.material_info || 'Ademende performance-stof.';
-  document.getElementById('sShipping').textContent = P.shipping_info || 'Levering binnen 5–7 werkdagen.';
-  document.getElementById('sReturns').textContent = P.returns_info || '14 dagen retour voor ongebruikte items (zie voorwaarden).';
-  document.getElementById('sPolicy').textContent = P.personalization_policy || 'Gepersonaliseerde items zijn uitgesloten van retour.';
+  document.getElementById('sShipping').textContent = P.shipping_info || 'Op voorraad: levering 1–2 werkdagen. Nabestelling: 7–12 werkdagen.';
   document.getElementById('sCare').textContent = P.care_instructions || 'Wassen op 30°C, binnenstebuiten.';
   renderReco();
+  syncPdpWishlistButton();
 }
 
 function renderGallery(animate){
@@ -1083,7 +1410,7 @@ function renderGallery(animate){
   const doSwap = () => {
     main.src = productImgSrc(gallery[gi]);
     main.onclick = ()=>openLightbox();
-    t.innerHTML = gallery.map((g,idx)=>`<button class="thumb ${idx===gi?'on':''}" onclick="setImg(${idx})"><img src="${productImgSrc(g)}" alt="View ${idx+1}"></button>`).join('');
+    t.innerHTML = gallery.map((g,idx)=>`<button type="button" class="thumb ${idx===gi?'on':''}" onclick="setImg(${idx})"><img src="${productImgSrc(g)}" alt="View ${idx+1}"></button>`).join('');
     if(animate) { main.classList.remove('switching'); }
   };
   if(animate){ main.classList.add('switching'); setTimeout(doSwap, 220); }
@@ -1091,8 +1418,18 @@ function renderGallery(animate){
 }
 function setImg(i){ gi=i; renderGallery(true); }
 function shiftImg(d){ if(!gallery.length) return; gi = (gi + d + gallery.length) % gallery.length; renderGallery(true); }
-function openLightbox(){ if(!gallery.length) return; const lb=document.getElementById('lightbox'); document.getElementById('lbImg').src=productImgSrc(gallery[gi]); lb.classList.add('on'); }
-function closeLightbox(){ document.getElementById('lightbox').classList.remove('on'); }
+function openLightbox(){
+  if(!gallery.length) return;
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lbImg').src = productImgSrc(gallery[gi]);
+  lb.classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('on');
+  const cartOpen = document.getElementById('pcart')?.classList.contains('on');
+  document.body.style.overflow = cartOpen ? 'hidden' : '';
+}
 function pickSize(el,s){
   if(!P) return;
   const qAvail = Number(el.dataset.qty ?? 0);
@@ -1107,7 +1444,7 @@ function chgQty(d){
   if(!P || !pickedSize) return;
   const pr = getPendingPrintFields();
   const max = maxQtyForProductSize(P, pickedSize);
-  const used = pdpQtyUsedForVariant(P.id, pickedSize, pr.printing_option, pr.print_name, pr.print_number, pr.print_badges);
+  const used = pdpQtyUsedForVariant(P.id, pickedSize, pr.printing_option, pr.print_name, pr.print_number, pr.print_badges, pickedVersion);
   const remaining = Math.max(0, max - used);
   if (remaining <= 0) {
     qty = 1;
@@ -1121,16 +1458,31 @@ function chgQty(d){
   document.getElementById('qtyV').textContent = String(qty);
 }
 
+function pdpToast(msg, type){
+  let t = document.getElementById('pdpToastEl');
+  if (!t) { t = document.createElement('div'); t.id = 'pdpToastEl'; document.body.appendChild(t); }
+  const icons = {
+    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16.4v.01"></path></svg>',
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>'
+  };
+  t.className = 'toast' + (type ? ' toast--' + type : '');
+  t.innerHTML = (icons[type] ? `<span class="toast-ico">${icons[type]}</span>` : '') + '<span class="toast-msg"></span>';
+  t.querySelector('.toast-msg').textContent = String(msg);
+  void t.offsetWidth;
+  t.classList.add('on');
+  clearTimeout(pdpToast._t);
+  pdpToast._t = setTimeout(() => t.classList.remove('on'), 2800);
+}
 function addToCart(){
   if(!P) return;
-  if(!productHasSellableStock(P)){ alert('Dit product is niet op voorraad.'); return; }
-  if(!pickedSize){ alert('Kies eerst een maat.'); return; }
+  if(!productHasSellableStock(P)){ pdpToast('Dit product is niet op voorraad.', 'error'); return; }
+  if(!pickedSize){ pdpToast('Kies eerst een maat.', 'error'); return; }
   const nameEl = document.getElementById('printName');
   const numEl = document.getElementById('printNumber');
   let pn = (nameEl.value || '').trim().slice(0,15);
   const numRaw = (numEl.value || '').trim();
   let num = numRaw.replace(/\D/g,'').slice(0,4);
-  if(numRaw && numRaw !== num){ alert('Nummer mag alleen cijfers bevatten (max. 4).'); return; }
+  if(numRaw && numRaw !== num){ pdpToast('Nummer mag alleen cijfers bevatten (max. 4).', 'error'); return; }
   nameEl.value = pn;
   numEl.value = num;
   let badges = (document.getElementById('printBadges').value || '').trim();
@@ -1138,15 +1490,16 @@ function addToCart(){
   if (!custom) { pn = ''; num = ''; badges = ''; }
   const printing_option = custom ? 'custom' : 'none';
   const maxAllowed = maxQtyForProductSize(P, pickedSize);
-  const used = pdpQtyUsedForVariant(P.id, pickedSize, printing_option, pn, num, badges);
+  const used = pdpQtyUsedForVariant(P.id, pickedSize, printing_option, pn, num, badges, pickedVersion);
   const remaining = maxAllowed - used;
   const addQty = Math.min(Math.max(1, Number(qty) || 1), Math.max(0, remaining));
   if (addQty <= 0 || remaining <= 0) {
-    alert('Onvoldoende voorraad voor deze maat (' + maxAllowed + ' beschikbaar voor deze optie).');
+    pdpToast('Onvoldoende voorraad voor deze maat (' + maxAllowed + ' beschikbaar voor deze optie).', 'error');
     return;
   }
-  const add = custom ? Number(CONFIG.customPrintingPrice || 5) : 0;
-  const unit = Number(P.price) + add;
+  const printAdd = custom && (pn || num) ? Number(CONFIG.customPrintingPrice || 5) : 0;
+  const badgeAdd = custom && badges ? unitBadgeExtraPdp() : 0;
+  const unit = versionPrice(P, pickedVersion) + printAdd + badgeAdd;
   const cartItem = {
     id: P.id,
     name: P.name,
@@ -1158,6 +1511,7 @@ function addToCart(){
     image3: P.image3 || '',
     stock: maxAllowed,
     size: pickedSize,
+    version: pickedVersion,
     printing_option,
     print_name: pn,
     print_number: num,
@@ -1166,7 +1520,7 @@ function addToCart(){
     qty: addQty
   };
   const sameIdx = pdpCart.findIndex(i =>
-    i.id === P.id && i.size === pickedSize && pdpPrintingMatch(i, printing_option, pn, num, badges)
+    i.id === P.id && i.size === pickedSize && (i.version || 'fan') === pickedVersion && pdpPrintingMatch(i, printing_option, pn, num, badges)
   );
   if (sameIdx >= 0) {
     pdpCart[sameIdx].qty = Math.min(maxAllowed, Number(pdpCart[sameIdx].qty || 0) + addQty);
@@ -1181,11 +1535,11 @@ function addToCart(){
   // Button feedback: show "✓ Added!" briefly, then open the cart panel
   const addBtnEl = document.getElementById('addBtn');
   const stickyBtnEl = document.getElementById('stickyAddBtn');
-  addBtnEl.textContent = '✓ Toegevoegd!';
+  addBtnEl.textContent = 'Toegevoegd!';
   addBtnEl.style.background = '#2d5a27';
   addBtnEl.disabled = true;
   if (stickyBtnEl) {
-    stickyBtnEl.textContent = '✓ Toegevoegd!';
+    stickyBtnEl.textContent = 'Toegevoegd!';
     stickyBtnEl.style.background = '#2d5a27';
     stickyBtnEl.disabled = true;
   }
@@ -1193,6 +1547,18 @@ function addToCart(){
     syncPdpAddButtons();
     openPdpCart();
   }, 700);
+}
+
+function openStickyWhatsApp() {
+  const size = document.querySelector('.sz.on')?.textContent?.trim() || '';
+  const bits = [
+    'Hi! Ik wil deze graag bestellen:',
+    P ? P.name : '',
+    size ? `(maat ${size})` : ''
+  ].filter(Boolean);
+  const msg = bits.join(' ');
+  const wa = 'https://wa.me/' + kbeWaDigits() + '?text=' + encodeURIComponent(msg);
+  window.open(wa, '_blank');
 }
 
 document.getElementById('printName').addEventListener('input', function(){
@@ -1287,7 +1653,7 @@ function renderPdpCart(){
     const img = i.image || i.image2 || i.image3;
     const slug = i.id != null ? shareSlug(i) : '';
     const href = slug ? `product.php?slug=${encodeURIComponent(slug)}` : '';
-    const mediaInner = img ? `<img src="${productImgSrc(img)}" alt="">` : `<span style="font-size:20px;opacity:.5">${i.emoji||'👕'}</span>`;
+    const mediaInner = img ? `<img src="${productImgSrc(img)}" alt="">` : `<span class="pdp-line-noimg" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>`;
     const mediaBlock = href
       ? `<a class="pdp-line-media" href="${href}" title="Product bekijken">${mediaInner}</a>`
       : `<div class="pdp-line-media">${mediaInner}</div>`;
@@ -1298,13 +1664,13 @@ function renderPdpCart(){
       ${mediaBlock}
       <div>
         ${nameBlock}
-        <div class="pdp-line-meta">Maat: ${i.size}${i.printing_option==='custom' ? ' · ' + (i.print_name||'') + (i.print_number ? ' #' + i.print_number : '') : ''}</div>
+        <div class="pdp-line-meta">${i.version==='player' ? 'Player · ' : ''}Maat: ${i.size}${i.printing_option==='custom' ? ' · ' + (i.print_name||'') + (i.print_number ? ' #' + i.print_number : '') + (i.print_badges ? ' · ' + escHtml(i.print_badges) : '') : ''}</div>
         <div class="pdp-qty">
           <button type="button" onclick="pdpChQ(${idx},-1)" aria-label="Aantal verlagen">−</button>
           <span>${i.qty}</span>
           <button type="button" onclick="pdpChQ(${idx},1)" aria-label="Aantal verhogen">+</button>
         </div>
-        <button class="pdp-remove" onclick="pdpRemove(${idx})">Verwijderen</button>
+        <button type="button" class="pdp-remove" onclick="pdpRemove(${idx})">Verwijderen</button>
       </div>
       <div class="pdp-line-price">€${(Number(i.price||0)*Number(i.qty||1)).toFixed(2)}</div>
     </div>`;
@@ -1333,7 +1699,7 @@ async function applyPdpCoupon(){
     pdpCoupon = null;
     persistCouponState();
     fb.className = 'pdp-coupon-fb err';
-    fb.textContent = '✗ ' + (res.error === 'network' ? 'Kon code niet controleren.' : (res.error || 'Ongeldige kortingscode.'));
+    fb.textContent = (res.error === 'network' ? 'Kon code niet controleren.' : (res.error || 'Ongeldige kortingscode.'));
   }
   renderPdpCart();
 }
@@ -1475,7 +1841,11 @@ function initRecoSlider(){
     const step = w + gap;
     let target = vp.scrollLeft + dir * step;
     target = Math.max(0, Math.min(maxScroll, target));
-    vp.scrollTo({ left: target, behavior: 'smooth' });
+    if (typeof kbeScrollElementTo === 'function') {
+      kbeScrollElementTo(vp, target, 0, true);
+    } else {
+      vp.scrollTo({ left: target, behavior: 'smooth' });
+    }
     window.requestAnimationFrame(() => window.requestAnimationFrame(updateRecoArrows));
   }
 

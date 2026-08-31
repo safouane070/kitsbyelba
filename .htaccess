@@ -26,11 +26,27 @@
 # Prevent directory listing
 Options -Indexes
 
+# Run PHP inside the two static entry pages so they can reuse shared includes
+# (shared footer/nav). Scoped to ONLY these two files — every other .html stays
+# a plain static file. XAMPP/Apache mod_php: handler name is application/x-httpd-php.
+<FilesMatch "^(index|shop)\.html$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
 # Force HTML files to always reload fresh (no browser cache)
 <FilesMatch "\.(html)$">
     Header always set Cache-Control "no-cache, no-store, must-revalidate"
     Header always set Pragma "no-cache"
     Header always set Expires "0"
+</FilesMatch>
+
+# Cache static assets to reduce repeat load time
+<FilesMatch "\.(css|js|mjs|png|jpe?g|gif|webp|svg|ico)$">
+    Header always set Cache-Control "public, max-age=604800"
+</FilesMatch>
+# Fonts: zelden wisselen — lang cachen (herhaalbezoeken / PageSpeed “cache lifetimes”)
+<FilesMatch "\.(woff2?|ttf|otf)$">
+    Header always set Cache-Control "public, max-age=31536000, immutable"
 </FilesMatch>
 
 # Block HTTP access to PHP includes (not used for normal URLs; prevents accidental probing)
@@ -42,10 +58,51 @@ Options -Indexes
   RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
   RewriteRule ^includes(/|$) - [F,L]
+  # Block HTTP access to CLI/maintenance scripts (run these from the shell only)
+  RewriteRule ^tools(/|$) - [F,L]
+  # Block version-control metadata (a served .git/ leaks full source + history)
+  RewriteRule (^|/)\.(git|hg|svn)(/|$) - [F,L]
+  # Block the ROOT config.php (holds DB creds) — but NOT api/config.php, which is
+  # the intentionally public, sanitized config endpoint the frontend fetches.
+  RewriteRule ^config\.php$ - [F,L]
+  # 301: legacy query URLs -> clean category URLs
+  RewriteCond %{REQUEST_URI} ^/(index\.html|shop\.html)$ [NC]
+  RewriteCond %{QUERY_STRING} (^|&)(type|cat)=shirts(&|$) [NC]
+  RewriteRule ^ shirts? [R=301,L]
+  RewriteCond %{REQUEST_URI} ^/(index\.html|shop\.html)$ [NC]
+  RewriteCond %{QUERY_STRING} (^|&)(type|cat)=sets(&|$) [NC]
+  RewriteRule ^ sets? [R=301,L]
+  RewriteCond %{REQUEST_URI} ^/(index\.html|shop\.html)$ [NC]
+  RewriteCond %{QUERY_STRING} (^|&)(type|cat)=hemdsetjes(&|$) [NC]
+  RewriteRule ^ hemdsetjes? [R=301,L]
+  RewriteCond %{REQUEST_URI} ^/(index\.html|shop\.html)$ [NC]
+  RewriteCond %{QUERY_STRING} (^|&)(type|cat)=retro(&|$) [NC]
+  RewriteRule ^ retro? [R=301,L]
+  RewriteCond %{REQUEST_URI} ^/(index\.html|shop\.html)$ [NC]
+  RewriteCond %{QUERY_STRING} (^|&)(type|cat)=kids(&|$) [NC]
+  RewriteRule ^ kids? [R=301,L]
+  RewriteCond %{REQUEST_URI} ^/(index\.html|shop\.html)$ [NC]
+  RewriteCond %{QUERY_STRING} (^|&)(type|cat)=voorraad(&|$) [NC,OR]
+  RewriteCond %{QUERY_STRING} (^|&)voorraad=1(&|$) [NC]
+  RewriteRule ^ voorraad? [R=301,L]
+  # Category landing pages (real dedicated page files, same shop styling)
+  RewriteRule ^shirts/?$ shirts.php [L,QSA,NC]
+  RewriteRule ^sets/?$ sets.php [L,QSA,NC]
+  RewriteRule ^hemdsetjes/?$ hemdsetjes.php [L,QSA,NC]
+  RewriteRule ^retro/?$ retro.php [L,QSA,NC]
+  RewriteRule ^kids/?$ kids.php [L,QSA,NC]
+  RewriteRule ^voorraad/?$ voorraad.php [L,QSA,NC]
 </IfModule>
 
-# Block direct access to sensitive files
-<FilesMatch "(\.env|\.sql|config\.php)$">
-    Order allow,deny
-    Deny from all
+# Block direct access to sensitive files.
+# NOTE: config.php is handled by the mod_rewrite rule above (root-only), so it is
+# deliberately NOT listed here — a FilesMatch would also block api/config.php.
+<FilesMatch "(\.env|\.sql)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
 </FilesMatch>

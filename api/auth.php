@@ -23,6 +23,7 @@ ini_set('session.gc_maxlifetime', (string)(60 * 120));
 header('Content-Type: application/json');
 $cfg = require __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/cors.php';
+require_once __DIR__ . '/../includes/app_log.php';
 kits_emit_cors_headers($cfg, true);
 header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -53,7 +54,7 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
     );
 } catch (PDOException $e) {
-    error_log('[auth] DB connection: ' . $e->getMessage());
+    kits_log('error', 'auth_db_connect_failed', ['error' => $e->getMessage()]);
     jsonError('Geen verbinding met de database. Probeer het later opnieuw.', 500);
 }
 

@@ -104,39 +104,69 @@ $displayNameNice = static function (?string $name): string {
 <title>Mijn account — KitsByElbaa</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --cream:#faf8f4;--cream2:#f3f0ea;--cream3:#ede9e0;--line:#d9d3c6;
-  --ink:#1c1a17;--ink2:#3d3a34;--ink3:#6b6760;--ink4:#9c9890;
+  --cream:#f9faf7;--cream2:#f2f4ef;--cream3:#eaece6;--parchment:#e6e8e2;--line:#e4e6df;--line2:#d4d7cd;
+  --ink:#181a17;--ink2:#3a3d38;--ink3:#6a6d66;--ink4:#9a9d95;
   --accent:#2d5a27;--accent2:#3a7232;--accent-light:#edf5eb;
-  --gold:#b8962e;--gold2:#d4ab38;--red:#c0392b;
-  --shadow-sm:0 1px 8px rgba(28,26,23,.07);--shadow:0 4px 24px rgba(28,26,23,.10);
+  --gold:#b8962e;--gold2:#d4ab38;--wa:#25D366;--red:#c0392b;--white:#ffffff;
+  --font-display:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-body:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --r-sm:8px;--r:12px;--r-lg:16px;--ease-out:cubic-bezier(.23,1,.32,1);
+  --shadow-sm:0 1px 3px rgba(24,26,23,.05),0 1px 2px rgba(24,26,23,.04);--shadow:0 6px 24px rgba(24,26,23,.08);--shadow-lg:0 16px 48px rgba(24,26,23,.12);
 }
-html{scroll-behavior:smooth;height:100%}
-body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;font-weight:400;overflow-x:hidden;min-height:100vh;display:flex;flex-direction:column}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+html{height:100%}
+body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-weight:400;overflow-x:hidden;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 a{text-decoration:none;color:inherit}
 .page{flex:1}
 /* Announcement */
-.announce{background:var(--ink);color:var(--cream);text-align:center;padding:10px 24px;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;overflow:hidden}
-.announce-inner{display:inline-flex;gap:48px;animation:marquee 28s linear infinite;white-space:nowrap}
-.announce-inner span::before{content:'✦';margin-right:48px;color:var(--gold2);font-size:8px}
+.announce{background:var(--ink);color:var(--cream);text-align:center;padding:8px 24px;font-size:11px;font-weight:500;letter-spacing:.08em;overflow:hidden}
+.announce-inner{display:inline-flex;gap:40px;animation:marquee 36s linear infinite;white-space:nowrap}
+.announce-inner span{opacity:.8;display:inline-flex;align-items:center;gap:40px}
+.announce-inner span::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:.7}
+.announce-inner .announce-promo{opacity:1;color:var(--gold2);font-weight:700;letter-spacing:.1em}
+.announce-inner .announce-promo strong{color:#fff;font-weight:700}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 /* Site header = zelfde patroon als index.html (desktop + hamburger ≤960px in responsive-global.css) */
 .site-nav{background:var(--cream);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:90;backdrop-filter:blur(16px)}
 .promo-banner{background:var(--accent-light);border-bottom:1px solid rgba(45,90,39,.15);text-align:center;padding:9px 16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700}
 .nav-top{max-width:1360px;margin:0 auto;padding:0 48px;height:74px;display:flex;align-items:center;justify-content:space-between;position:relative}
-.logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;letter-spacing:.02em;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
-.logo-mark{width:32px;height:32px;background:var(--ink);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--cream);font-weight:700;letter-spacing:.04em}
+.logo{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:.02em;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-img{height:64px;width:auto;display:block;object-fit:contain}
+.logo-text{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .nav-links{display:flex;list-style:none;gap:36px;margin:0;padding:0}
 .nav-links a{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);text-decoration:none;transition:color .2s;position:relative;padding-bottom:2px}
 .nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .22s}
 .nav-links a:hover{color:var(--ink)}
 .nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
 .nav-links a.active{color:var(--ink)}
+.nav-links>li{position:relative}
+.nav-links .has-mega>.top-link{display:inline-flex;align-items:center;gap:6px}
+.nav-links .has-mega>.top-link::before{content:''}
+.nav-links .has-mega>.top-link::after{content:'▾';font-size:10px;line-height:1;opacity:.65;position:static;background:none;transform:none;height:auto;transition:transform .2s ease}
+.nav-mega{position:absolute;top:100%;left:50%;transform:translate(-50%,6px);min-width:240px;background:#fff;border:1px solid #e2dbcf;box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:260;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .2s ease,visibility .18s}
+.nav-mega a{display:flex;align-items:center;gap:10px;padding:8px 12px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);border-bottom:1px solid #eee7da;white-space:nowrap;border-radius:8px}
+.nav-mega a:last-child{border-bottom:none}
+.nav-mega a::after{display:none}
+.nav-mega a:hover{background:var(--cream2);color:var(--ink)}
+.nav-mega a::before{content:'';width:26px;height:26px;flex-shrink:0;background-color:#fff;border:1px solid var(--line);border-radius:6px;background-repeat:no-repeat;background-position:center;background-size:18px 18px}
+.nav-mega a[href*="league=premier"]::before{background-image:url("images/leagues/premier.png")}
+.nav-mega a[href*="league=laliga"]::before{background-image:url("images/leagues/laliga.png")}
+.nav-mega a[href*="league=bundesliga"]::before{background-image:url("images/leagues/bundesliga.png")}
+.nav-mega a[href*="league=seriea"]::before{background-image:url("images/leagues/seriea.png")}
+.nav-mega a[href*="league=ligue1"]::before{background-image:url("images/leagues/ligue1.png")}
+.nav-mega a[href*="league=eredivisie"]::before{background-image:url("images/leagues/eredivisie.png")}
+.nav-mega a[href*="league=national"]::before{background-image:none;content:"🌍";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-mega a[href*="league=overig"]::before{background-image:none;content:"⚽";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-links .has-mega:hover .nav-mega,.nav-links .has-mega:focus-within .nav-mega{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
+.nav-links .has-mega:hover>.top-link::after,.nav-links .has-mega:focus-within>.top-link::after{transform:rotate(180deg)}
+@media(max-width:960px){.nav-mega{display:none !important}.nav-links .has-mega>.top-link::after{display:none}}
 .nav-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
-.nav-cart{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--cream);border:none;padding:11px 22px;font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.nav-cart{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--cream);border:none;padding:11px 22px;font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
 .nav-cart-ico{font-size:1.05rem;line-height:1}
 .nav-cart-label{display:inline}
 .nav-cart:hover{background:var(--ink2)}
@@ -145,7 +175,7 @@ a{text-decoration:none;color:inherit}
 .ham span{width:20px;height:2px;background:var(--ink);display:block;transition:all .2s}
 /* Page */
 .page{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
-.page-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;margin-bottom:8px}
+.page-title{font-family:var(--font-display);font-size:36px;font-weight:700;margin-bottom:8px}
 .page-sub{color:var(--ink3);font-size:14px;margin-bottom:40px;line-height:1.5}
 .page-sub .account-user-name{text-transform:none;letter-spacing:.02em;font-weight:600;color:var(--ink2)}
 /* Auth panel (not logged in) */
@@ -156,10 +186,10 @@ a{text-decoration:none;color:inherit}
 .apanel{display:none}.apanel.on{display:block}
 .form-group{margin-bottom:18px}
 .form-group label{display:block;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:7px}
-.form-group input{width:100%;padding:12px 14px;border:1px solid var(--line);background:#fff;font-family:'Jost',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color .18s}
+.form-group input{width:100%;padding:12px 14px;border:1px solid var(--line);background:#fff;font-family:var(--font-body);font-size:14px;color:var(--ink);outline:none;transition:border-color .18s}
 .form-group input:focus{border-color:var(--ink)}
 .form-hint{font-size:12px;color:var(--ink4);margin-top:5px}
-.btn-primary{width:100%;padding:14px;background:var(--ink);color:var(--cream);border:none;font-family:'Jost',sans-serif;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .18s;margin-top:8px}
+.btn-primary{width:100%;padding:14px;background:var(--ink);color:var(--cream);border:none;font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .18s;margin-top:8px}
 .btn-primary:hover{background:var(--ink2)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
 .form-err{background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
@@ -170,17 +200,17 @@ a{text-decoration:none;color:inherit}
 .dash-nav a{display:flex;align-items:center;gap:10px;padding:13px 20px;font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .18s;border-left:3px solid transparent}
 .dash-nav a:hover{color:var(--ink);background:var(--cream2)}
 .dash-nav a.on{color:var(--ink);background:var(--cream2);border-left-color:var(--ink);font-weight:600}
-/* Geen emoji: past bij rest van site (Jost + Playfair) */
+/* Geen emoji: past bij rest van site (Manrope + Space Grotesk) */
 .dash-nav .nav-icon{display:none}
 .dash-nav .danger-link{color:var(--red)}
 .dash-nav .danger-link:hover{color:var(--red);background:#fff5f5}
 .dpanel{display:none;min-width:0}.dpanel.on{display:block}
-.dpanel-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px}
+.dpanel-title{font-family:var(--font-display);font-size:24px;font-weight:700;margin-bottom:6px}
 .dpanel-sub{color:var(--ink3);font-size:13px;margin-bottom:28px}
 /* Stats row */
 .stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
 .stat-card{background:#fff;border:1px solid var(--line);padding:20px 24px;box-shadow:var(--shadow-sm)}
-.stat-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-bottom:4px}
+.stat-val{font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:4px}
 .stat-lbl{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4)}
 /* Orders table */
 .orders-table{width:100%;border-collapse:collapse;font-size:13px}
@@ -200,31 +230,34 @@ a{text-decoration:none;color:inherit}
 /* Profile form */
 .profile-form{background:#fff;border:1px solid var(--line);padding:28px}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.btn-secondary{padding:11px 24px;background:transparent;border:1px solid var(--line);font-family:'Jost',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);cursor:pointer;transition:all .18s}
+.btn-secondary{padding:11px 24px;background:transparent;border:1px solid var(--line);font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);cursor:pointer;transition:all .18s}
 .btn-secondary:hover{border-color:var(--ink);color:var(--ink)}
 .form-actions{display:flex;gap:12px;margin-top:24px}
 /* Danger zone */
 .danger-box{background:#fff5f5;border:1px solid #fca5a5;padding:24px 28px}
 .danger-box h3{font-size:14px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
 .danger-box p{font-size:13px;color:var(--ink2);line-height:1.7;margin-bottom:20px}
-.btn-danger{padding:12px 24px;background:var(--red);color:#fff;border:none;font-family:'Jost',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .18s}
+.btn-danger{padding:12px 24px;background:var(--red);color:#fff;border:none;font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .18s}
 .btn-danger:hover{background:#a93226}
 /* Modal */
 .modal-bg{position:fixed;inset:0;background:rgba(28,26,23,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
 .modal-bg.on{display:flex}
 .modal{background:#fff;padding:36px;max-width:420px;width:100%;position:relative}
-.modal h3{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px}
+.modal h3{font-family:var(--font-display);font-size:22px;margin-bottom:8px}
 .modal p{font-size:13px;color:var(--ink3);margin-bottom:20px;line-height:1.65}
 .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink3)}
 /* Footer */
 footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
 .foot-inner{max-width:1280px;margin:0 auto;padding:56px 24px 32px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px}
-.foot-logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
+.foot-logo{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
 footer p,footer a{display:block;font-size:13px;color:rgba(250,248,244,.5);text-decoration:none;margin-bottom:10px;line-height:1.7;transition:color .18s}
 footer a:hover{color:var(--cream)}
-footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
+footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
 .foot-bottom{max-width:1280px;margin:0 auto;padding:20px 24px;border-top:1px solid rgba(250,248,244,.1);display:flex;justify-content:space-between;font-size:12px;color:rgba(250,248,244,.35)}
 /* Responsive */
+@media(max-width:1024px){
+  .logo-img{height:50px}
+}
 @media(max-width:768px){
   .dash-grid{grid-template-columns:1fr}
   .dash-nav{display:flex;overflow-x:auto;padding:10px 0 0;scroll-snap-type:x proximity;scroll-padding:0 16px;border:none;border-bottom:1px solid var(--line);background:#fff;gap:0;box-shadow:0 1px 0 rgba(28,26,23,.06)}
@@ -239,47 +272,19 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   .orders-table .hide-mobile{display:none}
 }
 </style>
-<link rel="stylesheet" href="css/responsive-global.css?v=10">
+<link rel="stylesheet" href="css/responsive-global.css?v=15">
+<script defer src="js/kbe-ios-helpers.js?v=2"></script>
 </head>
 <body class="account-page">
 
-<!-- ANNOUNCEMENT BAR -->
-<div class="announce">
-  <div class="announce-inner">
-    <span>Gratis verzending vanaf €40</span>
-    <span>Nieuwe 25/26 tenues op voorraad</span>
-    <span>Bestellen via WhatsApp</span>
-    <span>Betaal eenvoudig met Tikkie</span>
-    <span>Gratis verzending vanaf €40</span>
-    <span>Nieuwe 25/26 tenues op voorraad</span>
-    <span>Bestellen via WhatsApp</span>
-    <span>Betaal eenvoudig met Tikkie</span>
-  </div>
-</div>
+<?php include __DIR__ . '/includes/announce.php'; ?>
 
-<!-- NAV (zelfde structuur als index.html: logo · uitklapmenu · shop) -->
-<nav class="site-nav">
-  <div class="promo-banner"><?= $promoBannerHtml ?></div>
-  <div class="nav-top">
-    <a class="logo" href="index.html"><span class="logo-mark">KBE</span>KitsByElbaa</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html?type=shirts#shop">Shirts</a></li>
-      <li><a href="index.html?type=sets#shop">Sets</a></li>
-      <li><a href="index.html?type=hemdsetjes#shop">Hemdsetjes</a></li>
-      <li><a href="index.html?type=retro#shop">Retro</a></li>
-      <li><a href="index.html?type=kids#shop">Kids</a></li>
-      <li><a href="index.html#sizeguide">Maattabel</a></li>
-      <li><a href="index.html#faq">FAQ</a></li>
-      <li><a href="account.php" class="active">Account</a></li>
-    </ul>
-    <div class="nav-right">
-      <button type="button" class="ham" id="ham" onclick="toggleNav()" aria-label="Menu"><span></span><span></span><span></span></button>
-      <button type="button" class="nav-cart" onclick="window.location.href='index.html'" aria-label="Naar de shop">
-        <span class="nav-cart-ico" aria-hidden="true">🛒</span><span class="nav-cart-label">Shop</span>
-      </button>
-    </div>
-  </div>
-</nav>
+<?php
+$navActive = 'account';
+$navClass = 'site-nav';
+$navCartOnclick = "window.location.href='index.html?openCart=1'";
+include __DIR__ . '/includes/nav.php';
+?>
 
 <!-- PAGE CONTENT -->
 <div class="page">
@@ -306,7 +311,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
       <label>Wachtwoord</label>
       <input type="password" id="login-pass" placeholder="Je wachtwoord" autocomplete="current-password">
     </div>
-    <button class="btn-primary" id="login-btn" onclick="doLogin()">Inloggen</button>
+    <button type="button" class="btn-primary" id="login-btn" onclick="doLogin()">Inloggen</button>
   </div>
 
   <!-- REGISTER -->
@@ -325,7 +330,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
       <input type="password" id="reg-pass" placeholder="Minimaal 8 tekens" autocomplete="new-password">
       <p class="form-hint">Minimaal 8 tekens.</p>
     </div>
-    <button class="btn-primary" id="reg-btn" onclick="doRegister()">Account aanmaken</button>
+    <button type="button" class="btn-primary" id="reg-btn" onclick="doRegister()">Account aanmaken</button>
     <p class="form-hint" style="margin-top:16px;line-height:1.65">
       Door een account aan te maken ga je ermee akkoord dat we je naam, e-mail en adres
       alleen bewaren om je bestellingen te verwerken. Je kunt je account en gegevens altijd verwijderen.
@@ -480,7 +485,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
           <p class="form-hint">E-mail kan niet worden gewijzigd. Neem via WhatsApp contact op als je hulp nodig hebt.</p>
         </div>
         <div class="form-actions">
-          <button class="btn-primary" style="width:auto;padding:12px 32px" onclick="saveProfile()">Opslaan</button>
+          <button type="button" class="btn-primary" style="width:auto;padding:12px 32px" onclick="saveProfile()">Opslaan</button>
         </div>
       </div>
     </div>
@@ -506,7 +511,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
           <input type="password" id="pw-confirm" autocomplete="new-password">
         </div>
         <div class="form-actions">
-          <button class="btn-primary" style="width:auto;padding:12px 32px" onclick="changePassword()">Wachtwoord bijwerken</button>
+          <button type="button" class="btn-primary" style="width:auto;padding:12px 32px" onclick="changePassword()">Wachtwoord bijwerken</button>
         </div>
       </div>
     </div>
@@ -516,7 +521,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
       <div class="dpanel-title">Account verwijderen</div>
       <div class="dpanel-sub">Verwijder je persoonsgegevens permanent bij KitsByElbaa</div>
       <div class="danger-box">
-        <h3>⚠ Dit kan niet ongedaan worden gemaakt</h3>
+        <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><path d="M12 3.2l9.2 16.3H2.8z"></path><path d="M12 10v4.2M12 17.2v.02"></path></svg>Dit kan niet ongedaan worden gemaakt</h3>
         <p>
           Als je je account verwijdert, wissen we je naam, e-mailadres, telefoonnummer
           en bezorgadres uit onze systemen. Dat is je recht onder de
@@ -524,7 +529,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
           Bestelgegevens worden anoniem 7 jaar bewaard vanwege de Nederlandse fiscale bewaarplicht
           (Belastingdienst), maar niet meer aan jou gekoppeld.
         </p>
-        <button class="btn-danger" onclick="openDeleteModal()">Mijn account &amp; gegevens verwijderen</button>
+        <button type="button" class="btn-danger" onclick="openDeleteModal()">Mijn account &amp; gegevens verwijderen</button>
       </div>
     </div>
 
@@ -543,7 +548,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 <!-- DELETE ACCOUNT MODAL -->
 <div class="modal-bg" id="deleteModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+    <button type="button" class="modal-close" onclick="closeDeleteModal()">✕</button>
     <h3>Account verwijderen?</h3>
     <p>Voer je wachtwoord ter bevestiging in. Hiermee worden al je persoonsgegevens direct en permanent verwijderd.</p>
     <div class="form-err" id="del-err"></div>
@@ -552,36 +557,58 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
       <input type="password" id="del-pass" placeholder="Je wachtwoord">
     </div>
     <div style="display:flex;gap:12px;margin-top:8px">
-      <button class="btn-secondary" onclick="closeDeleteModal()">Annuleren</button>
-      <button class="btn-danger" id="del-confirm-btn" onclick="confirmDelete()">Ja, alles verwijderen</button>
+      <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Annuleren</button>
+      <button type="button" class="btn-danger" id="del-confirm-btn" onclick="confirmDelete()">Ja, alles verwijderen</button>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="foot-inner">
-    <div>
-      <div class="foot-logo">KitsByElbaa</div>
-      <p>Premium voetbaltenues in Nederland. Bestel via WhatsApp, betaal met Tikkie.</p>
-    </div>
-    <div><h4>Shop</h4><a href="index.html?type=shirts#shop">Shirts</a><a href="index.html?type=sets#shop">Sets</a><a href="index.html?type=hemdsetjes#shop">Hemdsetjes</a><a href="index.html?type=retro#shop">Retro</a><a href="index.html?type=kids#shop">Kids</a></div>
-    <div><h4>Info</h4><a href="index.html#sizeguide">Maattabel</a><a href="index.html#faq">FAQ</a><a href="account.php">Mijn account</a></div>
-    <div><h4>Contact</h4><a href="https://wa.me/31643554052" target="_blank" rel="noopener">WhatsApp</a></div>
-  </div>
-  <div class="foot-bottom">
-    <span>© 2026 KitsByElbaa. Alle rechten voorbehouden.</span>
-    <span>Betaling via Tikkie · Verzending via PostNL</span>
-  </div>
-</footer>
+<?php
+$footerAnchorPrefix   = 'index.html';
+$footerHideAlleTenues = false;
+include __DIR__ . '/includes/footer.php';
+?>
 
 <script>
 const CSRF_TOKEN = <?php echo json_encode($csrfToken, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
-function toggleNav() {
-  const el = document.getElementById('navLinks');
-  if (el) el.classList.toggle('open');
+function initKbeNavToggleAria() {
+  const cb = document.getElementById('kbeNavToggle');
+  const ham = document.getElementById('ham');
+  const nav = document.getElementById('navLinks');
+  if (!cb || !ham || !nav) return;
+  const sync = () => ham.setAttribute('aria-expanded', cb.checked ? 'true' : 'false');
+  cb.addEventListener('change', sync);
+  nav.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', () => {
+      cb.checked = false;
+      sync();
+    });
+  });
+  sync();
 }
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initKbeNavToggleAria);
+} else {
+  initKbeNavToggleAria();
+}
+
+// ── NAV CART COUNTER (read-only: synchroniseer met localStorage van home) ──
+function kbeUpdateNavCartCount() {
+  try {
+    const raw = localStorage.getItem('kbe_cart_main');
+    const cart = raw ? JSON.parse(raw) : [];
+    const count = Array.isArray(cart)
+      ? cart.reduce((s, i) => s + Number(i && i.qty ? i.qty : 0), 0)
+      : 0;
+    const el = document.getElementById('cartN');
+    if (el) el.textContent = String(count);
+  } catch (_) {}
+}
+kbeUpdateNavCartCount();
+window.addEventListener('storage', function (e) {
+  if (!e || e.key === 'kbe_cart_main' || e.key === null) kbeUpdateNavCartCount();
+});
 
 // ── AUTH TABS ────────────────────────────────────────────────
 function switchAuthTab(tab) {

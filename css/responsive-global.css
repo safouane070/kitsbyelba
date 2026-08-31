@@ -294,15 +294,15 @@ main,
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (min-width: 1025px) {
   .nav-top {
-    justify-content: flex-start !important;
+    justify-content: space-between !important;
     align-items: center !important;
-    flex-wrap: wrap !important;
-    gap: 16px 28px !important;
-    row-gap: 14px !important;
-    min-height: 80px !important;
-    height: auto !important;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
+    flex-wrap: nowrap !important;
+    gap: 16px !important;
+    row-gap: 0 !important;
+    min-height: 74px !important;
+    height: 74px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
 
   .nav-top .logo {
@@ -310,11 +310,11 @@ main,
   }
 
   .nav-links {
-    flex: 1 1 auto !important;
-    flex-wrap: wrap !important;
-    gap: 10px 24px !important;
-    row-gap: 12px !important;
-    justify-content: flex-start !important;
+    flex: 0 1 auto !important;
+    flex-wrap: nowrap !important;
+    gap: 14px !important;
+    row-gap: 0 !important;
+    justify-content: center !important;
     align-items: center !important;
     align-content: center !important;
     min-width: 0 !important;
@@ -326,14 +326,35 @@ main,
 
   .nav-links a {
     white-space: nowrap !important;
-    padding-bottom: 4px !important;
-    letter-spacing: 0.11em !important;
+    padding-bottom: 2px !important;
+    letter-spacing: 0.08em !important;
+    font-size: 11px !important;
   }
 
   /* Mand / hamburger-blok rechts (ook anonieme wrapper op account.php) */
   .nav-top > ul.nav-links ~ * {
     margin-left: auto !important;
     flex-shrink: 0 !important;
+  }
+
+  .nav-right {
+    margin-left: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .nav-search {
+    width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+  }
+
+  .nav-cart {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    align-items: center !important;
   }
 }
 
@@ -351,7 +372,10 @@ main,
   nav:not(.dash-nav) {
     width: 100%;
     max-width: 100%;
-    overflow-x: clip;
+    /* Geen overflow-x op nav: met overflow-x:hidden wordt overflow-y in de praktijk auto
+       → <nav> wordt scroll-container (DevTools: "scroll") en het uitklapmenu wordt geknipt.
+       Horizontaal begrenzen doen html/body al (overflow-x: clip hierboven). */
+    overflow: visible;
     box-sizing: border-box;
   }
 
@@ -364,6 +388,9 @@ main,
     gap: 8px !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: visible !important;
   }
 
   .nav-top .logo {
@@ -373,13 +400,17 @@ main,
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
     max-width: 100% !important;
+    position: relative !important;
+    z-index: 1 !important;
   }
 
-  .nav-right {
+  .nav-top .nav-right {
     display: inline-flex !important;
     align-items: center !important;
     gap: 8px !important;
     flex-shrink: 0 !important;
+    position: relative !important;
+    z-index: 25 !important;
   }
 
   /* Mand: alleen icoon + teller — verberg woord “Winkelwagen” */
@@ -443,6 +474,19 @@ main,
     min-width: 44px !important;
     min-height: 44px !important;
     box-sizing: border-box !important;
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+    position: relative !important;
+    z-index: 2 !important;
+    /* label.ham = zelfde als button */
+    cursor: pointer !important;
+    margin: 0 !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+  }
+
+  .ham span {
+    pointer-events: none !important;
   }
 
   /* Uitklapmenu: echte viewport-breedte — alleen homepage/shop (<nav> zonder .site-nav). account.php gebruikt <nav class="site-nav"> + hamburger zoals index. */
@@ -477,6 +521,7 @@ main,
 @media (max-width: 960px) {
   .site-nav .nav-top {
     position: relative;
+    isolation: isolate;
     gap: 10px;
     height: auto;
     min-height: 64px;
@@ -510,7 +555,8 @@ main,
     box-sizing: border-box;
   }
 
-  .site-nav .nav-links.open {
+  /* Menu open via #kbeNavToggle (checkbox + label) — betrouwbaar op iOS */
+  .site-nav #kbeNavToggle:checked ~ #navLinks {
     display: flex;
   }
 
@@ -545,6 +591,13 @@ main,
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  .site-nav .nav-top .nav-right {
+    position: relative;
+    z-index: 25;
   }
 
   .site-nav .ham {
@@ -582,6 +635,30 @@ main,
   }
 }
 
+/* Shop: type-tabs horizontaal scrollen op smal scherm — voorkomt dat taps “verloren” gaan in WebKit */
+@media (max-width: 960px) {
+  .filter-type-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    touch-action: pan-x;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .filter-type-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-type-tabs .ftab {
+    flex-shrink: 0;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
 /* Shop: brede knoppen netjes op smal scherm */
 @media (max-width: 640px) {
   .shop-toolbar .btn-sec,
@@ -597,5 +674,56 @@ main,
   }
   .upsell-grid .upsell-card:last-child:nth-child(odd) {
     grid-column: 1 / -1;
+  }
+}
+
+/* Verborgen checkbox voor hamburger (één per pagina); geen pointer-events — label triggert */
+.kbe-nav-toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 960px) {
+  nav .nav-top #kbeNavToggle:checked ~ #navLinks {
+    display: flex !important;
+  }
+}
+
+/* Mega menu: eerste tap opent submenu op touch + breed scherm (iPad); tweede tap volgt de link (js/kbe-ios-helpers.js) */
+@media (hover: none) and (min-width: 961px) {
+  .nav-links .has-mega.mega-touch-open .nav-mega {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+  }
+
+  .nav-links .has-mega.mega-touch-open > .top-link::after {
+    transform: rotate(180deg);
+  }
+}
+
+/* iOS Safari: focus op inputs <16px zoomt het viewport — formulieren blijven leesbaar zonder gedwongen zoom */
+@media (max-width: 960px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Mobiel uitklapmenu: max-hoogte wanneer open (checkbox) */
+@media (max-width: 960px) {
+  nav:not(.dash-nav) #kbeNavToggle:checked ~ #navLinks {
+    max-height: min(82dvh, 82vh) !important;
   }
 }
