@@ -97,142 +97,7 @@ if ($seoImage !== '') {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --cream:#f9faf7;--cream2:#f2f4ef;--cream3:#eaece6;--parchment:#e6e8e2;--line:#e4e6df;--line2:#d4d7cd;
-  --ink:#181a17;--ink2:#3a3d38;--ink3:#6a6d66;--ink4:#9a9d95;--accent:#2d5a27;--accent2:#3a7232;
-  --accent-light:#edf5eb;
-  --gold:#b8962e;--gold2:#d4ab38;--wa:#25D366;--red:#c0392b;
-  --white:#ffffff;
-  --font-display:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  --font-body:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --r-sm:8px;--r:12px;--r-lg:16px;--ease-out:cubic-bezier(.23,1,.32,1);
-  --shadow-sm:0 1px 3px rgba(24,26,23,.05),0 1px 2px rgba(24,26,23,.04);
-  --shadow:0 6px 24px rgba(24,26,23,.08);
-  --shadow-lg:0 16px 48px rgba(24,26,23,.12);
-}
-@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
-*{box-sizing:border-box}
-body{margin:0;font-family:var(--font-body);background:var(--cream);color:var(--ink);overflow-x:hidden}
 a{text-decoration:none;color:inherit}
-.announce{
-  background:var(--ink);color:var(--cream);
-  text-align:center;padding:8px 24px;
-  font-size:11px;font-weight:500;
-  letter-spacing:.08em;
-  position:relative;overflow:hidden;
-}
-.announce-inner{
-  display:inline-flex;gap:40px;
-  animation:marquee 36s linear infinite;white-space:nowrap;
-}
-.announce-inner span{opacity:.8;display:inline-flex;align-items:center;gap:40px}
-.announce-inner span::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:.7}
-.announce-inner .announce-promo{opacity:1;color:var(--gold2);font-weight:700;letter-spacing:.1em}
-.announce-inner .announce-promo strong{color:#fff;font-weight:700}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-nav{
-  background:var(--cream);border-bottom:1px solid var(--line);
-  position:sticky;top:0;z-index:90;backdrop-filter:blur(16px);
-}
-.promo-banner{
-  background:var(--accent-light);
-  border-bottom:1px solid rgba(45,90,39,.15);
-  text-align:center;
-  padding:9px 16px;
-  font-size:11px;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  color:var(--accent);
-  font-weight:700;
-}
-.nav-top{
-  max-width:1360px;margin:0 auto;padding:0 48px;height:74px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.logo{
-  font-family:var(--font-display);font-size:26px;font-weight:700;
-  letter-spacing:.02em;color:var(--ink);text-decoration:none;
-  display:flex;align-items:center;gap:10px;
-  min-width:0;
-}
-.logo-img{height:64px;width:auto;display:block;object-fit:contain}
-.logo-text{
-  position:absolute!important;width:1px!important;height:1px!important;padding:0!important;
-  margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;
-  white-space:nowrap!important;border:0!important;
-}
-.nav-links{display:flex;list-style:none;gap:36px;margin:0;padding:0}
-.nav-links a{
-  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--ink3);text-decoration:none;transition:color .2s;
-  position:relative;padding-bottom:2px;
-}
-.nav-links a::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .22s;
-}
-.nav-links a:hover{color:var(--ink)}
-.nav-links a:hover::after{transform:scaleX(1)}
-.nav-links a.active{color:var(--ink)}
-.nav-links a.active::after{transform:scaleX(1)}
-.nav-links>li{position:relative}
-.nav-links .has-mega>.top-link{display:inline-flex;align-items:center;gap:6px}
-.nav-links .has-mega>.top-link::before{content:''}
-.nav-links .has-mega>.top-link::after{
-  content:'▾';font-size:10px;line-height:1;opacity:.65;position:static;background:none;transform:none;height:auto;transition:transform .2s ease;
-}
-.nav-mega{
-  position:absolute;top:100%;left:50%;transform:translate(-50%,6px);
-  min-width:240px;background:#fff;border:1px solid #e2dbcf;
-  box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:260;
-  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .2s ease,visibility .18s;
-}
-.nav-mega a{
-  display:flex;align-items:center;gap:10px;padding:8px 12px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--ink3);border-bottom:1px solid #eee7da;white-space:nowrap;border-radius:8px;
-}
-.nav-mega a:last-child{border-bottom:none}
-.nav-mega a::after{display:none}
-.nav-mega a:hover{background:var(--cream2);color:var(--ink)}
-.nav-mega a::before{
-  content:'';width:26px;height:26px;flex-shrink:0;
-  background-color:#fff;border:1px solid var(--line);border-radius:6px;
-  background-repeat:no-repeat;background-position:center;background-size:18px 18px;
-}
-.nav-mega a[href*="league=premier"]::before{background-image:url("images/leagues/premier.png")}
-.nav-mega a[href*="league=laliga"]::before{background-image:url("images/leagues/laliga.png")}
-.nav-mega a[href*="league=bundesliga"]::before{background-image:url("images/leagues/bundesliga.png")}
-.nav-mega a[href*="league=seriea"]::before{background-image:url("images/leagues/seriea.png")}
-.nav-mega a[href*="league=ligue1"]::before{background-image:url("images/leagues/ligue1.png")}
-.nav-mega a[href*="league=eredivisie"]::before{background-image:url("images/leagues/eredivisie.png")}
-.nav-mega a[href*="league=national"]::before{background-image:none;content:"🌍";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
-.nav-mega a[href*="league=overig"]::before{background-image:none;content:"⚽";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
-.nav-links .has-mega:hover .nav-mega,
-.nav-links .has-mega:focus-within .nav-mega{
-  opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);
-}
-.nav-links .has-mega:hover>.top-link::after,
-.nav-links .has-mega:focus-within>.top-link::after{transform:rotate(180deg)}
-.nav-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
-.nav-cart{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  background:var(--ink);color:var(--cream);
-  border:none;padding:11px 22px;font-family:var(--font-body);
-  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;
-}
-.nav-cart-ico{font-size:1.05rem;line-height:1}
-.nav-cart-label{display:inline}
-.nav-cart:hover{background:var(--ink2)}
-.nav-cart-num{
-  background:var(--gold2);color:var(--ink);
-  width:19px;height:19px;border-radius:50%;
-  font-size:10px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;
-}
-.ham{display:none;flex-direction:column;gap:5px;background:transparent;border:1.5px solid var(--line);padding:9px 11px;cursor:pointer;transition:border-color .18s}
-.ham:hover{border-color:var(--ink)}
-.ham span{width:20px;height:2px;background:var(--ink);display:block;transition:all .2s}
 .wrap{max-width:1280px;margin:0 auto;padding:18px}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .crumbs{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a857b;margin-bottom:10px}
@@ -642,6 +507,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .cta{width:100%;padding:14px}
 }
 </style>
+<link rel="stylesheet" href="css/app.css?v=2">
 <link rel="stylesheet" href="css/responsive-global.css?v=15">
 <script defer src="js/kbe-ios-helpers.js?v=2"></script>
 </head>

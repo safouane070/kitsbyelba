@@ -107,30 +107,10 @@ $displayNameNice = static function (?string $name): string {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --cream:#f9faf7;--cream2:#f2f4ef;--cream3:#eaece6;--parchment:#e6e8e2;--line:#e4e6df;--line2:#d4d7cd;
-  --ink:#181a17;--ink2:#3a3d38;--ink3:#6a6d66;--ink4:#9a9d95;
-  --accent:#2d5a27;--accent2:#3a7232;--accent-light:#edf5eb;
-  --gold:#b8962e;--gold2:#d4ab38;--wa:#25D366;--red:#c0392b;--white:#ffffff;
-  --font-display:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  --font-body:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --r-sm:8px;--r:12px;--r-lg:16px;--ease-out:cubic-bezier(.23,1,.32,1);
-  --shadow-sm:0 1px 3px rgba(24,26,23,.05),0 1px 2px rgba(24,26,23,.04);--shadow:0 6px 24px rgba(24,26,23,.08);--shadow-lg:0 16px 48px rgba(24,26,23,.12);
-}
-@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
 html{height:100%}
 body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-weight:400;overflow-x:hidden;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 a{text-decoration:none;color:inherit}
 .page{flex:1}
-/* Announcement */
-.announce{background:var(--ink);color:var(--cream);text-align:center;padding:8px 24px;font-size:11px;font-weight:500;letter-spacing:.08em;overflow:hidden}
-.announce-inner{display:inline-flex;gap:40px;animation:marquee 36s linear infinite;white-space:nowrap}
-.announce-inner span{opacity:.8;display:inline-flex;align-items:center;gap:40px}
-.announce-inner span::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:.7}
-.announce-inner .announce-promo{opacity:1;color:var(--gold2);font-weight:700;letter-spacing:.1em}
-.announce-inner .announce-promo strong{color:#fff;font-weight:700}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 /* Site header = zelfde patroon als index.html (desktop + hamburger ≤960px in responsive-global.css) */
 .site-nav{background:var(--cream);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:90;backdrop-filter:blur(16px)}
 .promo-banner{background:var(--accent-light);border-bottom:1px solid rgba(45,90,39,.15);text-align:center;padding:9px 16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700}
@@ -170,9 +150,6 @@ a{text-decoration:none;color:inherit}
 .nav-cart-ico{font-size:1.05rem;line-height:1}
 .nav-cart-label{display:inline}
 .nav-cart:hover{background:var(--ink2)}
-.ham{display:none;flex-direction:column;gap:5px;background:transparent;border:1.5px solid var(--line);padding:9px 11px;cursor:pointer;transition:border-color .18s}
-.ham:hover{border-color:var(--ink)}
-.ham span{width:20px;height:2px;background:var(--ink);display:block;transition:all .2s}
 /* Page */
 .page{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
 .page-title{font-family:var(--font-display);font-size:36px;font-weight:700;margin-bottom:8px}
@@ -272,6 +249,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .orders-table .hide-mobile{display:none}
 }
 </style>
+<link rel="stylesheet" href="css/app.css?v=2">
 <link rel="stylesheet" href="css/responsive-global.css?v=15">
 <script defer src="js/kbe-ios-helpers.js?v=2"></script>
 </head>
