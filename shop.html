@@ -15,7 +15,9 @@
 <meta name="twitter:title" content="Shop — voetbaltenues | KitsByElbaa">
 <meta name="twitter:description" content="Alle voetbalshirts, sets, kids en retro tenues bij KitsByElbaa.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script defer src="js/kbe-ios-helpers.js?v=2"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script type="application/ld+json">
 {
@@ -23,7 +25,7 @@
   "@type": "Organization",
   "name": "KitsByElbaa",
   "url": "https://kitsbyelba.com",
-  "sameAs": ["https://wa.me/31643554052"]
+  "sameAs": ["https://wa.me/31684446255"]
 }
 </script>
 <script type="application/ld+json">
@@ -43,16 +45,16 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
 :root{
-  --cream:#faf8f4;
-  --cream2:#f3f0ea;
-  --cream3:#ede9e0;
-  --parchment:#e8e2d6;
-  --line:#d9d3c6;
-  --line2:#ccc6b8;
-  --ink:#1c1a17;
-  --ink2:#3d3a34;
-  --ink3:#6b6760;
-  --ink4:#9c9890;
+  --cream:#f9faf7;
+  --cream2:#f2f4ef;
+  --cream3:#eaece6;
+  --parchment:#e6e8e2;
+  --line:#e4e6df;
+  --line2:#d4d7cd;
+  --ink:#181a17;
+  --ink2:#3a3d38;
+  --ink3:#6a6d66;
+  --ink4:#9a9d95;
   --accent:#2d5a27;
   --accent2:#3a7232;
   --accent-light:#edf5eb;
@@ -61,13 +63,19 @@
   --wa:#25D366;
   --red:#c0392b;
   --white:#ffffff;
-  --shadow-sm:0 1px 8px rgba(28,26,23,.07);
-  --shadow:0 4px 24px rgba(28,26,23,.10);
-  --shadow-lg:0 12px 48px rgba(28,26,23,.14);
+  --font-display:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-body:'Manrope',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --r-sm:8px;
+  --r:12px;
+  --r-lg:16px;
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --shadow-sm:0 1px 3px rgba(24,26,23,.05),0 1px 2px rgba(24,26,23,.04);
+  --shadow:0 6px 24px rgba(24,26,23,.08);
+  --shadow-lg:0 16px 48px rgba(24,26,23,.12);
 }
 
-html{scroll-behavior:smooth}
-body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;font-weight:400;overflow-x:hidden}
+@media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
+body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-weight:400;overflow-x:hidden}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--cream2)}
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px}
@@ -75,23 +83,26 @@ body{background:var(--cream);color:var(--ink);font-family:'Jost',sans-serif;font
 /* ── ANNOUNCEMENT BAR ── */
 .announce{
   background:var(--ink);color:var(--cream);
-  text-align:center;padding:10px 24px;
-  font-size:12px;font-weight:500;
-  letter-spacing:.12em;text-transform:uppercase;
+  text-align:center;padding:8px 24px;
+  font-size:11px;font-weight:500;
+  letter-spacing:.08em;
   position:relative;overflow:hidden;
 }
 .announce-inner{
-  display:inline-flex;gap:48px;
-  animation:marquee 28s linear infinite;white-space:nowrap;
+  display:inline-flex;gap:40px;
+  animation:marquee 36s linear infinite;white-space:nowrap;
 }
-.announce-inner span{opacity:.9}
-.announce-inner span::before{content:'✦';margin-right:48px;color:var(--gold2);font-size:8px}
+.announce-inner span{opacity:.8;display:inline-flex;align-items:center;gap:40px}
+.announce-inner span::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--gold2);opacity:.7}
+.announce-inner .announce-promo{opacity:1;color:var(--gold2);font-weight:700;letter-spacing:.1em}
+.announce-inner .announce-promo strong{color:#fff;font-weight:700}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 /* ── NAV ── */
 nav{
   background:var(--cream);border-bottom:1px solid var(--line);
   position:sticky;top:0;z-index:90;backdrop-filter:blur(16px);
+  overflow:visible;
 }
 .promo-banner{
   background:var(--accent-light);
@@ -106,23 +117,42 @@ nav{
 }
 .nav-top{
   max-width:1360px;margin:0 auto;padding:0 48px;height:74px;
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  overflow:visible;
 }
 .logo{
-  font-family:'Playfair Display',serif;font-size:26px;font-weight:700;
+  font-family:var(--font-display);font-size:26px;font-weight:700;
   letter-spacing:.02em;color:var(--ink);text-decoration:none;
   display:flex;align-items:center;gap:10px;
+}
+.logo-img{
+  height:64px;
+  width:auto;
+  display:block;
+  object-fit:contain;
+}
+.logo-text{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
 }
 .logo-mark{
   width:32px;height:32px;background:var(--ink);
   display:flex;align-items:center;justify-content:center;
   font-size:14px;color:var(--cream);font-weight:700;letter-spacing:.04em;
 }
-.nav-links{display:flex;list-style:none;gap:36px}
+.nav-links{display:flex;list-style:none;gap:36px;margin:0;padding:0;align-items:center}
+.nav-links>li{position:relative}
 .nav-links a{
   font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
   color:var(--ink3);text-decoration:none;transition:color .2s;
-  position:relative;padding-bottom:2px;
+  position:relative;padding-bottom:2px;display:inline-flex;align-items:center;line-height:1;
 }
 .nav-links a::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
@@ -134,11 +164,48 @@ nav{
 .nav-links a.active::after{transform:scaleX(1)}
 .nav-links a.active{color:var(--ink)}
 .nav-links a.active::after{transform:scaleX(1)}
-.nav-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
+.nav-links .has-mega>.top-link{display:inline-flex;align-items:center;gap:6px}
+.nav-links .has-mega>.top-link::before{content:''}
+.nav-links .has-mega>.top-link::after{
+  content:'▾';font-size:10px;line-height:1;opacity:.65;position:static;background:none;transform:none;height:auto;transition:transform .2s ease;
+}
+.nav-mega{
+  position:absolute;top:100%;left:50%;transform:translate(-50%,6px);
+  min-width:240px;background:#fff;border:1px solid #e2dbcf;
+  box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:260;
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .2s ease,visibility .18s;
+}
+.nav-mega a{
+  display:flex;align-items:center;gap:10px;padding:8px 12px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink3);border-bottom:1px solid #eee7da;white-space:nowrap;border-radius:8px;
+}
+.nav-mega a:last-child{border-bottom:none}
+.nav-mega a::after{display:none}
+.nav-mega a:hover{background:var(--cream2);color:var(--ink)}
+.nav-mega a::before{
+  content:'';width:26px;height:26px;flex-shrink:0;
+  background-color:#fff;border:1px solid var(--line);border-radius:6px;
+  background-repeat:no-repeat;background-position:center;background-size:18px 18px;
+}
+.nav-mega a[href*="league=premier"]::before{background-image:url("images/leagues/premier.png")}
+.nav-mega a[href*="league=laliga"]::before{background-image:url("images/leagues/laliga.png")}
+.nav-mega a[href*="league=bundesliga"]::before{background-image:url("images/leagues/bundesliga.png")}
+.nav-mega a[href*="league=seriea"]::before{background-image:url("images/leagues/seriea.png")}
+.nav-mega a[href*="league=ligue1"]::before{background-image:url("images/leagues/ligue1.png")}
+.nav-mega a[href*="league=eredivisie"]::before{background-image:url("images/leagues/eredivisie.png")}
+.nav-mega a[href*="league=national"]::before{background-image:none;content:"🌍";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-mega a[href*="league=overig"]::before{background-image:none;content:"⚽";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-links .has-mega:hover .nav-mega,
+.nav-links .has-mega:focus-within .nav-mega{
+  opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);
+}
+.nav-links .has-mega:hover>.top-link::after,
+.nav-links .has-mega:focus-within>.top-link::after{transform:rotate(180deg)}
+.nav-right{display:flex;align-items:center;align-self:center;gap:14px;flex-shrink:0}
 .nav-search{
   width:38px;height:38px;border:1.5px solid var(--line);border-radius:8px;background:var(--white);
   color:var(--ink);display:flex;align-items:center;justify-content:center;cursor:pointer;
-  font-size:17px;line-height:1;
+  font-size:17px;line-height:1;align-self:center;
 }
 .nav-search:hover{border-color:var(--ink);background:var(--cream2)}
 .nav-search-modal-bg{
@@ -153,16 +220,44 @@ nav{
 }
 .nav-search-modal.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
 .nav-search-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.nav-search-modal-head strong{font-size:20px;font-family:'Playfair Display',serif}
+.nav-search-modal-head strong{font-size:20px;font-family:var(--font-display)}
 .nav-search-close{border:none;background:transparent;font-size:28px;line-height:1;cursor:pointer}
 .nav-search-field{width:100%;border:1.5px solid var(--line);padding:12px 14px;border-radius:8px;font-size:14px}
+.nav-search-results{
+  margin-top:10px;max-height:min(54vh,420px);overflow:auto;
+  border:1px solid var(--line);border-radius:10px;background:var(--white);
+}
+.nav-search-popular{
+  display:flex;flex-wrap:wrap;gap:8px;padding:10px;border-bottom:1px solid var(--line);background:var(--cream2);
+}
+.nav-search-chip{
+  border:1px solid var(--line);background:#fff;color:var(--ink2);font-size:11px;font-weight:600;
+  padding:6px 10px;border-radius:999px;cursor:pointer;
+}
+.nav-search-chip:hover{border-color:var(--ink);color:var(--ink)}
+.nav-search-empty{
+  padding:12px 14px;font-size:12px;color:var(--ink4);
+}
+.nav-search-item{
+  width:100%;display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;
+  padding:8px 10px;border:none;border-bottom:1px solid var(--line);background:transparent;cursor:pointer;text-align:left;
+}
+.nav-search-item:last-child{border-bottom:none}
+.nav-search-item:hover{background:var(--cream2)}
+.nav-search-item.is-active{background:var(--cream2);outline:1px solid var(--line2)}
+.nav-search-item img{
+  width:48px;height:58px;object-fit:cover;border:1px solid var(--line);border-radius:6px;background:var(--cream2);
+}
+.nav-search-item-name{font-size:12px;color:var(--ink);line-height:1.35}
+.nav-search-item-meta{font-size:11px;color:var(--ink4);margin-top:2px}
+.nav-search-item-price{font-size:12px;font-weight:700;color:var(--ink)}
 .nav-search-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
 .nav-cart{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   background:var(--ink);color:var(--cream);
-  border:none;padding:11px 22px;font-family:'Jost',sans-serif;
+  border:none;padding:0 16px;font-family:var(--font-body);
   font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;
+  cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;align-self:center;height:38px;
 }
 .nav-cart-ico{font-size:1.05rem;line-height:1}
 .nav-cart-label{display:inline}
@@ -217,7 +312,7 @@ nav{
   color:rgba(255,255,255,.9);margin-bottom:18px;
 }
 .banner-title{
-  font-family:'Playfair Display',serif;
+  font-family:var(--font-display);
   font-size:clamp(32px,5vw,62px);font-weight:700;
   color:#fff;line-height:1.05;margin-bottom:16px;
 }
@@ -225,7 +320,7 @@ nav{
 .banner-sub{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:28px}
 .banner-btn{
   background:#fff;color:var(--ink);border:none;
-  padding:14px 36px;font-family:'Jost',sans-serif;
+  padding:14px 36px;font-family:var(--font-body);
   font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
   cursor:pointer;transition:all .22s;
 }
@@ -268,7 +363,7 @@ nav{
 .hero-tag-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .hero h1{
-  font-family:'Playfair Display',serif;
+  font-family:var(--font-display);
   font-size:clamp(52px,6vw,88px);font-weight:700;
   line-height:1.05;letter-spacing:-.01em;color:var(--ink);margin-bottom:24px;
 }
@@ -280,13 +375,13 @@ nav{
 .hero-btns{display:flex;gap:14px;align-items:center}
 .btn-primary{
   background:var(--ink);color:var(--cream);border:none;padding:16px 40px;
-  font-family:'Jost',sans-serif;font-size:12px;font-weight:600;
+  font-family:var(--font-body);font-size:12px;font-weight:600;
   letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:all .22s;
 }
 .btn-primary:hover{background:var(--accent);transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,90,39,.25)}
 .btn-sec{
   background:transparent;color:var(--ink);border:1.5px solid var(--line2);
-  padding:15px 30px;font-family:'Jost',sans-serif;
+  padding:15px 30px;font-family:var(--font-body);
   font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
   cursor:pointer;transition:all .2s;
 }
@@ -323,18 +418,6 @@ nav{
 .hcard-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .hcard-price{font-size:12px;color:var(--accent);font-weight:600}
 
-/* ── TRUST BAR ── */
-.trust-bar{background:var(--cream2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.trust-bar-inner{
-  max-width:1360px;margin:0 auto;padding:18px 48px;
-  display:flex;justify-content:center;gap:56px;flex-wrap:wrap;
-}
-.tb-item{
-  display:flex;align-items:center;gap:10px;
-  font-size:12px;font-weight:500;color:var(--ink3);letter-spacing:.04em;
-}
-.tb-icon{font-size:16px}
-
 /* ── SHOP ── */
 .shop{max-width:1360px;margin:0 auto;padding:80px 48px}
 .shop{scroll-margin-top:130px}
@@ -351,28 +434,33 @@ nav{
   display:flex;align-items:flex-end;justify-content:space-between;
   margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--line);
 }
-.sh-left .sh-eyebrow{
-  font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:10px;
-}
-.sh-title{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;color:var(--ink);line-height:1}
+.sh-left .sh-eyebrow{display:none}
+.sh-title{font-family:var(--font-display);font-size:48px;font-weight:700;color:var(--ink);line-height:1}
+.sh-lede{margin:10px 0 0;font-size:13px;color:var(--ink3);line-height:1.55;max-width:700px}
 .sh-count{font-size:12px;color:var(--ink4);padding-bottom:4px;letter-spacing:.04em}
 
 /* Filter pills */
 .filter-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}
 .fpill{
   background:var(--white);border:1.5px solid var(--line);color:var(--ink3);
-  padding:8px 20px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  padding:7px 18px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
   cursor:pointer;border-radius:100px;transition:all .18s;
+  display:inline-flex;align-items:center;gap:8px;line-height:1;
 }
 .fpill:hover{border-color:var(--ink);color:var(--ink)}
 .fpill.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+.fpill-logo{width:32px;height:32px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;margin-left:-8px;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:3px}
+.fpill-logo img{width:100%;height:100%;object-fit:contain;display:block}
+.fpill-logo--emoji{font-size:19px;padding:0;line-height:1}
+.fpill.on .fpill-logo{border-color:rgba(255,255,255,.3)}
+.fpill.is-empty:not(.on){opacity:.4}
+.fpill.is-empty:not(.on):hover{opacity:.6;border-color:var(--line);color:var(--ink3)}
 
 /* Product grid */
 .pgrid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(min(100%,268px),1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,276px),1fr));
+  gap:24px;
 }
 .no-results{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--ink3)}
 .no-results strong{display:block;font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px}
@@ -380,21 +468,24 @@ nav{
 .no-results .btn-sec{display:inline-block}
 .no-results-tips{margin:18px auto 0;padding:0;max-width:440px;list-style:disc;text-align:left;font-size:13px;color:var(--ink2);line-height:1.55}
 .no-results-tips li{margin:8px 0;padding-left:4px}
+.no-results-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.no-results-actions button{padding:8px 12px;border:1px solid var(--line);background:var(--white);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.no-results-actions button:hover{border-color:var(--ink);color:var(--ink)}
 .pcard{
-  background:var(--white);border:1px solid var(--line);
-  overflow:hidden;cursor:pointer;transition:all .28s;
-  box-shadow:var(--shadow-sm);display:flex;flex-direction:column;
+  background:var(--white);border:1px solid #e0d9cc;
+  overflow:hidden;cursor:pointer;transition:transform .28s,box-shadow .28s,border-color .28s;
+  box-shadow:0 4px 18px rgba(28,26,23,.06);display:flex;flex-direction:column;border-radius:12px;
 }
 .pcard.card-enter{opacity:0;transform:translateY(12px);animation:cardIn .42s ease forwards}
 @keyframes cardIn{to{opacity:1;transform:translateY(0)}}
-.pcard:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--line2)}
+.pcard:hover{transform:translateY(-6px);box-shadow:0 16px 34px rgba(28,26,23,.14);border-color:#cec5b7}
 .pcard.card-enter{opacity:0;transform:translateY(12px);animation:cardIn .42s ease forwards}
 @keyframes cardIn{to{opacity:1;transform:translateY(0)}}
 .pimg-wrap{
   aspect-ratio:4/5;
   background:linear-gradient(155deg,var(--cream2),var(--cream3));
   display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
+  position:relative;overflow:hidden;border-bottom:1px solid #ece4d8;
 }
 .pimg-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
 .pcard:hover .pimg-wrap img{transform:scale(1.04)}
@@ -407,17 +498,39 @@ nav{
   content:'';position:absolute;inset:0;
   background:linear-gradient(to bottom,transparent 55%,rgba(28,26,23,.04));
 }
+.pwish-btn{
+  position:absolute;top:12px;right:12px;z-index:2;width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(28,26,23,.14);background:rgba(255,255,255,.96);color:#a3a3a3;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;
+  box-shadow:0 6px 16px rgba(28,26,23,.08);
+  transition:transform .18s ease,box-shadow .2s ease,border-color .2s ease,color .2s ease,background .2s ease;
+}
+.pwish-btn:hover{border-color:rgba(185,28,28,.35);color:#b91c1c;transform:translateY(-1px)}
+.pwish-btn:active{transform:scale(.95)}
+.pwish-btn.on{
+  background:linear-gradient(180deg,#ef4444,#b91c1c);
+  border-color:#b91c1c;color:#fff;
+  box-shadow:0 10px 20px rgba(185,28,28,.32);
+  animation:wishPop .28s ease;
+}
+@keyframes wishPop{
+  0%{transform:scale(.82)}
+  55%{transform:scale(1.08)}
+  100%{transform:scale(1)}
+}
 .pbadge{
   position:absolute;top:14px;left:14px;z-index:1;
   font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;
 }
 .pbadge.new{background:var(--accent);color:#fff}
 .pbadge.hot{background:var(--ink);color:var(--cream)}
-.pbody{padding:18px 20px 22px;flex:1;display:flex;flex-direction:column}
-.pleague{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px}
+.pbadge.bestseller{background:#2d5a27;color:#fff}
+.fpill .fpill-count{opacity:.7;font-weight:600}
+.pbody{padding:16px 16px 18px;flex:1;display:flex;flex-direction:column}
+.pleague{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px}
 .pname{
-  font-family:'Playfair Display',serif;font-size:17px;font-weight:600;
-  color:var(--ink);line-height:1.2;margin-bottom:4px;flex:1;
+  font-family:var(--font-display);font-size:20px;font-weight:600;
+  color:var(--ink);line-height:1.18;margin-bottom:4px;flex:1;
 }
 .pseason{font-size:11px;color:var(--ink4);margin-bottom:8px}
 .stock-pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;width:max-content}
@@ -425,7 +538,7 @@ nav{
 .stock-pill.low{background:#fef3c7;color:#92400e}
 .stock-pill.out{background:#fee2e2;color:#991b1b}
 .pfooter{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
-.pprice{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink)}
+.pprice{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--ink)}
 .padd-btn{
   width:44px;height:44px;
   background:var(--cream2);border:1.5px solid var(--line);
@@ -436,7 +549,20 @@ nav{
 .padd-btn:hover{background:var(--ink);border-color:var(--ink);color:var(--cream)}
 .shop-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
 .shop-toolbar .finput{max-width:420px}
-.shop-mobile-filter-btn{display:none}
+.shop-mobile-filter-btn{
+  display:none;
+  border:1px solid var(--line);
+  background:var(--white);
+  color:var(--ink);
+  border-radius:8px;
+  padding:10px 14px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+}
+.shop-mobile-filter-btn:hover{border-color:var(--ink)}
 .shop-view-toggle{display:none;gap:6px;align-items:center}
 .shop-view-btn{
   width:42px;height:42px;border:1px solid var(--line);background:var(--white);color:var(--ink2);
@@ -445,7 +571,7 @@ nav{
 .shop-view-btn.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
 .fselect{
   background:var(--white);border:1.5px solid var(--line);color:var(--ink);
-  padding:11px 14px;font-family:'Jost',sans-serif;font-size:13px;border-radius:4px;outline:none;
+  padding:11px 14px;font-family:var(--font-body);font-size:13px;border-radius:4px;outline:none;
 }
 
 /* ── DETAIL DRAWER ── */
@@ -493,9 +619,9 @@ nav{
 .d-arrow.prev{left:10px}
 .d-arrow.next{right:10px}
 .d-league{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
-.d-name{font-family:'Playfair Display',serif;font-size:40px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:14px}
+.d-name{font-family:var(--font-display);font-size:40px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:14px}
 .d-desc{font-size:14px;color:var(--ink3);line-height:1.8;margin-bottom:16px}
-.d-price{font-family:'Playfair Display',serif;font-size:46px;font-weight:700;color:var(--ink);margin-bottom:18px}
+.d-price{font-family:var(--font-display);font-size:46px;font-weight:700;color:var(--ink);margin-bottom:18px}
 .stock-msg{font-size:12px;margin:2px 0 12px}
 .stock-msg.ok{color:#065f46}
 .stock-msg.low{color:#92400e}
@@ -508,9 +634,17 @@ nav{
 .sz-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink4);margin-bottom:12px}
 .sz-required{color:var(--red)}
 .sz-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.versie-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.versie-btn{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:9px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:1px;font-family:var(--font-body);transition:all .16s;min-width:96px}
+.versie-btn:hover{border-color:var(--ink)}
+.versie-btn.on{background:var(--ink);border-color:var(--ink)}
+.versie-btn .versie-name{font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--ink)}
+.versie-btn.on .versie-name{color:var(--cream)}
+.versie-btn .versie-price{font-size:12px;font-weight:600;color:var(--ink3)}
+.versie-btn.on .versie-price{color:rgba(255,255,255,.72)}
 .sz{
   border:1.5px solid var(--line);background:var(--white);color:var(--ink3);
-  padding:12px 18px;font-family:'Jost',sans-serif;
+  padding:12px 18px;font-family:var(--font-body);
   font-size:12px;font-weight:600;letter-spacing:.06em;
   cursor:pointer;transition:all .16s;min-width:48px;
 }
@@ -526,7 +660,7 @@ nav{
 .print-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .popt{
   border:1.5px solid var(--line);background:var(--white);color:var(--ink3);
-  padding:12px 16px;font-family:'Jost',sans-serif;font-size:12px;font-weight:700;
+  padding:12px 16px;font-family:var(--font-body);font-size:12px;font-weight:700;
   letter-spacing:.06em;cursor:pointer;transition:all .16s;border-radius:8px;
 }
 .popt:hover{border-color:var(--ink);color:var(--ink)}
@@ -554,7 +688,7 @@ nav{
 }
 .d-add{
   width:100%;background:var(--ink);color:var(--cream);border:none;padding:18px;
-  font-family:'Jost',sans-serif;font-size:13px;font-weight:600;
+  font-family:var(--font-body);font-size:13px;font-weight:600;
   letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;
 }
 .d-add:hover:not(:disabled){background:var(--accent);transform:translateY(-2px)}
@@ -577,9 +711,9 @@ nav{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   background:transparent;
 }
-.chead-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--ink);flex:1;min-width:0}
+.chead-title{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--ink);flex:1;min-width:0}
 .chead-back{
-  flex-shrink:0;border:none;background:transparent;cursor:pointer;font-family:'Jost',sans-serif;
+  flex-shrink:0;border:none;background:transparent;cursor:pointer;font-family:var(--font-body);
   font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--accent);
   padding:10px 8px;margin:-10px 0 -10px -8px;min-height:44px;line-height:1.2;text-align:left;
 }
@@ -598,7 +732,7 @@ nav{
 .cempty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px;color:var(--ink4)}
 .cempty-ico{font-size:48px;opacity:.5}
 .cempty p{font-size:14px;text-align:center;line-height:1.7;color:var(--ink3)}
-.cart-empty-cta{margin-top:8px;padding:12px 22px;font-family:'Jost',sans-serif;font-size:12px;font-weight:600;
+.cart-empty-cta{margin-top:8px;padding:12px 22px;font-family:var(--font-body);font-size:12px;font-weight:600;
   letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--cream);border:none;cursor:pointer;min-height:48px}
 .cart-empty-cta:hover{background:var(--accent)}
 .citem{display:flex;gap:14px;padding:18px 0;border-bottom:1px solid var(--line)}
@@ -611,7 +745,7 @@ nav{
 }
 .citem-img img{width:100%;height:100%;object-fit:cover}
 .citem-info{flex:1;min-width:0}
-.citem-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.citem-name{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .citem-thumb-link{
   text-decoration:none;color:inherit;cursor:pointer;border-radius:2px;transition:opacity .15s, box-shadow .15s;
 }
@@ -630,20 +764,20 @@ nav{
 .citem-meta{font-size:11px;color:var(--ink4);margin-bottom:10px}
 .citem-size-select{
   width:74px;padding:8px 10px;border:1px solid var(--line);background:#fff;color:var(--ink);
-  font-family:'Jost',sans-serif;font-size:13px;border-radius:4px;
+  font-family:var(--font-body);font-size:13px;border-radius:4px;
 }
 .citem-row{display:flex;align-items:center;justify-content:space-between}
 .qrow{display:flex;align-items:center;border:1.5px solid var(--line);overflow:hidden}
 .qbtn{width:32px;height:32px;background:transparent;border:none;color:var(--ink);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
 .qbtn:hover{background:var(--cream2)}
 .qval{width:32px;text-align:center;font-size:13px;font-weight:600;border-left:1px solid var(--line);border-right:1px solid var(--line);padding:3px 0;color:var(--ink)}
-.citem-price{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--ink)}
+.citem-price{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--ink)}
 .crm{background:none;border:none;color:var(--ink4);font-size:11px;cursor:pointer;margin-top:6px;transition:color .18s;display:block}
 .crm:hover{color:var(--red)}
 .cfoot{padding:20px 28px 28px;border-top:1px solid var(--line);background:transparent}
 .ctot-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink3);margin-bottom:8px}
 .ctot-row.grand{
-  font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink);
+  font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink);
   padding-top:14px;margin-top:4px;border-top:1.5px solid var(--line2);
 }
 .ctot-row.discount-line{color:var(--accent);font-weight:600}
@@ -662,19 +796,19 @@ nav{
 .cart-coupon-remove:hover{color:var(--ink2)}
 .cart-continue-btn{
   flex:1;background:transparent;border:1.5px solid var(--line);
-  color:var(--ink3);padding:10px;font-family:'Jost',sans-serif;
+  color:var(--ink3);padding:10px;font-family:var(--font-body);
   font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .18s;
 }
 .cart-continue-btn:hover{border-color:var(--ink);color:var(--ink)}
 .cart-clear-btn{
   background:transparent;border:1.5px solid var(--line);
-  color:var(--ink4);padding:10px 14px;font-family:'Jost',sans-serif;
+  color:var(--ink4);padding:10px 14px;font-family:var(--font-body);
   font-size:11px;cursor:pointer;transition:all .18s;white-space:nowrap;
 }
 .cart-clear-btn:hover{border-color:var(--red);color:var(--red)}
 .wa-order-btn{
   width:100%;background:var(--wa);color:#fff;border:none;padding:17px;
-  font-family:'Jost',sans-serif;font-size:13px;font-weight:600;
+  font-family:var(--font-body);font-size:13px;font-weight:600;
   letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:10px;
   transition:all .2s;margin-top:18px;margin-bottom:12px;border-radius:0;
@@ -703,13 +837,13 @@ nav{
   display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;background:var(--cream);z-index:1;
 }
-.mtitle{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--ink)}
+.mtitle{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--ink)}
 .mbody{padding:28px 32px 40px}
 .mrecap{background:var(--cream2);border:1px solid var(--line);padding:18px 20px;margin-bottom:20px;border-radius:4px}
 .mrecap-lbl{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ink4);margin-bottom:14px}
 .mrecap-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink3);margin-bottom:6px}
 .mrecap-row.discount{color:var(--accent);font-weight:600}
-.mrecap-tot{display:flex;justify-content:space-between;font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--ink);border-top:1px solid var(--line);padding-top:10px;margin-top:6px}
+.mrecap-tot{display:flex;justify-content:space-between;font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--ink);border-top:1px solid var(--line);padding-top:10px;margin-top:6px}
 /* Tikkie note */
 .tikkie-note{
   background:var(--accent-light);border:1px solid rgba(45,90,39,.2);
@@ -724,7 +858,7 @@ nav{
 .coupon-input-row .finput{flex:1}
 .coupon-apply-btn{
   background:var(--ink);color:var(--cream);border:none;
-  padding:12px 20px;font-family:'Jost',sans-serif;
+  padding:12px 20px;font-family:var(--font-body);
   font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
   cursor:pointer;transition:all .18s;white-space:nowrap;border-radius:4px;
 }
@@ -739,7 +873,7 @@ nav{
 .flabel .opt{font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink4);margin-left:4px;font-size:10px}
 .finput{
   width:100%;background:var(--white);border:1.5px solid var(--line);color:var(--ink);
-  padding:13px 16px;font-family:'Jost',sans-serif;font-size:14px;
+  padding:13px 16px;font-family:var(--font-body);font-size:14px;
   outline:none;transition:border-color .2s;border-radius:4px;
 }
 .finput:focus{border-color:var(--ink)}
@@ -749,7 +883,7 @@ nav{
 .fzip-hint.err{color:var(--red);font-weight:600}
 .fselect{
   width:100%;background:var(--white);border:1.5px solid var(--line);color:var(--ink);
-  padding:13px 16px;font-family:'Jost',sans-serif;font-size:14px;
+  padding:13px 16px;font-family:var(--font-body);font-size:14px;
   outline:none;transition:border-color .2s;border-radius:4px;cursor:pointer;
 }
 .fselect:focus{border-color:var(--ink)}
@@ -757,7 +891,7 @@ nav{
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .msub{
   width:100%;background:var(--wa);color:#fff;border:none;padding:17px;
-  font-family:'Jost',sans-serif;font-size:13px;font-weight:600;
+  font-family:var(--font-body);font-size:13px;font-weight:600;
   letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:10px;
   transition:all .2s;margin-top:8px;border-radius:4px;
@@ -804,8 +938,8 @@ nav{
   display:flex;align-items:center;justify-content:space-between;
   background:#fff;border-bottom:1px solid var(--line);
 }
-.cscreen-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ink)}
-.cscreen-back{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;border:1px solid var(--line);background:#fff;padding:8px 18px;font-family:'Jost',sans-serif;transition:all .18s}
+.cscreen-logo{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)}
+.cscreen-back{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;border:1px solid var(--line);background:#fff;padding:8px 18px;font-family:var(--font-body);transition:all .18s}
 .cscreen-back:hover{border-color:var(--ink);color:var(--ink)}
 
 /* confirm body */
@@ -822,7 +956,7 @@ nav{
   margin-bottom:24px;animation:cpop .5s cubic-bezier(.175,.885,.32,1.275) both;
 }
 .ctitle{
-  font-family:'Playfair Display',serif;font-size:clamp(32px,4.5vw,52px);
+  font-family:var(--font-display);font-size:clamp(32px,4.5vw,52px);
   font-weight:700;color:var(--ink);line-height:1.1;margin-bottom:12px;
 }
 .ctitle em{font-style:italic;color:var(--accent)}
@@ -841,7 +975,7 @@ nav{
 .wa-confirm-btn{
   display:inline-flex;align-items:center;gap:10px;
   background:var(--wa);color:#fff;border:none;padding:14px 28px;
-  border-radius:100px;font-family:'Jost',sans-serif;font-size:12px;font-weight:700;
+  border-radius:100px;font-family:var(--font-body);font-size:12px;font-weight:700;
   letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;
   transition:all .2s;margin-right:12px;
 }
@@ -858,7 +992,7 @@ nav{
   padding:20px 24px;border-bottom:1px solid var(--line);background:var(--ink);
 }
 .cord-lbl{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(250,248,244,.5);margin-bottom:4px}
-.cord-id{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--cream);letter-spacing:.04em}
+.cord-id{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--cream);letter-spacing:.04em}
 .ccard-body{padding:20px 24px}
 .cord-item{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);padding:10px 0;border-bottom:1px solid var(--cream3)}
 .cord-item-name{flex:1;padding-right:12px;line-height:1.4}
@@ -866,7 +1000,7 @@ nav{
 .cord-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink3);padding:8px 0}
 .cord-total{
   display:flex;justify-content:space-between;
-  font-family:'Playfair Display',serif;font-size:18px;font-weight:700;
+  font-family:var(--font-display);font-size:18px;font-weight:700;
   color:var(--ink);padding:16px 24px;background:var(--cream2);
   border-top:2px solid var(--line);margin:0;
 }
@@ -875,13 +1009,13 @@ nav{
 .how{background:var(--cream2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:80px 48px}
 .how-inner{max-width:1360px;margin:0 auto}
 .how-head{text-align:center;margin-bottom:56px}
-.how-title{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;color:var(--ink);line-height:1}
+.how-title{font-family:var(--font-display);font-size:48px;font-weight:700;color:var(--ink);line-height:1}
 .how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
 .how-step{background:var(--white);border:1px solid var(--line);padding:32px 28px;position:relative;transition:transform .22s,box-shadow .22s}
 .how-step:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-.hs-num{font-family:'Playfair Display',serif;font-size:60px;font-weight:700;color:var(--line);position:absolute;top:12px;right:18px;line-height:1}
+.hs-num{font-family:var(--font-display);font-size:60px;font-weight:700;color:var(--line);position:absolute;top:12px;right:18px;line-height:1}
 .hs-icon{font-size:32px;margin-bottom:16px;display:block}
-.how-step h3{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;color:var(--ink);margin-bottom:10px}
+.how-step h3{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--ink);margin-bottom:10px}
 .how-step p{font-size:13.5px;color:var(--ink3);line-height:1.75}
 
 /* ── FOOTER ── */
@@ -943,7 +1077,7 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
   padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.12em;
   text-transform:uppercase;color:var(--ink3);
   border:1px solid var(--line);border-radius:8px;background:var(--white);
-  cursor:pointer;font-family:'Jost',sans-serif;transition:background .18s,color .18s,border-color .18s,box-shadow .18s;
+  cursor:pointer;font-family:var(--font-body);transition:background .18s,color .18s,border-color .18s,box-shadow .18s;
   box-shadow:0 1px 2px rgba(28,26,23,.04);
 }
 .ftab.on{background:var(--ink);color:var(--cream);border-color:var(--ink);box-shadow:none}
@@ -951,22 +1085,19 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
 #ftab-voorraad:not(.on){border-color:rgba(26,45,26,.28);color:#243524}
 #ftab-voorraad.on{background:#1a2d1a;border-color:#1a2d1a;color:#faf8f4}
 
-.filter-league-wrap{margin-bottom:20px}
-.filter-league-label{
-  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink4);margin-bottom:10px;
-}
+.filter-league-wrap{margin-bottom:18px}
 .filter-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0}
 /* Extra filters: version, kit type, voorraad */
-.shop-refine-wrap{margin-bottom:20px}
+.shop-refine-wrap{margin-bottom:14px}
 .shop-refine-toggle{
   width:100%;display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;
-  padding:12px 14px;font-family:inherit;font-size:11px;font-weight:700;
+  padding:13px 14px;font-family:inherit;font-size:11px;font-weight:700;
   letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);
-  background:var(--white);border:1px solid var(--line);border-radius:8px;cursor:pointer;
-  transition:border-color .15s,color .15s;
+  background:var(--white);border:1px solid #d9d2c6;border-radius:12px;cursor:pointer;
+  transition:border-color .15s,color .15s,box-shadow .15s,transform .15s;
+  box-shadow:0 3px 16px rgba(28,26,23,.05);
 }
-.shop-refine-toggle:hover{border-color:var(--ink);color:var(--ink)}
+.shop-refine-toggle:hover{border-color:var(--ink);color:var(--ink);box-shadow:0 5px 18px rgba(28,26,23,.08)}
 .shop-refine-hint{
   font-weight:500;text-transform:none;letter-spacing:0;color:var(--ink4);font-size:12px;
 }
@@ -979,31 +1110,85 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
 .shop-refine-chevron{margin-left:auto;font-size:9px;transition:transform .2s;opacity:.7;flex-shrink:0}
 .shop-refine-toggle-text{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
 .shop-refine-toggle[aria-expanded="true"] .shop-refine-chevron{transform:rotate(-180deg)}
-.shop-refine-panel{display:none;padding-top:2px}
+.shop-refine-panel{display:none;padding-top:8px}
 .shop-refine-panel.is-open{display:block}
 .shop-filter-drawer-bg{display:none}
 .shop-filter-drawer-head{display:none}
 .shop-refine{
   display:flex;flex-wrap:wrap;align-items:center;gap:10px;
-  padding:12px 14px;
-  background:var(--white);border:1px solid var(--line);border-radius:0 0 8px 8px;
+  padding:14px;
+  background:var(--white);border:1px solid #ddd5c9;border-radius:12px;
   border-top:none;
+  box-shadow:0 6px 22px rgba(28,26,23,.05);
 }
 .shop-refine-select{
   flex:1;min-width:140px;max-width:220px;margin:0;
-  font-size:12px;padding:9px 12px;border-radius:6px;
+  font-size:13px;padding:11px 40px 11px 14px;border-radius:10px;
+  border:1px solid #d8d1c5;background-color:#fff;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2328211c' d='M1.4.6 6 5.2 10.6.6 12 2 6 8 0 2z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  transition:border-color .15s,box-shadow .15s,background-color .15s;
 }
+.shop-refine-select:hover{border-color:#c2b9ab}
+.shop-refine-select:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(28,26,23,.08);outline:none}
 .shop-refine-toggle[aria-expanded="true"]{
   border-radius:8px;background:var(--white);
 }
+.collection-page .filter-type-tabs{display:none}
+.collection-page .filter-league-wrap{display:block}
+.collection-page .shop-refine-wrap{margin-bottom:14px}
+.collection-page .shop-refine-toggle{display:none}
+.collection-page .shop-refine-panel{display:block;padding-top:0}
+.collection-page .shop-refine{
+  border-top:1px solid #ddd5c9;
+  border-radius:14px;
+}
+.collection-page .collection-sidebar{
+  background:#fbf9f4;
+  border:1px solid #e2dbcf;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 8px 26px rgba(28,26,23,.05);
+}
+.collection-page .collection-sidebar .btn-sec{
+  width:100%;
+  border-radius:10px;
+  font-size:11px;
+  letter-spacing:.12em;
+  margin-bottom:12px;
+}
+.collection-page .shop-page-head p{display:none}
+.collection-page .collection-layout{
+  display:grid;
+  grid-template-columns:minmax(220px,270px) minmax(0,1fr);
+  gap:32px;
+  align-items:start;
+}
+.collection-page .collection-sidebar{position:sticky;top:128px}
+.collection-page .collection-content{min-width:0;padding-right:4px}
+@media (min-width:1280px){
+  .collection-page .collection-layout{gap:38px}
+  .pgrid{
+    grid-template-columns:repeat(auto-fill,minmax(min(100%,288px),1fr));
+    gap:26px;
+  }
+}
+.wishlist-page .shop-toolbar,
+.wishlist-page .filter-type-tabs,
+.wishlist-page .filter-league-wrap,
+.wishlist-page .collection-sidebar{display:none !important}
+.wishlist-page .collection-layout{display:block}
+.wishlist-page .collection-content{max-width:1360px;margin:0 auto}
 .foot-inner{
   max-width:1360px;margin:0 auto;padding:64px 48px 40px;
   display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;
 }
-.foot-logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
+.foot-logo{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
 footer p,footer a{display:block;font-size:13px;color:rgba(250,248,244,.5);text-decoration:none;margin-bottom:10px;line-height:1.7;transition:color .18s}
 footer a:hover{color:var(--cream)}
-footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
+footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
 .foot-bottom{border-top:1px solid rgba(250,248,244,.08);padding:20px 48px;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;font-size:11px;color:rgba(250,248,244,.3);letter-spacing:.06em}
 
 /* ── TOAST ── */
@@ -1011,17 +1196,24 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   position:fixed;bottom:28px;left:50%;
   transform:translateX(-50%) translateY(80px);
   background:var(--ink);color:var(--cream);
-  padding:13px 28px;border-radius:100px;
-  font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  padding:12px 22px;border-radius:100px;
+  font-size:13px;font-weight:600;letter-spacing:.01em;
   z-index:500;transition:transform .3s cubic-bezier(.4,0,.2,1);
   white-space:nowrap;box-shadow:var(--shadow-lg);
+  display:inline-flex;align-items:center;gap:9px;max-width:min(90vw,520px);
 }
 .toast.on{transform:translateX(-50%) translateY(0)}
+.toast-ico{display:inline-flex;flex-shrink:0}
+.toast-ico svg{width:16px;height:16px;display:block}
+.toast-msg{overflow:hidden;text-overflow:ellipsis}
+.toast--success{background:var(--accent);color:#fff}
+.toast--error{background:var(--red);color:#fff}
+.toast--wish .toast-ico{color:#ff7a7a}
 .promo-popup-bg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:18px}
 .promo-popup-bg.on{display:flex}
 .promo-popup{background:var(--cream);border:1px solid var(--line);max-width:430px;width:100%;padding:24px;position:relative;box-shadow:var(--shadow-lg)}
 .promo-close{position:absolute;top:10px;right:10px;width:30px;height:30px;border:1px solid var(--line);background:#fff;cursor:pointer}
-.promo-title{font-family:'Playfair Display',serif;font-size:34px;line-height:1.05;margin-bottom:10px}
+.promo-title{font-family:var(--font-display);font-size:34px;line-height:1.05;margin-bottom:10px}
 .promo-sub{font-size:14px;color:var(--ink3);margin-bottom:14px}
 .promo-code{display:inline-block;background:var(--ink);color:#fff;padding:10px 14px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
 
@@ -1039,11 +1231,12 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 @media(max-width:960px){
   .hero-inner{grid-template-columns:1fr;padding:40px 24px;min-height:auto;gap:32px}
   .hero-left{padding:48px 0 0}
-  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--line);flex-direction:column;padding:8px 20px 14px;gap:0;box-shadow:0 8px 24px rgba(28,26,23,.08);z-index:89;max-height:calc(100vh - 100%);overflow:auto}
-  .nav-links.open{display:flex}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--line);flex-direction:column;padding:8px 20px 14px;gap:0;box-shadow:0 8px 24px rgba(28,26,23,.08);z-index:89;max-height:min(82dvh,82vh);overflow:auto}
   .nav-links li{padding:0}
   .nav-links a{font-size:13px;padding:10px 0;display:block;border-bottom:1px solid var(--line);letter-spacing:.1em}
   .nav-links li:last-child a{border-bottom:none}
+  .nav-links .has-mega>.top-link::after{display:none}
+  .nav-mega{display:none !important}
   .ham{display:flex}
   .nav-top{
     gap:10px;height:auto;min-height:64px;padding-top:6px;padding-bottom:6px;
@@ -1054,6 +1247,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
     flex:1;min-width:0;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
+  .logo-img{height:50px}
   .ham{align-self:center;flex-shrink:0;min-width:44px;min-height:44px;justify-content:center;box-sizing:border-box}
   .nav-cart{
     padding:8px 11px;
@@ -1066,7 +1260,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   .nav-cart-label{display:none}
   .nav-cart-ico{font-size:1.28rem;line-height:1}
   .nav-search{width:42px;height:42px}
-  .nav-top,.shop,.trust-bar-inner,.foot-inner,.foot-bottom{padding-left:24px;padding-right:24px}
+  .nav-top,.shop,.foot-inner,.foot-bottom{padding-left:24px;padding-right:24px}
   .shop{padding-top:56px;padding-bottom:56px}
   .drawer-body{grid-template-columns:1fr;padding:24px 20px;gap:24px}
   .d-gallery{display:flex}
@@ -1117,7 +1311,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   color:var(--accent);margin-bottom:14px;
 }
 .section-title{
-  font-family:'Playfair Display',serif;
+  font-family:var(--font-display);
   font-size:clamp(30px,4vw,44px);font-weight:700;letter-spacing:.03em;
   color:var(--ink);margin-bottom:14px;
 }
@@ -1171,7 +1365,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   padding:16px 24px;text-align:center;
   font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
   color:var(--ink4);cursor:pointer;border:none;background:transparent;
-  font-family:'Jost',sans-serif;transition:all .2s;
+  font-family:var(--font-body);transition:all .2s;
 }
 .vtab:first-child{border-right:1px solid var(--line)}
 .vtab.on{background:var(--cream2);color:var(--ink)}
@@ -1204,28 +1398,27 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   padding:16px 20px 14px;
 }
 .kids-maten-title{
-  font-family:'Playfair Display',serif;font-size:clamp(20px,2.8vw,26px);font-weight:700;color:var(--ink);margin:0 0 6px;
+  font-family:var(--font-display);font-size:clamp(20px,2.8vw,26px);font-weight:700;color:var(--ink);margin:0 0 6px;
 }
 .kids-maten-remark{margin:0;font-size:12px;font-weight:600;color:var(--ink3);line-height:1.45}
 .kids-maten-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
 .maten-scroll-hint{
   display:none;font-size:11px;font-weight:600;color:var(--ink2);text-align:center;
-  padding:8px 12px;margin:8px auto 0;border:1px dashed var(--line2);background:var(--cream2);
+  padding:8px 12px;margin:10px auto 0;border:1px dashed var(--line2);background:var(--cream2);
   border-radius:999px;max-width:max-content;
+  opacity:.9;
 }
 @media(max-width:720px){
   .kids-maten-scroll{
-    border:1px solid var(--line);border-radius:8px;background:var(--cream);
+    border:1px solid var(--line);border-radius:12px;background:var(--cream);
     overflow-x:auto;-webkit-overflow-scrolling:touch;
-    padding-right:0;
+    padding-right:0;padding-bottom:2px;
     scroll-padding-right:0;
     touch-action:pan-x;
-    scrollbar-width:thin;
-    scrollbar-color:var(--line2) transparent;
+    scrollbar-width:none;
+    scroll-snap-type:x proximity;
   }
-  .kids-maten-scroll::-webkit-scrollbar{height:8px;display:block}
-  .kids-maten-scroll::-webkit-scrollbar-thumb{background:var(--line2);border-radius:999px}
-  .kids-maten-scroll::-webkit-scrollbar-track{background:transparent}
+  .kids-maten-scroll::-webkit-scrollbar{display:none}
   .kids-maten-scroll .maten-table{
     min-width:640px;
     width:max-content;
@@ -1241,8 +1434,10 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   }
   .maten-table td:first-child,
   .maten-table th:first-child{
-    position:static;
-    box-shadow:none;
+    position:sticky;
+    left:0;
+    background:var(--cream2);
+    box-shadow:1px 0 0 var(--line);
   }
   .maten-scroll-hint{display:block}
 }
@@ -1271,7 +1466,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   width:100%;text-align:left;padding:22px 24px;
   background:rgba(250,248,244,.04);border:none;cursor:pointer;
   display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
-  font-family:'Jost',sans-serif;transition:background .18s;
+  font-family:var(--font-body);transition:background .18s;
 }
 .faqitem.on .faqbtn,.faqbtn:hover{background:rgba(250,248,244,.08)}
 .faq-q-wrap{display:flex;align-items:flex-start;gap:14px}
@@ -1305,14 +1500,14 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   flex-wrap:wrap;gap:20px;
 }
 .faq-bottom-text h3{
-  font-family:'Playfair Display',serif;font-size:22px;font-weight:700;
+  font-family:var(--font-display);font-size:22px;font-weight:700;
   color:var(--cream);margin-bottom:6px;
 }
 .faq-bottom-text p{font-size:13px;color:rgba(250,248,244,.45)}
 .faq-wa-btn{
   display:inline-flex;align-items:center;gap:10px;
   background:var(--wa);color:#fff;padding:14px 28px;
-  font-family:'Jost',sans-serif;font-size:12px;font-weight:700;
+  font-family:var(--font-body);font-size:12px;font-weight:700;
   letter-spacing:.14em;text-transform:uppercase;border:none;
   cursor:pointer;text-decoration:none;transition:filter .2s;flex-shrink:0;
 }
@@ -1344,7 +1539,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 .page-shop .shop-crumbs{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink4);margin-bottom:10px}
 .page-shop .shop-crumbs a{color:var(--ink3);text-decoration:none}
 .page-shop .shop-crumbs a:hover{color:var(--ink)}
-.page-shop .shop-page-head h1{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,42px);font-weight:700;margin:0 0 8px;color:var(--ink)}
+.page-shop .shop-page-head h1{font-family:var(--font-display);font-size:clamp(28px,4vw,42px);font-weight:700;margin:0 0 8px;color:var(--ink)}
 .page-shop .shop-page-head p{margin:0;max-width:620px;font-size:14px;color:var(--ink3);line-height:1.65}
 @media(max-width:960px){
   .page-shop .shop-page-head{padding:22px 24px 12px}
@@ -1356,10 +1551,11 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 @media (max-width:960px){
   .shop-header{justify-content:center;text-align:center;margin-bottom:14px}
   .sh-eyebrow,.sh-count{display:none}
-  .shop-toolbar{display:grid;grid-template-columns:auto;gap:10px;align-items:center}
-  .shop-mobile-filter-btn{display:none}
+  .shop-toolbar{display:grid;grid-template-columns:auto auto;gap:10px;align-items:center;justify-content:space-between}
+  .shop-mobile-filter-btn{display:inline-flex;align-items:center;justify-content:center}
+  .collection-page .shop-mobile-filter-btn{display:inline-flex !important}
   .shop-view-toggle{display:flex}
-  .shop-view-toggle{justify-self:start}
+  .shop-view-toggle{justify-self:end}
   .shop-toolbar #shopSearch{display:none}
   .shop-toolbar .fselect{width:100%;max-width:none}
   .shop-toolbar .btn-sec{display:none}
@@ -1371,29 +1567,47 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   .shop-refine{flex-direction:column;align-items:stretch;padding:12px}
   .shop-refine-select{max-width:none;width:100%}
   .shop-filter-drawer-bg{
-    display:block;position:fixed;inset:0;background:rgba(15,18,20,.45);
-    opacity:0;pointer-events:none;transition:opacity .2s;z-index:180;
+    display:block;position:fixed;inset:0;background:rgba(15,18,20,.52);
+    backdrop-filter:blur(2px);
+    opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:180;
   }
   .shop-filter-drawer-bg.on{opacity:1;pointer-events:auto}
+  .collection-page .collection-layout{display:block}
+  .collection-page .collection-sidebar{display:block;position:static}
   .shop-refine-wrap{
-    position:fixed;left:0;top:0;bottom:0;width:min(86vw,360px);max-width:100%;
-    background:var(--cream);z-index:181;transform:translateX(-102%);
-    transition:transform .24s ease;box-shadow:0 10px 30px rgba(0,0,0,.22);
+    position:fixed;left:0;top:0;bottom:0;width:min(88vw,380px);max-width:100%;
+    background:#f8f6f1;z-index:181;transform:translateX(-102%);
+    transition:transform .28s cubic-bezier(.22,.61,.36,1);box-shadow:0 12px 34px rgba(0,0,0,.24);
     overflow:auto;padding:0 0 24px;
   }
   .shop-refine-wrap.on{transform:translateX(0)}
   .shop-filter-drawer-head{
     display:flex;align-items:center;justify-content:space-between;
-    padding:16px 16px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--cream);z-index:2;
+    padding:18px 16px 14px;border-bottom:1px solid #ddd5c9;position:sticky;top:0;background:#f8f6f1;z-index:2;
   }
   .shop-filter-drawer-head h3{
-    margin:0;font-family:'Playfair Display',serif;font-size:28px;line-height:1;color:#90b9a7;font-weight:700;
+    margin:0;font-family:var(--font-display);font-size:28px;line-height:1;color:var(--ink);font-weight:700;
   }
   .shop-filter-close{
-    border:none;background:transparent;color:var(--ink);font-size:34px;line-height:1;cursor:pointer;padding:0 4px;
+    width:36px;height:36px;border:1px solid var(--line);border-radius:999px;
+    background:var(--white);color:var(--ink);font-size:28px;line-height:1;cursor:pointer;padding:0;
   }
   .shop-refine-toggle{display:none}
-  .shop-refine-panel{display:block;padding:8px 12px 0}
+  .shop-refine-panel{display:block;padding:12px 12px 0}
+  .shop-refine{
+    gap:10px;
+    border-radius:12px;
+    box-shadow:none;
+    border:1px solid #d9d2c6;
+    background:#fff;
+    padding:12px;
+  }
+  .shop-refine-select{
+    font-size:15px;
+    min-height:48px;
+    border-radius:10px;
+    padding:12px 42px 12px 14px;
+  }
   .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .pcard{min-width:0}
   .wa-float{width:52px;height:52px;right:14px;bottom:18px}
@@ -1414,7 +1628,6 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   .foot-inner{grid-template-columns:1fr;gap:28px}
   .how-steps{grid-template-columns:1fr}
   .how{padding:48px 16px}
-  .trust-bar-inner{gap:16px;justify-content:flex-start;padding-left:16px;padding-right:16px}
   .hero-btns{flex-direction:column;align-items:flex-start;gap:10px}
   .btn-primary,.btn-sec{width:100%;text-align:center}
   .maten-card{padding:20px}
@@ -1434,6 +1647,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 @media(max-width:375px){
   .size-chips{grid-template-columns:1fr}
   .nav-top .logo{font-size:19px}
+  .logo-img{height:50px}
   .logo-mark{width:28px;height:28px;font-size:12px}
   .nav-cart{padding:7px 9px}
   .sh-title{font-size:28px}
@@ -1444,69 +1658,26 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 }
 
 </style>
-<link rel="stylesheet" href="css/responsive-global.css?v=10">
+<link rel="stylesheet" href="css/responsive-global.css?v=15">
 </head>
 <body class="page-shop">
 
 <!-- ANNOUNCEMENT BAR -->
-<div class="announce">
-  <div class="announce-inner">
-    <span id="announceFreeShipA">Gratis verzending vanaf €40</span>
-    <span>Nieuwe 25/26 tenues op voorraad</span>
-    <span>Bestellen via WhatsApp</span>
-    <span>Betaal eenvoudig met Tikkie</span>
-    <span>Levering binnen 5–7 dagen</span>
-    <span id="announceFreeShipB">Gratis verzending vanaf €40</span>
-    <span>Nieuwe 25/26 tenues op voorraad</span>
-    <span>Bestellen via WhatsApp</span>
-    <span>Betaal eenvoudig met Tikkie</span>
-    <span>Levering binnen 5–7 dagen</span>
-  </div>
-</div>
+<?php include __DIR__ . '/includes/announce.php'; ?>
 
-<!-- NAV -->
-<nav>
-  <div class="promo-banner">10% KORTING — code <strong>KITSBYELBA</strong> · <strong>KitsByElbaa</strong></div>
-  <div class="nav-top">
-    <a class="logo" href="index.html"><span class="logo-mark">KBE</span>KitsByElbaa</a>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="shop.html#shop" id="navType-shirts" onclick="goToShop('shirts');return false;">Shirts</a></li>
-      <li><a href="shop.html#shop" id="navType-sets" onclick="goToShop('sets');return false;">Sets</a></li>
-      <li><a href="shop.html#shop" id="navType-hemdsetjes" onclick="goToShop('hemdsetjes');return false;">Hemdsetjes</a></li>
-      <li><a href="shop.html#shop" id="navType-retro" onclick="goToShop('retro');return false;">Retro</a></li>
-      <li><a href="shop.html#shop" id="navType-kids" onclick="goToShop('kids');return false;">Kids</a></li>
-      <li><a href="index.html#sizeguide">Maattabel</a></li>
-      <li><a href="index.html#faq">FAQ</a></li>
-      <li><a href="account.php" id="nav-account-link">Inloggen / registreren</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="ham" id="ham" onclick="toggleNav()" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-      <button type="button" class="nav-search" onclick="openNavSearch()" aria-label="Zoeken">⌕</button>
-      <button type="button" class="nav-cart" onclick="openCart()" aria-label="Winkelwagen">
-        <span class="nav-cart-ico" aria-hidden="true">🛒</span><span class="nav-cart-label">Winkelwagen</span><span class="nav-cart-num" id="cartN">0</span>
-      </button>
-    </div>
-  </div>
-</nav>
+<?php $navSearch = true; include __DIR__ . '/includes/nav.php'; ?>
 <div class="nav-search-modal-bg" id="navSearchBg" onclick="closeNavSearch()"></div>
 <div class="nav-search-modal" id="navSearchModal" role="dialog" aria-modal="true" aria-label="Zoek producten">
   <div class="nav-search-modal-head">
     <strong>Zoeken</strong>
     <button type="button" class="nav-search-close" onclick="closeNavSearch()" aria-label="Zoekvenster sluiten">×</button>
   </div>
-  <input id="navSearchInput" class="nav-search-field" placeholder="Zoek op club, land of competitie" onkeydown="if(event.key==='Enter'){applyNavSearch();}">
+  <input id="navSearchInput" class="nav-search-field" placeholder="Zoek op club, land of competitie" oninput="renderNavSearchSuggestions(this.value)" onkeydown="handleNavSearchKeydown(event)">
+  <div class="nav-search-results" id="navSearchResults"></div>
   <div class="nav-search-actions">
     <button type="button" class="btn-sec" onclick="closeNavSearch()">Sluiten</button>
     <button type="button" class="btn-primary" onclick="applyNavSearch()">Zoeken</button>
   </div>
-</div>
-
-<div class="shop-page-head">
-  <div class="shop-crumbs"><a href="index.html">Home</a> · Shop</div>
-  <h1>Voetbaltenues</h1>
-  <p>Bekijk shirts, complete sets, kids en retro. Filters hieronder — je winkelwagen blijft gelijk met de rest van de site.</p>
 </div>
 
 <!-- SHOP -->
@@ -1515,29 +1686,33 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
     <div class="sh-left">
       <div class="sh-eyebrow">Onze collectie</div>
       <div class="sh-title" id="shopTitle">Alle tenues</div>
+      <p class="sh-lede" id="shopHeroLede">Shop per categorie en gebruik filters om snel de juiste club, competitie en maat te vinden.</p>
     </div>
     <span class="sh-count" id="shopCount">Laden…</span>
   </div>
   <div class="shop-toolbar">
+    <button type="button" class="shop-mobile-filter-btn" onclick="toggleShopRefinePanel()">Filters</button>
     <div class="shop-view-toggle" role="group" aria-label="Productweergave">
       <button type="button" class="shop-view-btn on" id="shopViewGridBtn" aria-label="Rasterweergave" onclick="setShopCardView('grid')">▦</button>
-      <button type="button" class="shop-view-btn" id="shopViewListBtn" aria-label="Lijstweergave" onclick="setShopCardView('list')">☰</button>
+      <button type="button" class="shop-view-btn" id="shopViewListBtn" aria-label="Lijstweergave" onclick="setShopCardView('list')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
     </div>
-    <button class="btn-sec" style="padding:11px 16px" onclick="resetShopFilters()">Filters resetten</button>
+    <button type="button" class="btn-sec" style="padding:11px 16px" onclick="resetShopFilters()">Filters resetten</button>
   </div>
 
   <!-- Category tabs -->
   <div class="filter-type-tabs" id="catTabs">
-    <button class="ftab on" onclick="setTypeFilter('all',this)">Alles</button>
-    <button class="ftab" onclick="setTypeFilter('shirts',this)">Shirts</button>
-    <button class="ftab" onclick="setTypeFilter('sets',this)">Sets</button>
-    <button class="ftab" onclick="setTypeFilter('hemdsetjes',this)">Hemdsetjes</button>
-    <button class="ftab" onclick="setTypeFilter('retro',this)">Retro</button>
-    <button class="ftab" onclick="setTypeFilter('kids',this)">Kids</button>
-    <button class="ftab" id="ftab-voorraad" onclick="goToShopVoorraad()" title="Alleen op voorraad — snelle levering">Voorraad</button>
+    <button type="button" class="ftab" data-cat-filter="all">Alles</button>
+    <button type="button" class="ftab on" data-cat-filter="shirts">Shirts</button>
+    <button type="button" class="ftab" data-cat-filter="sets">Sets</button>
+    <button type="button" class="ftab" data-cat-filter="hemdsetjes">Hemdsetjes</button>
+    <button type="button" class="ftab" data-cat-filter="retro">Retro</button>
+    <button type="button" class="ftab" data-cat-filter="kids">Kids</button>
+    <button type="button" class="ftab" id="ftab-voorraad" title="Alleen op voorraad — snelle levering">Voorraad</button>
   </div>
 
   <div class="shop-filter-drawer-bg" id="shopFilterBg" onclick="closeShopRefinePanel()"></div>
+  <div class="collection-layout">
+  <aside class="collection-sidebar">
   <div class="shop-refine-wrap" id="shopRefineWrap">
     <div class="shop-filter-drawer-head">
       <h3>Filters</h3>
@@ -1546,13 +1721,38 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
     <button type="button" class="shop-refine-toggle" id="shopRefineToggle" aria-expanded="false" aria-controls="shopRefinePanel" onclick="toggleShopRefinePanel()">
       <span class="shop-refine-toggle-text">
         <span>Meer filters</span>
-        <span class="shop-refine-hint">fan / player, type &amp; voorraad</span>
+        <span class="shop-refine-hint">kleur, maat, fan / player &amp; type</span>
       </span>
       <span class="shop-refine-badge" id="shopRefineBadge" hidden>0</span>
       <span class="shop-refine-chevron" aria-hidden="true">▼</span>
     </button>
     <div class="shop-refine-panel" id="shopRefinePanel" role="region" aria-label="Meer filteropties">
       <div class="shop-refine">
+        <select class="fselect shop-refine-select" id="shopColor" onchange="setColorFromUi(this.value)" title="Kleur filter">
+          <option value="all">Kleur — alle</option>
+          <option value="white">Wit</option>
+          <option value="black">Zwart</option>
+          <option value="blue">Blauw</option>
+          <option value="red">Rood</option>
+          <option value="green">Groen</option>
+          <option value="yellow">Geel</option>
+          <option value="orange">Oranje</option>
+          <option value="pink">Roze</option>
+          <option value="purple">Paars</option>
+          <option value="grey">Grijs</option>
+          <option value="gold">Goud</option>
+          <option value="beige">Beige</option>
+        </select>
+        <select class="fselect shop-refine-select" id="shopSize" onchange="setSizeFromUi(this.value)" title="Maat filter">
+          <option value="all">Maat — alle</option>
+          <option value="XS">XS</option>
+          <option value="S">S</option>
+          <option value="M">M</option>
+          <option value="L">L</option>
+          <option value="XL">XL</option>
+          <option value="XXL">XXL</option>
+          <option value="XXXL">XXXL</option>
+        </select>
         <select class="fselect shop-refine-select" id="shopVersion" onchange="setVersionFromUi(this.value)" title="Fan of player version">
           <option value="all">Versie — alle</option>
           <option value="fan">Versie — fan</option>
@@ -1565,50 +1765,36 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
           <option value="third">Type — third</option>
           <option value="goalkeeper">Type — keeper</option>
         </select>
-        <select class="fselect shop-refine-select" id="shopVoorraad" onchange="setVoorraadFilter(this.value)" title="Voorraad filter">
-          <option value="all">Voorraad — alle</option>
-          <option value="in_stock">Op voorraad</option>
-        </select>
       </div>
     </div>
   </div>
 
   <!-- League filter -->
   <div class="filter-league-wrap">
-    <div class="filter-league-label">Competitie</div>
     <div class="filter-pills" id="leaguePills">
-      <button type="button" class="fpill on" onclick="doFilter('all',this)">Alle competities</button>
-      <button type="button" class="fpill" onclick="doFilter('premier',this)">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</button>
-      <button type="button" class="fpill" onclick="doFilter('laliga',this)">🇪🇸 La Liga</button>
-      <button type="button" class="fpill" onclick="doFilter('bundesliga',this)">🇩🇪 Bundesliga</button>
-      <button type="button" class="fpill" onclick="doFilter('seriea',this)">🇮🇹 Serie A</button>
-      <button type="button" class="fpill" onclick="doFilter('ligue1',this)">🇫🇷 Ligue 1</button>
-      <button type="button" class="fpill" onclick="doFilter('eredivisie',this)">🇳🇱 Eredivisie</button>
-      <button type="button" class="fpill" onclick="doFilter('national',this)">🌍 Nationale teams</button>
+      <button type="button" class="fpill on" onclick="doFilter('all',this)"><span class="fpill-label">Alle competities</span></button>
+      <button type="button" class="fpill" onclick="doFilter('premier',this)"><span class="fpill-logo"><img src="images/leagues/premier.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/premier.svg'"></span><span class="fpill-label">Premier League</span></button>
+      <button type="button" class="fpill" onclick="doFilter('laliga',this)"><span class="fpill-logo"><img src="images/leagues/laliga.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/laliga.svg'"></span><span class="fpill-label">La Liga</span></button>
+      <button type="button" class="fpill" onclick="doFilter('bundesliga',this)"><span class="fpill-logo"><img src="images/leagues/bundesliga.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/bundesliga.svg'"></span><span class="fpill-label">Bundesliga</span></button>
+      <button type="button" class="fpill" onclick="doFilter('seriea',this)"><span class="fpill-logo"><img src="images/leagues/seriea.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/seriea.svg'"></span><span class="fpill-label">Serie A</span></button>
+      <button type="button" class="fpill" onclick="doFilter('ligue1',this)"><span class="fpill-logo"><img src="images/leagues/ligue1.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/ligue1.svg'"></span><span class="fpill-label">Ligue 1</span></button>
+      <button type="button" class="fpill" onclick="doFilter('eredivisie',this)"><span class="fpill-logo"><img src="images/leagues/eredivisie.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/eredivisie.svg'"></span><span class="fpill-label">Eredivisie</span></button>
+      <button type="button" class="fpill" onclick="doFilter('national',this)"><span class="fpill-logo fpill-logo--emoji">🌍</span><span class="fpill-label">Nationale teams</span></button>
+      <button type="button" class="fpill" onclick="doFilter('overig',this)"><span class="fpill-logo fpill-logo--emoji">⚽</span><span class="fpill-label">Overig</span></button>
     </div>
   </div>
-
-  <div class="shop-voorraad-lede" id="shopVoorraadLede" hidden></div>
-
-  <div class="pgrid" id="grid"></div>
+  </aside>
+  <div class="collection-content">
+    <div class="shop-voorraad-lede" id="shopVoorraadLede" hidden></div>
+    <div class="pgrid" id="grid"></div>
+  </div>
+  </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="foot-inner">
-    <div>
-      <div class="foot-logo">KitsByElbaa</div>
-      <p>Premium voetbaltenues in Nederland. Bestel via WhatsApp, betaal met Tikkie.</p>
-    </div>
-    <div><h4>Shop</h4><a href="shop.html?cat=shirts#shop">Shirts</a><a href="shop.html?cat=sets#shop">Sets</a><a href="shop.html?cat=hemdsetjes#shop">Hemdsetjes</a><a href="shop.html?cat=retro#shop">Retro</a><a href="shop.html?cat=kids#shop">Kids</a></div>
-    <div><h4>Info</h4><a href="index.html#sizeguide">Maattabel</a><a href="index.html#faq">FAQ</a><a href="index.html#how-it-works">Hoe het werkt</a></div>
-    <div><h4>Contact</h4><a href="#" onclick="window.open('https://wa.me/'+CONFIG.whatsapp,'_blank')">WhatsApp</a><a href="#">Instagram</a><a href="#">E-mail</a></div>
-  </div>
-  <div class="foot-bottom">
-    <span>© 2026 KitsByElbaa. Alle rechten voorbehouden.</span>
-    <span>Betaling via Tikkie · Verzending via PostNL</span>
-  </div>
-</footer>
+<?php /* Shared footer — single source of truth: includes/footer.php. Shop pages: hide "Alle tenues", anchors point to index.html (default prefix). */
+$footerHideAlleTenues = true;
+include __DIR__ . '/includes/footer.php';
+?>
 
 <!-- DETAIL DRAWER -->
 <div class="dbg" id="dbg" onclick="closeDetail()"></div>
@@ -1617,8 +1803,8 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   <div class="drawer-body">
     <div class="d-gallery">
       <div class="d-img" id="dMainImg">
-        <button class="d-arrow prev" id="dPrevBtn" onclick="goGallery(-1)" aria-label="Vorige afbeelding">‹</button>
-        <button class="d-arrow next" id="dNextBtn" onclick="goGallery(1)" aria-label="Volgende afbeelding">›</button>
+        <button type="button" class="d-arrow prev" id="dPrevBtn" onclick="goGallery(-1)" aria-label="Vorige afbeelding">‹</button>
+        <button type="button" class="d-arrow next" id="dNextBtn" onclick="goGallery(1)" aria-label="Volgende afbeelding">›</button>
       </div>
       <div class="d-thumbs" id="dThumbs"></div>
     </div>
@@ -1630,35 +1816,37 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
       <p class="stock-msg" id="dStockMsg"></p>
       <div class="voorraad-info" id="dVoorraad">
         <div class="voorraad-row">
-          <span class="voorraad-icon">📦</span>
+          <span class="voorraad-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg></span>
           <div>
             <strong>Voorraad</strong>
             <p id="dVoorraadText">Op voorraad: levering binnen 1–2 dagen</p>
           </div>
         </div>
       </div>
+      <p class="sz-label" id="dVersieLabel" hidden>Versie</p>
+      <div class="versie-row" id="dVersieRow" hidden></div>
       <p class="sz-label">Kies je maat <span class="sz-required">*</span></p>
       <div id="kidsJerseyDrawerChart" class="kids-jersey-drawer" hidden>
         <div class="maten-table-wrap kids-maten-drawer-card">
           <div class="kids-maten-banner">
-            <h3 class="kids-maten-title">KIDS Jersey Size Chart</h3>
-            <p class="kids-maten-remark">Remarks: 1-2 cm error is acceptable because of the Elastic.</p>
+            <h3 class="kids-maten-title">Maattabel kids jersey</h3>
+            <p class="kids-maten-remark">Let op: door rek in de stof kan de afwijking ongeveer 1–2 cm zijn.</p>
           </div>
           <div class="kids-maten-scroll">
             <table class="maten-table">
               <thead>
                 <tr>
-                  <th>&nbsp;</th>
+                  <th>Maat</th>
                   <th>16</th><th>18</th><th>20</th><th>22</th><th>24</th><th>26</th><th>28</th>
                 </tr>
               </thead>
               <tbody>
-                <tr><td>Age</td><td>2-3</td><td>4-5</td><td>5-6</td><td>7-8</td><td>8-9</td><td>10-11</td><td>12-13</td></tr>
-                <tr><td>Height (CM)</td><td>95-105</td><td>105-115</td><td>115-125</td><td>125-135</td><td>135-145</td><td>145-155</td><td>155-165</td></tr>
-                <tr><td>Clothes length (CM)</td><td>44</td><td>47</td><td>50</td><td>53</td><td>56</td><td>59</td><td>62</td></tr>
-                <tr><td>1/2 Bust</td><td>35</td><td>37</td><td>39</td><td>41</td><td>43</td><td>45</td><td>47</td></tr>
-                <tr><td>Shorts length (CM)</td><td>32</td><td>34</td><td>36</td><td>38</td><td>39</td><td>40</td><td>43</td></tr>
-                <tr><td>1/2 Waistline (CM)</td><td>20-37</td><td>21-39</td><td>22-41</td><td>23-42</td><td>24-44</td><td>25-47</td><td>26-50</td></tr>
+                <tr><td>Leeftijd</td><td>2-3</td><td>4-5</td><td>5-6</td><td>7-8</td><td>8-9</td><td>10-11</td><td>12-13</td></tr>
+                <tr><td>Lichaamslengte (cm)</td><td>95-105</td><td>105-115</td><td>115-125</td><td>125-135</td><td>135-145</td><td>145-155</td><td>155-165</td></tr>
+                <tr><td>Lengte shirt (cm)</td><td>44</td><td>47</td><td>50</td><td>53</td><td>56</td><td>59</td><td>62</td></tr>
+                <tr><td>½ borst (cm)</td><td>35</td><td>37</td><td>39</td><td>41</td><td>43</td><td>45</td><td>47</td></tr>
+                <tr><td>Lengte short (cm)</td><td>32</td><td>34</td><td>36</td><td>38</td><td>39</td><td>40</td><td>43</td></tr>
+                <tr><td>½ taille (cm)</td><td>20-37</td><td>21-39</td><td>22-41</td><td>23-42</td><td>24-44</td><td>25-47</td><td>26-50</td></tr>
               </tbody>
             </table>
             <p class="maten-scroll-hint maten-scroll-hint--kids" aria-hidden="true">← Veeg voor alle maten →</p>
@@ -1666,20 +1854,20 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
         </div>
       </div>
       <div class="sz-row">
-        <button class="sz" onclick="pickSz(this)">XS</button>
-        <button class="sz" onclick="pickSz(this)">S</button>
-        <button class="sz" onclick="pickSz(this)">M</button>
-        <button class="sz" onclick="pickSz(this)">L</button>
-        <button class="sz" onclick="pickSz(this)">XL</button>
-        <button class="sz" onclick="pickSz(this)">XXL</button>
+        <button type="button" class="sz" onclick="pickSz(this)">XS</button>
+        <button type="button" class="sz" onclick="pickSz(this)">S</button>
+        <button type="button" class="sz" onclick="pickSz(this)">M</button>
+        <button type="button" class="sz" onclick="pickSz(this)">L</button>
+        <button type="button" class="sz" onclick="pickSz(this)">XL</button>
+        <button type="button" class="sz" onclick="pickSz(this)">XXL</button>
       </div>
-      <p class="sz-hint" id="szHint">👆 Kies een maat om verder te gaan</p>
+      <p class="sz-hint" id="szHint">Kies een maat om verder te gaan</p>
 
       <p class="sz-label" style="margin-top:16px">Bedrukking</p>
-      <p class="print-hint">Naam, nummer of allebei: samen <strong>één</strong> toeslag van +€<span id="printCustomPriceHint"></span> per shirt.</p>
+      <p class="print-hint">Naam, nummer of allebei: samen <strong>één</strong> toeslag van +€<span id="printCustomPriceHint"></span> per shirt. Badge/patch (indien gekozen): +€<span id="printBadgePriceHint"></span> per shirt.</p>
       <div class="print-row" role="group" aria-label="Bedrukking">
-        <button class="popt on" id="print-none-btn" onclick="setPrintingOption('none', this)">Geen bedrukking</button>
-        <button class="popt" id="print-custom-btn" onclick="setPrintingOption('custom', this)">
+        <button type="button" class="popt on" id="print-none-btn" onclick="setPrintingOption('none', this)">Geen bedrukking</button>
+        <button type="button" class="popt" id="print-custom-btn" onclick="setPrintingOption('custom', this)">
           Met bedrukking (+€<span id="printCustomPrice"></span> samen)
         </button>
       </div>
@@ -1703,12 +1891,12 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 
       <p class="sz-label" style="margin-top:12px">Seizoen</p>
       <div class="sz-row" id="seasonRow">
-        <button class="sz" onclick="pickSeason(this)">23/24</button>
-        <button class="sz" onclick="pickSeason(this)">24/25</button>
-        <button class="sz on" onclick="pickSeason(this)">25/26</button>
+        <button type="button" class="sz" onclick="pickSeason(this)">23/24</button>
+        <button type="button" class="sz" onclick="pickSeason(this)">24/25</button>
+        <button type="button" class="sz on" onclick="pickSeason(this)">25/26</button>
       </div>
 
-      <button class="d-add" id="dAddBtn" disabled>Kies eerst een maat</button>
+      <button type="button" class="d-add" id="dAddBtn" disabled>Kies eerst een maat</button>
 
       <div class="policy" id="dPolicy"></div>
     </div>
@@ -1726,14 +1914,14 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
     </div>
   </div>
   <div class="cbody" id="cbody">
-    <div class="cempty"><div class="cempty-ico">🛒</div><p>Je winkelwagen is leeg.<br>Voeg tenues toe om te starten.</p><button type="button" class="cart-empty-cta" onclick="closeCart()">Terug naar winkelen</button></div>
+    <div class="cempty"><div class="cempty-ico" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div><p>Je winkelwagen is leeg.<br>Voeg tenues toe om te starten.</p><button type="button" class="cart-empty-cta" onclick="closeCart()">Terug naar winkelen</button></div>
   </div>
   <div class="cfoot" id="cfoot" style="display:none">
     <div id="ship-progress-wrap"></div>
     <div class="cart-coupon">
       <div class="cart-coupon-row">
         <input class="finput" id="cartCouponInput" placeholder="Kortingscode">
-        <button onclick="applyCouponFromCart()">Toepassen</button>
+        <button type="button" onclick="applyCouponFromCart()">Toepassen</button>
       </div>
       <p class="cart-coupon-feedback" id="cartCouponFeedback"></p>
       <button type="button" id="cartCouponRemoveBtn" class="cart-coupon-remove" onclick="removeAppliedCoupon()">Korting wijzigen of verwijderen</button>
@@ -1743,14 +1931,14 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
     <div class="ctot-row"><span>Verzending</span><span id="tShip">€4.99</span></div>
     <div class="ctot-row grand"><span>Totaal</span><span id="tTot">€0.00</span></div>
     <div class="cart-actions">
-      <button class="cart-continue-btn" onclick="closeCart()">← Verder winkelen</button>
-      <button class="cart-clear-btn" onclick="clearCart()" title="Alles verwijderen">🗑 Leegmaken</button>
+      <button type="button" class="cart-continue-btn" onclick="closeCart()">← Verder winkelen</button>
+      <button type="button" class="cart-clear-btn" onclick="clearCart()" title="Alles verwijderen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"></path></svg>Leegmaken</button>
     </div>
-    <button class="wa-order-btn" id="checkoutBtn" onclick="openModal()">
+    <button type="button" class="wa-order-btn" id="checkoutBtn" onclick="openModal()">
       <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Bestellen via WhatsApp
     </button>
-    <p class="cnote">💳 Je ontvangt meestal binnen 24 uur een Tikkie na je bestelling.</p>
+    <p class="cnote"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" style="vertical-align:-2px;margin-right:7px"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>Je ontvangt meestal binnen 24 uur een Tikkie na je bestelling.</p>
   </div>
 </div>
 
@@ -1759,7 +1947,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   <div class="modal">
     <div class="mhead">
       <span class="mtitle">Bestelling afronden</span>
-      <button class="xbtn" onclick="closeModal()" aria-label="Bestelvenster sluiten">✕</button>
+      <button type="button" class="xbtn" onclick="closeModal()" aria-label="Bestelvenster sluiten">✕</button>
     </div>
     <div class="mbody">
       <!-- Order recap -->
@@ -1776,7 +1964,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
         <label class="flabel">Kortingscode <span class="opt">(optioneel)</span></label>
         <div class="coupon-input-row">
           <input class="finput" id="couponInput" placeholder="Je kortingscode" autocomplete="off">
-          <button class="coupon-apply-btn" onclick="applyCoupon()">Toepassen</button>
+          <button type="button" class="coupon-apply-btn" onclick="applyCoupon()">Toepassen</button>
         </div>
         <p class="coupon-feedback" id="couponFeedback"></p>
       </div>
@@ -1815,7 +2003,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
         <input type="text" id="checkoutHpWebsite" name="website" tabindex="-1" autocomplete="off" value="">
       </div>
 
-      <button class="msub" id="msub" onclick="placeOrder()">
+      <button type="button" class="msub" id="msub" onclick="placeOrder()">
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Verstuur naar WhatsApp
       </button>
@@ -1829,7 +2017,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
   <!-- top nav -->
   <div class="cscreen-nav">
     <span class="cscreen-logo">KitsByElbaa</span>
-    <button class="cscreen-back" onclick="backShop()">← Verder winkelen</button>
+    <button type="button" class="cscreen-back" onclick="backShop()">← Verder winkelen</button>
   </div>
 
   <!-- two-column body -->
@@ -1869,9 +2057,9 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
           </div>
         </div>
         <div class="step">
-          <div class="step-i">📦</div>
+          <div class="step-i" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg></div>
           <div class="step-text">
-            <span class="step-l">Bezorging binnen 5–7 werkdagen</span>
+            <span class="step-l">Op voorraad 1–2 werkdagen · Nabestelling 7–12 werkdagen</span>
             <span class="step-d">Verzonden met PostNL</span>
           </div>
         </div>
@@ -1896,7 +2084,7 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 </div>
 
 <!-- WHATSAPP FLOAT -->
-<a class="wa-float" id="waFloat" title="WhatsApp" aria-label="WhatsApp">
+<a class="wa-float" id="waFloat" href="https://wa.me/31684446255" target="_blank" rel="noopener noreferrer" title="WhatsApp" aria-label="WhatsApp">
   <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
@@ -1905,11 +2093,12 @@ footer h4{font-family:'Jost',sans-serif;font-size:11px;font-weight:700;text-tran
 <script>
 // ── CONFIG filled from api/config.php (no EmailJS keys in page source) ──
 let CONFIG = {
-  whatsapp:         '',
+  whatsapp:         '31684446255',
   season:           '',
   freeShippingFrom: 0,
   shippingCost:     0,
   customPrintingPrice: 5,
+  badgeExtraPrice: 3,
   emailjsPk:        '',
   emailjsService:   '',
   emailjsTemplate:  '',
@@ -1917,11 +2106,18 @@ let CONFIG = {
   publicSiteUrl:    '',
 };
 
+function kbeWaDigits() {
+  const d = String(CONFIG.whatsapp || '31684446255').replace(/\D/g, '');
+  return d || '31684446255';
+}
+
 let PRODUCTS = [];
 let cart = [];
+let wishlist = [];
 let __kbeCartHistory = 0;
 let currentDetailId = null;
 let currentSz = null; // no default — user must explicitly pick
+let currentVersion = 'fan'; // Fan (basis) of Player in de drawer
 let currentPrinting = 'none'; // none|custom
 let currentDetailEmoji = '👕';
 let currentGalleryImages = [];
@@ -1930,6 +2126,9 @@ let currentFilterCat = 'all';
 let currentSearchTerm = '';
 let currentSortMode = 'featured';
 let currentShopCardView = 'grid';
+let navSearchSuggestions = [];
+let navSearchActiveIndex = -1;
+const NAV_SEARCH_POPULAR = ['Real Madrid', 'Barcelona', 'PSG', 'Retro', 'Kids', 'Manchester'];
 
 function setShopCardView(view) {
   currentShopCardView = (view === 'list') ? 'list' : 'grid';
@@ -1951,6 +2150,7 @@ function openNavSearch() {
     input.value = currentSearchTerm || '';
     setTimeout(() => input.focus(), 50);
   }
+  renderNavSearchSuggestions((input && input.value) || '');
 }
 
 function closeNavSearch() {
@@ -1958,19 +2158,143 @@ function closeNavSearch() {
   const modal = document.getElementById('navSearchModal');
   if (bg) bg.classList.remove('on');
   if (modal) modal.classList.remove('on');
+  navSearchActiveIndex = -1;
 }
 
 function applyNavSearch() {
   const input = document.getElementById('navSearchInput');
   const next = ((input && input.value) || '').trim();
+  if (navSearchActiveIndex >= 0 && navSearchSuggestions[navSearchActiveIndex]) {
+    openProductFromNavSearch(navSearchSuggestions[navSearchActiveIndex].id);
+    return;
+  }
   currentSearchTerm = next;
+  if (next) {
+    const top = getNavSearchSuggestions(next, 1);
+    if (top.length === 1) {
+      closeNavSearch();
+      goToProductPage(top[0].id);
+      return;
+    }
+  }
   closeNavSearch();
   renderGrid(currentFilterCat);
+}
+
+function getNavSearchSuggestions(queryRaw, limit = 8) {
+  const q = String(queryRaw || '').trim();
+  if (!Array.isArray(PRODUCTS) || !PRODUCTS.length) return [];
+  if (!q) {
+    return PRODUCTS
+      .filter((p) => (p.image || p.image2 || p.image3))
+      .slice(0, limit);
+  }
+  return PRODUCTS
+    .map((p) => ({ p, score: getProductSearchScore(p, q) }))
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((x) => x.p);
+}
+
+function applyPopularNavSearch(term) {
+  const input = document.getElementById('navSearchInput');
+  if (!input) return;
+  input.value = term;
+  renderNavSearchSuggestions(term);
+  input.focus();
+}
+
+function openProductFromNavSearch(id) {
+  closeNavSearch();
+  goToProductPage(id);
+}
+
+function setNavSearchActiveIndex(nextIdx) {
+  navSearchActiveIndex = nextIdx;
+  const items = Array.from(document.querySelectorAll('#navSearchResults .nav-search-item'));
+  items.forEach((el, idx) => el.classList.toggle('is-active', idx === navSearchActiveIndex));
+}
+
+function handleNavSearchKeydown(event) {
+  const input = document.getElementById('navSearchInput');
+  const count = navSearchSuggestions.length;
+  if (event.key === 'Escape') {
+    closeNavSearch();
+    return;
+  }
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    if (!count) return;
+    const next = navSearchActiveIndex < count - 1 ? navSearchActiveIndex + 1 : 0;
+    setNavSearchActiveIndex(next);
+    return;
+  }
+  if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    if (!count) return;
+    const next = navSearchActiveIndex > 0 ? navSearchActiveIndex - 1 : count - 1;
+    setNavSearchActiveIndex(next);
+    return;
+  }
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    applyNavSearch();
+    return;
+  }
+  if (input) {
+    setTimeout(() => renderNavSearchSuggestions(input.value), 0);
+  }
+}
+
+function renderNavSearchSuggestions(queryRaw) {
+  const box = document.getElementById('navSearchResults');
+  if (!box) return;
+  const q = String(queryRaw || '').trim();
+  const items = getNavSearchSuggestions(q, 8);
+  navSearchSuggestions = items;
+  navSearchActiveIndex = -1;
+  if (!items.length) {
+    box.innerHTML = `<div class="nav-search-empty">${q ? 'Geen resultaten. Probeer een andere club of competitie.' : 'Type om direct producten te zien.'}</div>`;
+    return;
+  }
+  const popular = !q ? `<div class="nav-search-popular">${NAV_SEARCH_POPULAR.map(t => `<button type="button" class="nav-search-chip" data-popular-term="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : '';
+  box.innerHTML = popular + items.map((p, idx) => {
+    const img = productImgSrc(p.image || p.image2 || p.image3);
+    return `<button type="button" class="nav-search-item" onmouseenter="setNavSearchActiveIndex(${idx})" onclick="openProductFromNavSearch(${Number(p.id)})">
+      ${img ? `<img src="${img}" alt="${esc(p.name || '')}" width="48" height="58" loading="lazy" decoding="async">` : `<div></div>`}
+      <div>
+        <div class="nav-search-item-name">${esc(p.name || '')}</div>
+        <div class="nav-search-item-meta">${esc(p.league || '')}</div>
+      </div>
+      <div class="nav-search-item-price">€${Number(p.price || 0).toFixed(2)}</div>
+    </button>`;
+  }).join('');
+  box.querySelectorAll('.nav-search-chip').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const term = btn.getAttribute('data-popular-term') || btn.textContent || '';
+      applyPopularNavSearch(term);
+    });
+  });
 }
 
 function unitPrintingExtra() {
   const v = Number(CONFIG.customPrintingPrice);
   return Number.isFinite(v) && v >= 0 ? v : 5;
+}
+function unitBadgeExtra() {
+  const v = Number(CONFIG.badgeExtraPrice);
+  return Number.isFinite(v) && v >= 0 ? v : 3;
+}
+function linePrintingExtraForCart(i) {
+  if ((i.printing_option || 'none') !== 'custom') return 0;
+  const pn = String(i.print_name || '').trim();
+  const num = String(i.print_number || '').trim();
+  return pn || num ? unitPrintingExtra() : 0;
+}
+function lineBadgeExtraForCart(i) {
+  if ((i.printing_option || 'none') !== 'custom') return 0;
+  return String(i.print_badges || '').trim() ? unitBadgeExtra() : 0;
 }
 
 function recalcCartPrintingPrices() {
@@ -1979,8 +2303,7 @@ function recalcCartPrintingPrices() {
   cart.forEach(i => {
     const p = PRODUCTS.find(x => x.id === i.id);
     if (!p) return;
-    const extra = (i.printing_option === 'custom') ? unitPrintingExtra() : 0;
-    const expected = Number(p.price) + extra;
+    const expected = Number(p.price) + linePrintingExtraForCart(i) + lineBadgeExtraForCart(i);
     if (Math.abs(Number(i.price) - expected) > 0.005) {
       i.price = expected;
       changed = true;
@@ -1992,6 +2315,9 @@ function recalcCartPrintingPrices() {
 // HTML escape helper — always use when inserting user/db data into innerHTML
 function esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function jss(v) {
+  return JSON.stringify(String(v ?? ''));
 }
 function productImgSrc(file) {
   if (!file) return '';
@@ -2063,47 +2389,74 @@ function couponAppliedLabel(c) {
 
 function applyPromoTextsFromConfig() {
   if (CONFIG.promoBanner) {
-    const b = document.querySelector('.promo-banner');
-    if (b) b.innerHTML = CONFIG.promoBanner;
+    document.querySelectorAll('.announce-promo').forEach(el => { el.innerHTML = CONFIG.promoBanner; });
   }
 }
 const CART_STORAGE_KEY = 'kbe_cart_main';
 const COUPON_STORAGE_KEY = 'kbe_coupon_main';
 const PROMO_POPUP_KEY = 'kbe_seen_promo_10';
+const WISHLIST_STORAGE_KEY = 'kbe_wishlist_main';
+
+/** EmailJS `defer` in <head> — init pas als `emailjs` bestaat (voorkomt race). */
+function kbeEnsureEmailjsInit(pk) {
+  pk = typeof pk === 'string' ? pk.trim() : pk;
+  if (!pk) return;
+  let n = 0;
+  (function tick() {
+    if (typeof emailjs !== 'undefined') {
+      try { emailjs.init({ publicKey: pk }); } catch (_) {}
+      return;
+    }
+    if (++n < 150) setTimeout(tick, 20);
+  })();
+}
+
+function kbeEmailJsSendOpts() {
+  const pk = (typeof CONFIG !== 'undefined' && CONFIG.emailjsPk) ? String(CONFIG.emailjsPk).trim() : '';
+  return pk ? { publicKey: pk } : {};
+}
 
 // ── INIT ──
 Promise.all([
   fetch('api/config.php').then(r => r.json()).catch(() => ({})),
   fetch('api/products.php').then(async r => {
+    const ok = r.ok;
     const j = await r.json().catch(() => []);
-    return Array.isArray(j) ? j : [];
-  }).catch(() => [])
+    const arr = Array.isArray(j) ? j : [];
+    window.__kbeProductsApiFailed = !ok;
+    return arr;
+  }).catch(() => { window.__kbeProductsApiFailed = true; return []; })
 ]).then(async ([cfg, products]) => {
   Object.assign(CONFIG, cfg);
   applyPromoTextsFromConfig();
   applySeoFromConfig('shop.html');
-  if (CONFIG.emailjsPk) {
-    emailjs.init(CONFIG.emailjsPk);
-  }
+  kbeEnsureEmailjsInit(CONFIG.emailjsPk);
   PRODUCTS = products;
+  if (window.__kbeProductsApiFailed) {
+    showToast('Producten laden lukt niet (server/database). Controleer de verbinding of probeer het zo opnieuw.');
+  }
   restoreCartState();
+  restoreWishlistState();
   recalcCartPrintingPrices();
   clampCartToStock();
   await restoreCouponState();
   applyDynamicStoreTexts();
   applyBannerImagesFromProducts();
   const pPrint = unitPrintingExtra();
+  const pBadge = unitBadgeExtra();
   const priceStr = pPrint.toFixed(2).replace('.', ',');
+  const badgeStr = pBadge.toFixed(2).replace('.', ',');
   const printPriceEl = document.getElementById('printCustomPrice');
   const printHintEl = document.getElementById('printCustomPriceHint');
+  const printBadgeHintEl = document.getElementById('printBadgePriceHint');
   if (printPriceEl) printPriceEl.textContent = priceStr;
   if (printHintEl) printHintEl.textContent = priceStr;
+  if (printBadgeHintEl) printBadgeHintEl.textContent = badgeStr;
   if (currentDetailId && currentPrinting === 'custom') {
-    const pOpen = PRODUCTS.find(x => x.id === currentDetailId);
-    const dEl = document.getElementById('dPrice');
-    if (pOpen && dEl) dEl.textContent = '€' + (pOpen.price + unitPrintingExtra()).toFixed(2);
+    refreshDetailDrawerPrice();
   }
-  document.getElementById('waFloat').onclick = () => window.open('https://wa.me/' + CONFIG.whatsapp, '_blank');
+  const waF = document.getElementById('waFloat');
+  if (waF) waF.href = 'https://wa.me/' + kbeWaDigits();
   renderHero();
   initShopFromUrl();
   populateCategoryImages();
@@ -2133,6 +2486,9 @@ function closePromoPopup() {
 function persistCartState() {
   try { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); } catch (_) {}
 }
+function persistWishlistState() {
+  try { localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist)); } catch (_) {}
+}
 function persistCouponState() {
   try {
     if (appliedCoupon) localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(appliedCoupon));
@@ -2147,6 +2503,14 @@ function restoreCartState() {
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) cart = parsed;
   } catch (_) {}
+}
+function restoreWishlistState() {
+  try {
+    const raw = localStorage.getItem(WISHLIST_STORAGE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    wishlist = Array.isArray(parsed) ? parsed.map(Number).filter(Number.isFinite) : [];
+  } catch (_) { wishlist = []; }
 }
 async function restoreCouponState() {
   try {
@@ -2201,22 +2565,26 @@ function renderHero() {
     <div class="hcard" onclick="goToProductPage(${p.id})">
       <div class="hcard-img">
         ${(p.image || p.image2 || p.image3)
-          ? `<img src="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`
-          : `<div class="pnoimg"><span class="icon">📸</span><span>Foto volgt</span></div>`}
-        ${p.badge ? `<span class="hcard-badge ${p.badge}">${p.badge === 'new' ? 'Nieuw' : 'Hot'}</span>` : ''}
+          ? `<img src="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" width="320" height="405" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`
+          : `<div class="pnoimg"><span class="icon" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span><span>Foto volgt</span></div>`}
+        ${['new','hot'].includes(String(p.badge || '').toLowerCase()) ? `<span class="hcard-badge ${String(p.badge).toLowerCase()}">${String(p.badge).toLowerCase() === 'new' ? 'Nieuw' : 'Hot'}</span>` : ''}
       </div>
       <div class="hcard-info">
-        <div class="hcard-name">${p.name}</div>
+        <div class="hcard-name">${esc(p.name)}</div>
         <div class="hcard-price">€${p.price.toFixed(2)}</div>
       </div>
     </div>`).join('');
 }
 
 // ── RENDER PRODUCT GRID ──
-let currentTypeFilter = 'all';
+let currentTypeFilter = 'shirts';
 let currentVersionFilter = 'all';
 let currentKitVariantFilter = 'all';
 let currentVoorraadFilter = 'all'; // 'all', 'in_stock', 'out_of_stock'
+let currentLandingType = '';
+let currentWishlistOnly = false;
+let currentColorFilter = 'all';
+let currentSizeFilter = 'all';
 let currentSeason = '25/26'; // default season
 
 function productHaystack(p) {
@@ -2234,39 +2602,42 @@ function normalizeSearchText(s) {
     .trim();
 }
 
-function searchSubsequenceMatch(text, query) {
-  if (!query) return true;
-  let qi = 0;
-  for (let i = 0; i < text.length && qi < query.length; i++) {
-    if (text[i] === query[qi]) qi++;
-  }
-  return qi === query.length;
-}
-
-function productMatchesSearch(p, queryRaw) {
+function getProductSearchScore(p, queryRaw) {
   const q = normalizeSearchText(queryRaw);
-  if (!q) return true;
+  if (!q) return 0;
+
   const name = normalizeSearchText(p.name || '');
   const league = normalizeSearchText(p.league || '');
   const cat = normalizeSearchText(p.cat || '');
   const path = normalizeSearchText(String(p.kits_path || '').replace(/\\/g, '/'));
   const season = normalizeSearchText(CONFIG.season || '');
   const hay = `${name} ${league} ${cat} ${path} ${season}`.trim();
-  if (hay.includes(q)) return true;
-
-  const words = hay.split(' ').filter(Boolean);
   const tokens = q.split(' ').filter(Boolean);
-  const allTokensMatch = tokens.every(t =>
-    words.some(w => w.startsWith(t)) || hay.includes(t)
-  );
-  if (allTokensMatch) return true;
+  if (!tokens.length) return 0;
 
-  if (q.length >= 2 && q.length <= 5) {
-    const compactQ = q.replace(/\s+/g, '');
-    const compactName = name.replace(/\s+/g, '');
-    if (searchSubsequenceMatch(compactName, compactQ)) return true;
+  // Every token must match strongly (word-start or full token inside the text).
+  const allTokensMatch = tokens.every((t) => {
+    if (t.length <= 1) return false;
+    return new RegExp(`\\b${t}`).test(hay) || hay.includes(t);
+  });
+  if (!allTokensMatch) return 0;
+
+  let score = 0;
+  if (name === q) score += 300;
+  if (name.startsWith(q)) score += 220;
+  if (name.includes(q)) score += 170;
+  if (league.includes(q)) score += 130;
+  if (cat.includes(q)) score += 70;
+  if (path.includes(q)) score += 40;
+
+  for (const t of tokens) {
+    if (name.startsWith(t)) score += 40;
+    if (new RegExp(`\\b${t}`).test(name)) score += 26;
+    if (new RegExp(`\\b${t}`).test(league)) score += 18;
+    if (new RegExp(`\\b${t}`).test(cat)) score += 10;
   }
-  return false;
+
+  return score;
 }
 
 function detectKitVariant(p) {
@@ -2284,6 +2655,8 @@ function detectProductType(p) {
   const catDb = String(p.cat || '').toLowerCase();
   if (catDb === 'hemsetjes' || catDb === 'hemdsetjes') return 'hemdsetjes';
   if (catDb === 'training') return 'shirts';
+  if (catDb === 'retro') return 'retro';
+  if (catDb === 'kids') return 'kids';
   const name = String(p.name || '').toLowerCase();
   const desc = String(p.description || '').toLowerCase();
   if (name.includes('retro kids')) return 'kids';
@@ -2295,23 +2668,78 @@ function detectProductType(p) {
 }
 
 function detectProductVersion(p) {
-  const hay = `${p.name || ''} ${p.description || ''}`.toLowerCase();
-  if (hay.includes('player version') || hay.includes('player fit') || /\bplayer\b/.test(hay)) return 'player';
+  if (!p) return 'fan';
+  const v = String(p.version || '').trim().toLowerCase();
+  if (v === 'player' || v === 'fan') return v;
+  const hay = `${p.name || ''} ${p.description || ''} ${p.fit_info || ''} ${p.size_advice || ''}`.toLowerCase();
+  if (
+    hay.includes('player version') ||
+    hay.includes('player fit') ||
+    hay.includes('players version') ||
+    /\bplayer\b/.test(hay)
+  ) {
+    return 'player';
+  }
+  if (
+    hay.includes('spelersversie') ||
+    hay.includes('spelerversie') ||
+    hay.includes('spelers versie') ||
+    hay.includes('speler versie') ||
+    hay.includes('spelers kit') ||
+    hay.includes('spelerseditie') ||
+    hay.includes('spelers editie')
+  ) {
+    return 'player';
+  }
   if (hay.includes('fan version') || hay.includes('fan fit') || /\bfan\b/.test(hay)) return 'fan';
+  if (hay.includes('fanversie') || hay.includes('fan versie') || hay.includes('fansversie')) return 'fan';
   return 'fan';
+}
+
+function detectProductColors(p) {
+  const hay = `${p.name || ''} ${p.description || ''} ${p.league || ''}`.toLowerCase();
+  const rules = [
+    ['white', /\b(wit|white)\b/],
+    ['black', /\b(zwart|black)\b/],
+    ['blue', /\b(blauw|blue|navy|marine)\b/],
+    ['red', /\b(rood|red)\b/],
+    ['green', /\b(groen|green)\b/],
+    ['yellow', /\b(geel|yellow)\b/],
+    ['orange', /\b(oranje|orange)\b/],
+    ['pink', /\b(roze|pink)\b/],
+    ['purple', /\b(paars|purple)\b/],
+    ['grey', /\b(grijs|gray|grey)\b/],
+    ['gold', /\b(goud|gold)\b/],
+    ['beige', /\b(beige|cream)\b/]
+  ];
+  return rules.filter(([, rx]) => rx.test(hay)).map(([key]) => key);
+}
+
+function productHasSize(p, sizeKey) {
+  if (!p || !sizeKey || sizeKey === 'all') return true;
+  const ss = p.stock_sizes;
+  if (ss && typeof ss === 'object') {
+    if (sizeKey === 'XXL' || sizeKey === '2XL') {
+      return Number(ss.XXL || 0) + Number(ss['2XL'] || 0) > 0;
+    }
+    if (Object.prototype.hasOwnProperty.call(ss, sizeKey)) {
+      return Number(ss[sizeKey] || 0) > 0;
+    }
+  }
+  const hay = `${p.name || ''} ${p.description || ''}`.toUpperCase();
+  return new RegExp(`\\b${sizeKey}\\b`).test(hay);
 }
 
 function syncShopCategoryTabsFromState() {
   const vTab = document.getElementById('ftab-voorraad');
-  const allTab = [...document.querySelectorAll('#catTabs .ftab')].find(b => /^alles$/i.test(b.textContent.trim()));
-  if (!vTab || !allTab) return;
+  if (!vTab) return;
   const voorraadTabActive = currentVoorraadFilter === 'in_stock' && currentTypeFilter === 'all';
   document.querySelectorAll('#catTabs .ftab').forEach(b => b.classList.remove('on'));
   if (voorraadTabActive) {
     vTab.classList.add('on');
   } else {
     const labels = { all:'Alles', shirts:'Shirts', sets:'Sets', hemdsetjes:'Hemdsetjes', retro:'Retro', kids:'Kids' };
-    const label = labels[currentTypeFilter] || 'Alles';
+    const label = labels[currentTypeFilter] || 'Shirts';
     const btn = [...document.querySelectorAll('#catTabs .ftab')].find(b => b.textContent.trim() === label);
     if (btn) btn.classList.add('on');
   }
@@ -2339,6 +2767,7 @@ function updateShopVoorraadLede() {
 
 function buildShopNoResultsTips(cat) {
   const tips = [];
+  if (currentWishlistOnly) tips.push('Voeg favorieten toe via het <strong>hartje (♥)</strong> op productkaarten.');
   if (currentSearchTerm) tips.push(`Zoekterm <strong>“${esc(currentSearchTerm)}”</strong> wissen of aanpassen.`);
   if (currentTypeFilter !== 'all') tips.push('Probeer een andere <strong>type-tab</strong> (bijv. Alle tenues).');
   if (currentVersionFilter !== 'all') tips.push('Zet Fan/Player op <strong>alle</strong>.');
@@ -2349,15 +2778,110 @@ function buildShopNoResultsTips(cat) {
   return '<ul class="no-results-tips">' + tips.map(t => `<li>${t}</li>`).join('') + '</ul>';
 }
 
+function buildNoResultsActions() {
+  return `<div class="no-results-actions">
+    <button type="button" onclick="resetShopFilters()">Reset alles</button>
+    <button type="button" onclick="doFilter('all')">Alle competities</button>
+    <button type="button" onclick="setTypeFilter('shirts')">Shirts</button>
+    <button type="button" onclick="setTypeFilter('kids')">Kids</button>
+  </div>`;
+}
+
+function updateShopHeroLede() {
+  const el = document.getElementById('shopHeroLede');
+  if (!el) return;
+  const typeMap = {
+    shirts: 'Shirts van topclubs en nationale teams, met fan- en player-opties.',
+    sets: 'Complete sets voor een volledige look, direct gefilterd op competitie.',
+    hemdsetjes: 'Lichte hemdsetjes voor training en warm weer, snel te filteren op league.',
+    retro: 'Retro klassiekers van legendarische seizoenen.',
+    kids: 'Kids tenues met passende maten en snelle selectie op club of competitie.',
+    all: 'Shop per categorie en gebruik filters om snel de juiste club, competitie en maat te vinden.'
+  };
+  const typeKey = typeMap[currentTypeFilter] ? currentTypeFilter : 'all';
+  const leagueMap = { premier:'Premier League', laliga:'La Liga', bundesliga:'Bundesliga', seriea:'Serie A', ligue1:'Ligue 1', eredivisie:'Eredivisie', national:'Nationale teams' };
+  const league = currentFilterCat !== 'all' ? ` Gefilterd op ${leagueMap[currentFilterCat] || 'competitie'}.` : '';
+  el.textContent = typeMap[typeKey] + league;
+}
+
+function isWishlisted(id) {
+  return wishlist.includes(Number(id));
+}
+
+function toggleWishlist(id, btn) {
+  const pid = Number(id);
+  if (!Number.isFinite(pid)) return;
+  const i = wishlist.indexOf(pid);
+  const on = i === -1;
+  if (on) wishlist.push(pid); else wishlist.splice(i, 1);
+  persistWishlistState();
+  if (btn) btn.classList.toggle('on', on);
+  if (typeof showToast === 'function') showToast(on ? '♥ Toegevoegd aan wishlist' : '♡ Verwijderd uit wishlist');
+}
+
+// ── League matching — single source of truth (used by the pills AND the grid) ──
+// A product belongs to a league when its `cat` equals the key OR its `league`
+// text contains a keyword. "national" also catches WK/Landen so every World-Cup
+// shirt lands under 🌍 Nationale teams. "overig" catches anything that fits none
+// of the named leagues, so a product is never unreachable by browsing.
+const LEAGUE_KEYWORDS = {
+  premier:    ['premier'],
+  laliga:     ['la liga', 'laliga'],
+  bundesliga: ['bundesliga'],
+  seriea:     ['serie'],
+  ligue1:     ['ligue'],
+  eredivisie: ['eredivisie'],
+  national:   ['national', 'wk', 'landen'],
+};
+function leagueHit(cat, lg, key) {
+  if (cat === key) return true;
+  return (LEAGUE_KEYWORDS[key] || [key]).some(kw => lg.includes(kw));
+}
+function productMatchesLeague(p, key) {
+  key = String(key || '').toLowerCase();
+  if (!key || key === 'all') return true;
+  const cat = String(p.cat || '').toLowerCase();
+  const lg  = String(p.league || '').toLowerCase();
+  if (key === 'overig') return !Object.keys(LEAGUE_KEYWORDS).some(k => leagueHit(cat, lg, k));
+  return leagueHit(cat, lg, key);
+}
+
+function updateLeaguePillCounts() {
+  let base = [...PRODUCTS];
+  if (currentTypeFilter !== 'all') base = base.filter(p => detectProductType(p) === currentTypeFilter);
+  if (currentVersionFilter !== 'all') base = base.filter(p => detectProductVersion(p) === currentVersionFilter);
+  if (currentKitVariantFilter !== 'all') base = base.filter(p => detectKitVariant(p) === currentKitVariantFilter);
+  if (currentColorFilter !== 'all') base = base.filter(p => detectProductColors(p).includes(currentColorFilter));
+  if (currentSizeFilter !== 'all') base = base.filter(p => productHasSize(p, currentSizeFilter));
+  if (currentVoorraadFilter === 'in_stock') base = base.filter(p => parseInt(p.in_voorraad) === 1);
+  else if (currentVoorraadFilter === 'out_of_stock') base = base.filter(p => parseInt(p.in_voorraad) !== 1);
+  if (currentSearchTerm) {
+    base = base
+      .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
+      .filter((x) => x.score > 0)
+      .map((x) => x.p);
+  }
+  document.querySelectorAll('#leaguePills .fpill').forEach((pill) => {
+    const oc = pill.getAttribute('onclick') || '';
+    const m = oc.match(/doFilter\('([^']+)'/);
+    const key = ((m && m[1]) || 'all').toLowerCase();
+    const count = base.filter(p => productMatchesLeague(p, key)).length;
+    const labelEl = pill.querySelector('.fpill-label') || pill;
+    if (!pill.dataset.baseLabel) pill.dataset.baseLabel = labelEl.textContent.replace(/\s\(\d+\)\s*$/, '').trim();
+    labelEl.innerHTML = `${esc(pill.dataset.baseLabel)} <span class="fpill-count">(${count})</span>`;
+    // Dim (but keep clickable) leagues with no matches in the current context; never dim "Alle competities".
+    pill.classList.toggle('is-empty', count === 0 && key !== 'all');
+  });
+}
+
 function renderGrid(cat = currentFilterCat) {
   currentFilterCat = cat;
   let list = [...PRODUCTS];
 
-  // League keyword map for matching against p.league text
-  const leagueKeywords = {
-    premier:'premier', laliga:'liga', bundesliga:'bundesliga',
-    seriea:'serie', ligue1:'ligue', eredivisie:'eredivisie', national:'national'
-  };
+  if (currentWishlistOnly) {
+    const keep = new Set((wishlist || []).map(Number));
+    list = list.filter(p => keep.has(Number(p.id)));
+  }
 
   // Apply type filter (shirts/sets/kids/…) from product naming.
   if (currentTypeFilter !== 'all') {
@@ -2369,17 +2893,21 @@ function renderGrid(cat = currentFilterCat) {
     list = list.filter(p => detectProductVersion(p) === currentVersionFilter);
   }
 
-  // Apply league filter - matches p.cat OR p.league text
+  // Apply league filter — single source of truth (see productMatchesLeague).
   if (cat !== 'all') {
-    const kw = leagueKeywords[cat] || cat;
-    list = list.filter(p =>
-      (p.cat || '').toLowerCase() === cat ||
-      (p.league || '').toLowerCase().includes(kw)
-    );
+    list = list.filter(p => productMatchesLeague(p, cat));
   }
 
   if (currentKitVariantFilter !== 'all') {
     list = list.filter(p => detectKitVariant(p) === currentKitVariantFilter);
+  }
+
+  if (currentColorFilter !== 'all') {
+    list = list.filter(p => detectProductColors(p).includes(currentColorFilter));
+  }
+
+  if (currentSizeFilter !== 'all') {
+    list = list.filter(p => productHasSize(p, currentSizeFilter));
   }
 
   // Apply voorraad filter
@@ -2390,7 +2918,12 @@ function renderGrid(cat = currentFilterCat) {
   }
 
   if (currentSearchTerm) {
-    list = list.filter(p => productMatchesSearch(p, currentSearchTerm));
+    const ranked = list
+      .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map((x) => x.p);
+    list = ranked;
   }
   if (currentSortMode === 'price_asc') list.sort((a,b) => a.price - b.price);
   if (currentSortMode === 'price_desc') list.sort((a,b) => b.price - a.price);
@@ -2399,7 +2932,12 @@ function renderGrid(cat = currentFilterCat) {
   const titleEl = document.getElementById('shopTitle');
   if (titleEl) {
     const typeLabels = {all:'Alle tenues',shirts:'Shirts',sets:'Sets',hemdsetjes:'Hemdsetjes',retro:'Retro',kids:'Kids'};
-    if (currentVoorraadFilter === 'in_stock') {
+    const landingLabel = typeLabels[currentLandingType] || (currentLandingType === 'voorraad' ? 'Voorraad' : '');
+    if (currentWishlistOnly) {
+      titleEl.textContent = 'Wishlist';
+    } else if (landingLabel && currentLandingType !== 'voorraad') {
+      titleEl.textContent = landingLabel;
+    } else if (currentVoorraadFilter === 'in_stock') {
       titleEl.textContent = currentTypeFilter === 'all' ? 'Op voorraad' : (typeLabels[currentTypeFilter] + ' · op voorraad');
     } else if (currentVoorraadFilter === 'out_of_stock') {
       titleEl.textContent = currentTypeFilter === 'all' ? 'Niet op voorraad' : (typeLabels[currentTypeFilter] + ' · niet op voorraad');
@@ -2409,16 +2947,23 @@ function renderGrid(cat = currentFilterCat) {
   }
   if (!list.length) {
     const hasSearch = !!currentSearchTerm;
+    const emptyTitle = currentWishlistOnly ? 'Je wishlist is nog leeg' : (hasSearch ? `Geen resultaten voor “${esc(currentSearchTerm)}”` : 'Geen tenues gevonden');
+    const emptyText = currentWishlistOnly
+      ? 'Klik op ♥ bij producten om favorieten op te slaan.'
+      : (hasSearch ? 'Probeer een andere club, land of competitie.' : 'Pas je filters aan — tips hieronder.');
     document.getElementById('grid').innerHTML = `
       <div class="no-results">
-        <strong>${hasSearch ? `Geen resultaten voor “${esc(currentSearchTerm)}”` : 'Geen tenues gevonden'}</strong>
-        <p>${hasSearch ? 'Probeer een andere club, land of competitie.' : 'Pas je filters aan — tips hieronder.'}</p>
+        <strong>${emptyTitle}</strong>
+        <p>${emptyText}</p>
         ${buildShopNoResultsTips(cat)}
-        <button class="btn-sec" onclick="resetShopFilters()">Filters resetten</button>
+        ${buildNoResultsActions()}
+        <button type="button" class="btn-sec" onclick="resetShopFilters()">Filters resetten</button>
       </div>`;
     updateShopVoorraadLede();
     updateShopRefineUI();
     syncShopCategoryTabsFromState();
+    updateLeaguePillCounts();
+    updateShopHeroLede();
     return;
   }
   document.getElementById('grid').innerHTML = list.map((p, idx) => {
@@ -2427,18 +2972,21 @@ function renderGrid(cat = currentFilterCat) {
     <div class="pcard card-enter" style="animation-delay:${Math.min(idx * 35, 280)}ms" onclick="goToProductPage(${p.id})">
       <div class="pimg-wrap">
         ${(p.image || p.image2 || p.image3)
-          ? `<img src="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${p.name}" loading="lazy" decoding="async" width="320" height="400" onerror="this.style.display='none'">`
-          : `<div class="pnoimg"><span class="icon">📸</span><span>Foto volgt</span></div>`}
-        ${p.badge ? `<span class="pbadge ${p.badge}">${p.badge === 'new' ? 'Nieuw' : 'Hot'}</span>` : ''}
+          ? `<img src="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" loading="lazy" decoding="async" width="320" height="400" onerror="this.style.display='none'">`
+          : `<div class="pnoimg"><span class="icon" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span><span>Foto volgt</span></div>`}
+        <button type="button" class="pwish-btn ${isWishlisted(p.id) ? 'on' : ''}" onclick="event.stopPropagation();toggleWishlist(${p.id},this)" aria-label="Wishlist">♥</button>
+        ${['new','hot'].includes(String(p.badge || '').toLowerCase())
+          ? `<span class="pbadge ${String(p.badge).toLowerCase()}">${String(p.badge).toLowerCase() === 'new' ? 'Nieuw' : 'Populair'}</span>`
+          : (!currentSearchTerm && currentSortMode === 'featured' && idx < 3 ? `<span class="pbadge bestseller">Bestseller</span>` : '')}
       </div>
       <div class="pbody">
-        <p class="pleague">${p.league}</p>
-        <p class="pname">${p.name}</p>
-        <p class="pseason">${CONFIG.season} seizoen</p>
+        <p class="pleague">${esc(p.league)}</p>
+        <p class="pname">${esc(p.name)}</p>
+        ${productHasPlayer(p) ? '<span style="display:block;width:max-content;margin:0 0 8px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-light);border:1px solid rgba(45,90,39,.18);padding:3px 9px;border-radius:100px">Ook als Player</span>' : ''}
         <span class="stock-pill ${stock.key}">${stock.label}</span>
         <div class="pfooter">
           <span class="pprice">€${p.price.toFixed(2)}</span>
-          <button class="padd-btn" onclick="event.stopPropagation();goToProductPage(${p.id})" title="Product openen" aria-label="Product openen">+</button>
+          <button type="button" class="padd-btn" onclick="event.stopPropagation();openDetail(${p.id})" title="Snel bekijken &amp; toevoegen" aria-label="Snel toevoegen">+</button>
         </div>
       </div>
     </div>`;
@@ -2446,6 +2994,8 @@ function renderGrid(cat = currentFilterCat) {
   updateShopVoorraadLede();
   updateShopRefineUI();
   syncShopCategoryTabsFromState();
+  updateLeaguePillCounts();
+  updateShopHeroLede();
 }
 
 function toggleShopRefinePanel() {
@@ -2459,6 +3009,9 @@ function toggleShopRefinePanel() {
   btn.setAttribute('aria-expanded', next ? 'true' : 'false');
   if (wrap) wrap.classList.toggle('on', next);
   if (bg) bg.classList.toggle('on', next);
+  if (window.matchMedia('(max-width: 960px)').matches) {
+    document.body.style.overflow = next ? 'hidden' : '';
+  }
 }
 
 function closeShopRefinePanel() {
@@ -2470,7 +3023,12 @@ function closeShopRefinePanel() {
   if (btn) btn.setAttribute('aria-expanded', 'false');
   if (wrap) wrap.classList.remove('on');
   if (bg) bg.classList.remove('on');
+  document.body.style.overflow = '';
 }
+
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeShopRefinePanel();
+});
 
 function updateShopRefineUI() {
   const badge = document.getElementById('shopRefineBadge');
@@ -2478,9 +3036,12 @@ function updateShopRefineUI() {
   const btn = document.getElementById('shopRefineToggle');
   if (!badge) return;
   let n = 0;
+  if (currentFilterCat !== 'all') n++;
   if (currentVersionFilter !== 'all') n++;
   if (currentKitVariantFilter !== 'all') n++;
   if (currentVoorraadFilter !== 'all') n++;
+  if (currentColorFilter !== 'all') n++;
+  if (currentSizeFilter !== 'all') n++;
   if (n > 0) {
     badge.hidden = false;
     badge.textContent = String(n);
@@ -2495,7 +3056,7 @@ function updateShopRefineUI() {
 
 function doFilter(cat, btn) {
   document.querySelectorAll('#leaguePills .fpill').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
+  if (btn) btn.classList.add('on');
   renderGrid(cat);
 }
 
@@ -2509,10 +3070,14 @@ function setKitVariantFromUi(v) {
   renderGrid();
 }
 
-function setVoorraadFilter(v) {
-  currentVoorraadFilter = v || 'all';
+function setColorFromUi(v) {
+  currentColorFilter = v || 'all';
   renderGrid();
-  updateShopRefineUI();
+}
+
+function setSizeFromUi(v) {
+  currentSizeFilter = v || 'all';
+  renderGrid();
 }
 
 function pickSeason(btn) {
@@ -2548,64 +3113,138 @@ function setActiveTypeNav(type) {
 }
 
 function setTypeFilter(type, btn) {
+  currentWishlistOnly = false;
   currentTypeFilter = type || 'all';
   currentVoorraadFilter = 'all';
-  const _sv = document.getElementById('shopVoorraad');
-  if (_sv) _sv.value = 'all';
   renderGrid();
 }
 
 function goToShopVoorraad() {
+  currentWishlistOnly = false;
   currentTypeFilter = 'all';
   currentVoorraadFilter = 'in_stock';
   currentFilterCat = 'all';
   currentVersionFilter = 'all';
   const shopVer = document.getElementById('shopVersion');
   if (shopVer) shopVer.value = 'all';
-  const vs = document.getElementById('shopVoorraad');
-  if (vs) vs.value = 'in_stock';
   document.querySelectorAll('[id^="navType-"]').forEach(a => a.classList.remove('active'));
   renderGrid('all');
-  document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  kbeScrollIntoView(document.getElementById('shop'));
 }
 
 function goToShop(type) {
+  currentWishlistOnly = false;
   currentTypeFilter = type || 'all';
   currentVoorraadFilter = 'all';
-  const vs = document.getElementById('shopVoorraad');
-  if (vs) vs.value = 'all';
   currentFilterCat = 'all';
   setActiveTypeNav(type || 'shirts');
   renderGrid('all');
-  document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  kbeScrollIntoView(document.getElementById('shop'));
+}
+
+function applyCollectionPageMode(type) {
+  const key = String(type || '').toLowerCase();
+  const isCollection = ['shirts','sets','hemdsetjes','retro','kids','voorraad','wishlist'].includes(key);
+  const isWishlist = key === 'wishlist';
+  document.body.classList.toggle('collection-page', isCollection);
+  document.body.classList.toggle('wishlist-page', isWishlist);
+  const panel = document.getElementById('shopRefinePanel');
+  const btn = document.getElementById('shopRefineToggle');
+  if (isCollection) {
+    const isMobile = window.matchMedia('(max-width: 960px)').matches;
+    if (panel) panel.classList.toggle('is-open', !isMobile);
+    if (btn) btn.setAttribute('aria-expanded', isMobile ? 'false' : 'true');
+  } else {
+    if (panel) panel.classList.remove('is-open');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+}
+
+function updateShopPageHeaderByType(type) {
+  const key = String(type || '').toLowerCase();
+  const map = {
+    shirts: { title: 'Shirts', crumb: 'Shirts' },
+    sets: { title: 'Sets', crumb: 'Sets' },
+    hemdsetjes: { title: 'Hemdsetjes', crumb: 'Hemdsetjes' },
+    retro: { title: 'Retro', crumb: 'Retro' },
+    kids: { title: 'Kids', crumb: 'Kids' },
+    voorraad: { title: 'Voorraad', crumb: 'Voorraad' },
+    wishlist: { title: 'Wishlist', crumb: 'Wishlist' },
+    all: { title: 'Voetbaltenues', crumb: 'Shop' }
+  };
+  const data = map[key] || map.all;
+  const h = document.getElementById('shopPageHeading');
+  const c = document.getElementById('shopCrumbLabel');
+  if (h) h.textContent = data.title;
+  if (c) c.textContent = data.crumb;
+}
+
+function applyLeagueFromUrl(leagueKey) {
+  const allowed = ['all', 'premier', 'laliga', 'bundesliga', 'seriea', 'ligue1', 'eredivisie', 'national', 'overig'];
+  const key = String(leagueKey || '').toLowerCase();
+  if (!allowed.includes(key) || key === 'all') return;
+  const btn = [...document.querySelectorAll('#leaguePills .fpill')]
+    .find((b) => (b.getAttribute('onclick') || '').includes(`'${key}'`));
+  doFilter(key, btn || null);
 }
 
 function initShopFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  let t = (params.get('cat') || params.get('type') || '').toLowerCase();
+  const pathType = (function () {
+    const segRaw = window.location.pathname.toLowerCase().replace(/\/+$/, '').split('/').pop() || '';
+    const seg = segRaw.replace(/\.(php|html)$/i, '');
+    const map = { shirts:'shirts', sets:'sets', hemdsetjes:'hemdsetjes', retro:'retro', kids:'kids', voorraad:'voorraad', wishlist:'wishlist' };
+    return map[seg] || '';
+  })();
+  const rawType = String(params.get('type') || '').toLowerCase();
+  const rawCat = String(params.get('cat') || '').toLowerCase();
+  const rawLeague = String(params.get('league') || '').toLowerCase();
+  let t = (pathType || rawType || '').toLowerCase();
   if (t === 'hemsetjes') t = 'hemdsetjes';
   if (t === 'training') t = 'shirts';
+  if (!t && ['shirts', 'sets', 'hemdsetjes', 'retro', 'kids', 'voorraad', 'wishlist'].includes(rawCat)) {
+    t = rawCat;
+  }
+  const legacyLeague = ['premier', 'laliga', 'bundesliga', 'seriea', 'ligue1', 'eredivisie', 'national'].includes(rawCat) ? rawCat : '';
+  const leagueFromUrl = rawLeague || legacyLeague;
+  currentLandingType = t;
+  currentWishlistOnly = (t === 'wishlist');
+  applyCollectionPageMode(t);
+  updateShopPageHeaderByType(t || 'all');
   if (params.get('voorraad') === '1' || t === 'voorraad') {
     goToShopVoorraad();
+    applyLeagueFromUrl(leagueFromUrl);
     return;
   }
   const allowed = ['shirts', 'sets', 'hemdsetjes', 'retro', 'kids'];
   if (t && allowed.includes(t)) {
     goToShop(t);
+    applyLeagueFromUrl(leagueFromUrl);
     return;
   }
-  currentTypeFilter = 'all';
+  if (t === 'wishlist') {
+    currentTypeFilter = 'all';
+    currentFilterCat = 'all';
+    setActiveTypeNav('all');
+    renderGrid('all');
+    return;
+  }
+  currentWishlistOnly = false;
+  currentTypeFilter = 'shirts';
   setActiveTypeNav('shirts');
   renderGrid('all');
+  applyLeagueFromUrl(leagueFromUrl);
 }
 
 function resetShopFilters() {
   currentSearchTerm = '';
   currentSortMode = 'featured';
   currentFilterCat = 'all';
-  currentTypeFilter = 'all';
+  currentTypeFilter = 'shirts';
   currentVersionFilter = 'all';
   currentKitVariantFilter = 'all';
+  currentColorFilter = 'all';
+  currentSizeFilter = 'all';
   const searchInput = document.getElementById('shopSearch');
   if (searchInput) searchInput.value = '';
   const sortInput = document.getElementById('shopSort');
@@ -2620,8 +3259,10 @@ function resetShopFilters() {
   if (sv) sv.value = 'all';
   const skt = document.getElementById('shopKitType');
   if (skt) skt.value = 'all';
-  const svd = document.getElementById('shopVoorraad');
-  if (svd) svd.value = 'all';
+  const sc = document.getElementById('shopColor');
+  if (sc) sc.value = 'all';
+  const ss = document.getElementById('shopSize');
+  if (ss) ss.value = 'all';
 
   const panel = document.getElementById('shopRefinePanel');
   const rt = document.getElementById('shopRefineToggle');
@@ -2630,7 +3271,7 @@ function resetShopFilters() {
   const rb = document.getElementById('shopRefineBadge');
   if (rb) rb.hidden = true;
 
-  document.querySelectorAll('[id^="navType-"]').forEach(a => a.classList.remove('active'));
+  setActiveTypeNav('shirts');
   renderGrid('all');
 }
 function setSearchTerm(value) {
@@ -2725,6 +3366,12 @@ function applyBannerImagesFromProducts() {
     const useUrl = (url) => {
       slide.classList.add('has-photo');
       if (slideImg) {
+        if (idx === 0) {
+          slideImg.setAttribute('fetchpriority', 'high');
+          slideImg.loading = 'eager';
+        } else {
+          slideImg.setAttribute('fetchpriority', 'low');
+        }
         slideImg.src = url;
         slideImg.classList.remove('hide');
       }
@@ -2735,6 +3382,8 @@ function applyBannerImagesFromProducts() {
     const useGradient = () => {
       slide.classList.remove('has-photo');
       if (slideImg) {
+        slideImg.removeAttribute('fetchpriority');
+        slideImg.removeAttribute('loading');
         slideImg.src = '';
         slideImg.classList.add('hide');
       }
@@ -2760,35 +3409,84 @@ function getStockState(stock) {
 function applySeoFromConfig(pageFile) {
   const base = (CONFIG.publicSiteUrl || '').trim().replace(/\/$/, '');
   if (!base) return;
-  const url = base + '/' + pageFile;
+  const params = new URLSearchParams(window.location.search);
+  let t = (params.get('type') || '').toLowerCase();
+  const segRaw = window.location.pathname.toLowerCase().replace(/\/+$/, '').split('/').pop() || '';
+  const seg = segRaw.replace(/\.(php|html)$/i, '');
+  if (['shirts','sets','hemdsetjes','retro','kids','voorraad','wishlist'].includes(seg)) t = seg;
+  if (t === 'hemsetjes') t = 'hemdsetjes';
+  if (t === 'training') t = 'shirts';
+  const pageMap = {
+    shirts: { slug: 'shirts', title: 'Shirts — voetbaltenues | KitsByElbaa', desc: 'Shop alle voetbalshirts bij KitsByElbaa. Topclubs en landen, met bedrukking en snelle levering.' },
+    sets: { slug: 'sets', title: 'Sets — voetbaltenues | KitsByElbaa', desc: 'Shop complete voetbalsets bij KitsByElbaa. Snelle levering en bedrukking mogelijk.' },
+    hemdsetjes: { slug: 'hemdsetjes', title: 'Hemdsetjes — voetbaltenues | KitsByElbaa', desc: 'Shop hemdsetjes bij KitsByElbaa. Comfortabele sets met snelle levering.' },
+    retro: { slug: 'retro', title: 'Retro tenues | KitsByElbaa', desc: 'Shop retro voetbaltenues bij KitsByElbaa. Klassieke shirts en sets van legendarische seizoenen.' },
+    kids: { slug: 'kids', title: 'Kids tenues | KitsByElbaa', desc: 'Shop kids voetbaltenues bij KitsByElbaa. Kinder maten met bedrukking en snelle levering.' },
+    voorraad: { slug: 'voorraad', title: 'Direct op voorraad | KitsByElbaa', desc: 'Shop direct op voorraad bij KitsByElbaa. Snelle levering voor direct beschikbare tenues.' },
+    wishlist: { slug: 'wishlist', title: 'Wishlist | KitsByElbaa', desc: 'Bekijk en beheer je favoriete tenues in je persoonlijke wishlist.' },
+    all: { slug: pageFile.replace(/\.html$/i, ''), title: 'Shop — voetbaltenues | KitsByElbaa', desc: 'Alle voetbalshirts, sets, kids en retro tenues bij KitsByElbaa.' }
+  };
+  const seo = pageMap[t] || pageMap.all;
+  const url = base + '/' + seo.slug;
   const canon = document.querySelector('link[rel="canonical"]');
   if (canon) canon.setAttribute('href', url);
   const ogUrl = document.querySelector('meta[property="og:url"]');
   if (ogUrl) ogUrl.setAttribute('content', url);
+  document.title = seo.title;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', seo.desc);
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', seo.title);
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', seo.desc);
+  const twTitle = document.querySelector('meta[name="twitter:title"]');
+  if (twTitle) twTitle.setAttribute('content', seo.title);
+  const twDesc = document.querySelector('meta[name="twitter:description"]');
+  if (twDesc) twDesc.setAttribute('content', seo.desc);
 }
 
-function maxQtyForProductSize(p, sizeStr) {
+/* Fan = basis (price / stock_sizes); Player = aparte prijs + aparte per-maat voorraad. */
+function versionStockSizes(p, version) {
+  if (!p) return null;
+  if ((version || 'fan') === 'player') return (p.player_stock_sizes && typeof p.player_stock_sizes === 'object') ? p.player_stock_sizes : null;
+  return (p.stock_sizes && typeof p.stock_sizes === 'object') ? p.stock_sizes : null;
+}
+function versionPrice(p, version) {
+  if ((version || 'fan') === 'player' && p && p.player_price != null && p.player_price !== '') return Number(p.player_price);
+  return Number((p && p.price) || 0);
+}
+function productHasPlayer(p) {
+  if (!p) return false;
+  if (p.player_price != null && p.player_price !== '') return true;
+  const ps = p.player_stock_sizes;
+  return !!(ps && typeof ps === 'object' && Object.values(ps).some(q => Number(q) > 0));
+}
+function maxQtyForProductSize(p, sizeStr, version) {
   if (!p || !sizeStr) return 0;
-  const ss = p.stock_sizes;
-  if (ss && typeof ss === 'object' && Object.prototype.hasOwnProperty.call(ss, sizeStr)) {
+  const ver = version || 'fan';
+  const ss = versionStockSizes(p, ver);
+  if (ss && Object.prototype.hasOwnProperty.call(ss, sizeStr)) {
     return Math.max(0, Math.floor(Number(ss[sizeStr]) || 0));
   }
+  if (ver === 'player') return 0;
   return Math.max(0, Math.floor(Number(p.stock) || 0));
 }
 
-function productHasSellableStock(p) {
+function productHasSellableStock(p, version) {
   if (!p) return false;
-  const ss = p.stock_sizes;
-  if (ss && typeof ss === 'object' && Object.keys(ss).length) {
+  const ver = version || 'fan';
+  const ss = versionStockSizes(p, ver);
+  if (ss && Object.keys(ss).length) {
     return Object.values(ss).some(q => Number(q) > 0);
   }
+  if (ver === 'player') return false;
   return Number(p.stock || 0) > 0;
 }
 
 function getMaxQtyForCartItem(item) {
   const p = PRODUCTS.find(x => x.id === item.id);
   if (!p) return Math.max(0, Math.floor(Number(item.stock) || 0));
-  return maxQtyForProductSize(p, item.size);
+  return maxQtyForProductSize(p, item.size, item.version);
 }
 
 function clampCartToStock() {
@@ -2797,7 +3495,7 @@ function clampCartToStock() {
     const item = cart[i];
     const p = PRODUCTS.find(x => x.id === item.id);
     if (!p) continue;
-    const max = maxQtyForProductSize(p, item.size);
+    const max = maxQtyForProductSize(p, item.size, item.version);
     if (item.qty > max) {
       item.qty = max;
       changed = true;
@@ -2811,11 +3509,54 @@ function clampCartToStock() {
 }
 
 // ── DETAIL DRAWER ──
+function renderDrawerVersion(p) {
+  const row = document.getElementById('dVersieRow');
+  const lbl = document.getElementById('dVersieLabel');
+  if (!row || !lbl) return;
+  if (!p || !productHasPlayer(p)) {
+    row.hidden = true; lbl.hidden = true; row.innerHTML = '';
+    return;
+  }
+  lbl.hidden = false; row.hidden = false;
+  const opts = [{ key: 'fan', label: 'Fan' }, { key: 'player', label: 'Player' }];
+  row.innerHTML = opts.map(o => {
+    const on = currentVersion === o.key ? ' on' : '';
+    const price = versionPrice(p, o.key);
+    return `<button type="button" class="versie-btn${on}" onclick="pickVersionDrawer('${o.key}')">`
+      + `<span class="versie-name">${o.label}</span>`
+      + `<span class="versie-price">€${price.toFixed(2)}</span>`
+      + `</button>`;
+  }).join('');
+}
+function pickVersionDrawer(v) {
+  const nv = (v === 'player') ? 'player' : 'fan';
+  if (nv === currentVersion) return;
+  currentVersion = nv;
+  currentSz = null;
+  const p = PRODUCTS.find(pr => pr.id === currentDetailId);
+  if (!p) return;
+  document.getElementById('dPrice').textContent = '€' + versionPrice(p, currentVersion).toFixed(2);
+  if (currentPrinting === 'custom') refreshDetailDrawerPrice();
+  const vss = versionStockSizes(p, currentVersion);
+  const vUnits = vss ? Object.values(vss).reduce((a, q) => a + Math.max(0, Number(q) || 0), 0) : (currentVersion === 'player' ? 0 : Number(p.stock || 0));
+  const stock = getStockState(vUnits);
+  const stockMsg = document.getElementById('dStockMsg');
+  if (stockMsg) { stockMsg.className = 'stock-msg ' + stock.key; stockMsg.textContent = stock.label; }
+  document.querySelectorAll('.sz-row .sz').forEach(b => b.classList.remove('on'));
+  const addBtn = document.getElementById('dAddBtn');
+  const soldOut = !productHasSellableStock(p, currentVersion);
+  addBtn.disabled = soldOut;
+  addBtn.textContent = soldOut ? 'Niet op voorraad' : 'Kies eerst een maat';
+  const hint = document.getElementById('szHint');
+  if (hint) { hint.textContent = 'Kies een maat om verder te gaan'; hint.className = 'sz-hint'; }
+  renderDrawerVersion(p);
+}
 function openDetail(id, updateUrl = true) {
   const p = PRODUCTS.find(p => p.id === id);
   if (!p) return;
   currentDetailId = id;
   currentSz = null; // always reset — no default size
+  currentVersion = (!productHasSellableStock(p, 'fan') && productHasPlayer(p)) ? 'player' : 'fan';
 
   // Reset printing option (drawer)
   currentPrinting = 'none';
@@ -2842,9 +3583,9 @@ function openDetail(id, updateUrl = true) {
   } else {
     dThumbs.innerHTML = '';
     dMainImg.innerHTML = `
-      <button class="d-arrow prev" id="dPrevBtn" onclick="goGallery(-1)" aria-label="Vorige afbeelding" disabled>‹</button>
-      <span style="font-size:110px;opacity:.55">${currentDetailEmoji}</span>
-      <button class="d-arrow next" id="dNextBtn" onclick="goGallery(1)" aria-label="Volgende afbeelding" disabled>›</button>`;
+      <button type="button" class="d-arrow prev" id="dPrevBtn" onclick="goGallery(-1)" aria-label="Vorige afbeelding" disabled>‹</button>
+      <span class="d-noimg" aria-hidden="true"><svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#c3c6bd" stroke-width="1.1" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>
+      <button type="button" class="d-arrow next" id="dNextBtn" onclick="goGallery(1)" aria-label="Volgende afbeelding" disabled>›</button>`;
     updateGalleryArrows();
   }
 
@@ -2852,12 +3593,15 @@ function openDetail(id, updateUrl = true) {
   document.getElementById('dName').textContent = p.name;
   document.getElementById('dDesc').textContent = (p.description && p.description.trim())
     ? p.description
-    : 'Hoogwaardige replica. Licht, ademend polyester. Zelfde design als op het veld. Wasmachine 30°C.';
+    : 'Licht, ademend polyester. Zelfde design als op het veld. Wasbaar op 30°C.';
 
-  document.getElementById('dPrice').textContent = '€' + p.price.toFixed(2);
+  document.getElementById('dPrice').textContent = '€' + versionPrice(p, currentVersion).toFixed(2);
   document.getElementById('dPolicy').innerHTML = getDrawerPolicyHTML();
+  renderDrawerVersion(p);
 
-  const stock = getStockState(p.stock);
+  const vss = versionStockSizes(p, currentVersion);
+  const vUnits = vss ? Object.values(vss).reduce((a, q) => a + Math.max(0, Number(q) || 0), 0) : (currentVersion === 'player' ? 0 : Number(p.stock || 0));
+  const stock = getStockState(vUnits);
   const stockMsg = document.getElementById('dStockMsg');
   stockMsg.className = 'stock-msg ' + stock.key;
   stockMsg.textContent = stock.label;
@@ -2884,12 +3628,13 @@ function openDetail(id, updateUrl = true) {
 
   // Reset add button to disabled
   const addBtn = document.getElementById('dAddBtn');
-  addBtn.disabled = Number(p.stock || 0) <= 0;
-  addBtn.textContent = Number(p.stock || 0) <= 0 ? 'Niet op voorraad' : 'Kies eerst een maat';
+  const soldOut = !productHasSellableStock(p, currentVersion);
+  addBtn.disabled = soldOut;
+  addBtn.textContent = soldOut ? 'Niet op voorraad' : 'Kies eerst een maat';
 
   // Show hint
   const hint = document.getElementById('szHint');
-  hint.textContent = '👆 Kies een maat om verder te gaan';
+  hint.textContent = 'Kies een maat om verder te gaan';
   hint.className = 'sz-hint';
 
   document.getElementById('dbg').classList.add('on');
@@ -2905,14 +3650,14 @@ function setGalleryMainImage(filename, thumbEl) {
   const dMainImg = document.getElementById('dMainImg');
   if (filename) {
     dMainImg.innerHTML = `
-      <button class="d-arrow prev" id="dPrevBtn" onclick="goGallery(-1)" aria-label="Vorige afbeelding">‹</button>
+      <button type="button" class="d-arrow prev" id="dPrevBtn" onclick="goGallery(-1)" aria-label="Vorige afbeelding">‹</button>
       <img src="${productImgSrc(filename)}" alt="Productafbeelding" onerror="this.style.display='none'">
-      <button class="d-arrow next" id="dNextBtn" onclick="goGallery(1)" aria-label="Volgende afbeelding">›</button>`;
+      <button type="button" class="d-arrow next" id="dNextBtn" onclick="goGallery(1)" aria-label="Volgende afbeelding">›</button>`;
   } else {
     dMainImg.innerHTML = `
-      <button class="d-arrow prev" id="dPrevBtn" onclick="goGallery(-1)" aria-label="Vorige afbeelding" disabled>‹</button>
-      <span style="font-size:110px;opacity:.55">${currentDetailEmoji}</span>
-      <button class="d-arrow next" id="dNextBtn" onclick="goGallery(1)" aria-label="Volgende afbeelding" disabled>›</button>`;
+      <button type="button" class="d-arrow prev" id="dPrevBtn" onclick="goGallery(-1)" aria-label="Vorige afbeelding" disabled>‹</button>
+      <span class="d-noimg" aria-hidden="true"><svg width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="#c3c6bd" stroke-width="1.1" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>
+      <button type="button" class="d-arrow next" id="dNextBtn" onclick="goGallery(1)" aria-label="Volgende afbeelding" disabled>›</button>`;
   }
   const thumbs = document.querySelectorAll('#dThumbs .d-thumb');
   thumbs.forEach(t => t.classList.remove('on'));
@@ -2954,7 +3699,7 @@ function getDrawerPolicyHTML() {
     <div class="policy">
       <h3>Verzending</h3>
       <div>
-        Bestellingen worden snel verwerkt; levering meestal binnen <strong>5–7 werkdagen</strong> via PostNL.
+        <strong>Op voorraad:</strong> 1–2 werkdagen · <strong>Nabestelling:</strong> 7–12 werkdagen.
         Gratis verzending vanaf <strong>€${Number(CONFIG.freeShippingFrom || 90).toFixed(0)}</strong>.
       </div>
       <h3 style="margin-top:14px">Retour</h3>
@@ -2970,6 +3715,21 @@ function getDrawerPolicyHTML() {
   `;
 }
 
+function refreshDetailDrawerPrice() {
+  const p = PRODUCTS.find(pr => pr.id === currentDetailId);
+  const el = document.getElementById('dPrice');
+  if (!p || !el) return;
+  let total = versionPrice(p, currentVersion);
+  if (currentPrinting === 'custom') {
+    const pn = (document.getElementById('printName').value || '').trim();
+    const num = (document.getElementById('printNumber').value || '').trim();
+    const bd = (document.getElementById('printBadges').value || '').trim();
+    if (pn || num) total += unitPrintingExtra();
+    if (bd) total += unitBadgeExtra();
+  }
+  el.textContent = '€' + total.toFixed(2);
+}
+
 function setPrintingOption(option, btnEl) {
   currentPrinting = option;
   const noneBtn = document.getElementById('print-none-btn');
@@ -2980,12 +3740,7 @@ function setPrintingOption(option, btnEl) {
   customBtn.classList.toggle('on', option === 'custom');
   fields.style.display = option === 'custom' ? 'block' : 'none';
 
-  // Update the displayed unit price in the drawer.
-  const p = PRODUCTS.find(p => p.id === currentDetailId);
-  if (p) {
-    const extra = option === 'custom' ? unitPrintingExtra() : 0;
-    document.getElementById('dPrice').textContent = '€' + (p.price + extra).toFixed(2);
-  }
+  refreshDetailDrawerPrice();
 
   // If size is already selected, update add button label.
   const addBtn = document.getElementById('dAddBtn');
@@ -2997,12 +3752,15 @@ function setPrintingOption(option, btnEl) {
 
 document.getElementById('printName').addEventListener('input', function() {
   this.value = this.value.slice(0, 15);
+  if (currentPrinting === 'custom') refreshDetailDrawerPrice();
 });
 document.getElementById('printNumber').addEventListener('input', function() {
   this.value = this.value.replace(/\D/g, '').slice(0, 4);
+  if (currentPrinting === 'custom') refreshDetailDrawerPrice();
 });
 document.getElementById('printBadges').addEventListener('input', function() {
   this.value = this.value.slice(0, 80);
+  if (currentPrinting === 'custom') refreshDetailDrawerPrice();
 });
 
 function closeDetail() {
@@ -3048,13 +3806,14 @@ function mergeCartItem(line) {
   const ex = cart.find(i =>
     i.id === line.id &&
     i.size === line.size &&
+    (i.version || 'fan') === (line.version || 'fan') &&
     (i.printing_option || 'none') === (line.printing_option || 'none') &&
     (i.print_name || '') === (line.print_name || '') &&
     (i.print_number || '') === (line.print_number || '') &&
     (i.print_badges || '') === (line.print_badges || '')
   );
   const p = PRODUCTS.find(x => x.id === line.id);
-  const max = p ? maxQtyForProductSize(p, line.size) : Math.max(0, Math.floor(Number(line.stock) || 0));
+  const max = p ? maxQtyForProductSize(p, line.size, line.version) : Math.max(0, Math.floor(Number(line.stock) || 0));
   const add = Number(line.qty || 1);
   if (ex) {
     ex.qty = Math.min(max, Number(ex.qty || 0) + add);
@@ -3081,7 +3840,7 @@ function importPendingCartFromProductPage() {
 
 function addToCart(p, sz) {
   if (!sz) { showToast('⚠️ Kies eerst een maat'); return; }
-  if (!productHasSellableStock(p)) { showToast('⚠️ Dit product is niet op voorraad'); return; }
+  if (!productHasSellableStock(p, currentVersion)) { showToast('⚠️ Dit product is niet op voorraad'); return; }
 
   const printing_option = currentPrinting;
   const nameEl = document.getElementById('printName');
@@ -3096,8 +3855,8 @@ function addToCart(p, sz) {
   badgesEl.value = print_badges;
 
   if (printing_option === 'custom') {
-    if (!print_name) {
-      showToast('⚠️ Vul een naam in voor bedrukking');
+    if (!print_name && !print_number && !print_badges) {
+      showToast('⚠️ Vul minstens een naam, nummer of badge in');
       return;
     }
     if (printNumberRaw && printNumberRaw !== print_number) {
@@ -3114,18 +3873,20 @@ function addToCart(p, sz) {
     print_badges = '';
   }
 
-  const extra = printing_option === 'custom' ? unitPrintingExtra() : 0;
-  const unitPrice = p.price + extra;
+  const printExtra = printing_option === 'custom' && (print_name || print_number) ? unitPrintingExtra() : 0;
+  const badgeExtra = printing_option === 'custom' && print_badges ? unitBadgeExtra() : 0;
+  const unitPrice = versionPrice(p, currentVersion) + printExtra + badgeExtra;
   const existingLine = cart.find(i =>
     i.id === p.id &&
     i.size === sz &&
+    (i.version || 'fan') === currentVersion &&
     (i.printing_option || 'none') === printing_option &&
     (i.print_name || '') === print_name &&
     (i.print_number || '') === print_number &&
     (i.print_badges || '') === print_badges
   );
   const currentQty = existingLine ? Number(existingLine.qty || 0) : 0;
-  const maxForSize = maxQtyForProductSize(p, sz);
+  const maxForSize = maxQtyForProductSize(p, sz, currentVersion);
   if (currentQty + 1 > maxForSize) {
     showToast('⚠️ Onvoldoende voorraad voor deze maat (' + maxForSize + ' beschikbaar)');
     return;
@@ -3134,6 +3895,7 @@ function addToCart(p, sz) {
   mergeCartItem({
     ...p,
     size: sz,
+    version: currentVersion,
     season: currentSeason,
     printing_option,
     print_name,
@@ -3207,7 +3969,7 @@ function renderCart() {
   const body = document.getElementById('cbody');
   const foot = document.getElementById('cfoot');
   if (!cart.length) {
-    body.innerHTML = `<div class="cempty"><div class="cempty-ico">🛒</div><p>Je winkelwagen is leeg.<br>Voeg tenues toe om te starten.</p><button type="button" class="cart-empty-cta" onclick="closeCart()">Terug naar winkelen</button></div>`;
+    body.innerHTML = `<div class="cempty"><div class="cempty-ico" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div><p>Je winkelwagen is leeg.<br>Voeg tenues toe om te starten.</p><button type="button" class="cart-empty-cta" onclick="closeCart()">Terug naar winkelen</button></div>`;
     foot.style.display = 'none';
     const checkoutBtn = document.getElementById('checkoutBtn');
     if (checkoutBtn) checkoutBtn.textContent = 'Bestellen via WhatsApp';
@@ -3243,10 +4005,10 @@ function renderCart() {
   // Shipping progress bar
   document.getElementById('ship-progress-wrap').innerHTML = discountedSub < CONFIG.freeShippingFrom
     ? `<div class="ship-progress">
-        <div class="sp-text">🔥 Nog <strong>€${remaining.toFixed(2)}</strong> voor gratis verzending!</div>
+        <div class="sp-text">Nog <strong>€${remaining.toFixed(2)}</strong> voor gratis verzending</div>
         <div class="sp-bar"><div class="sp-fill" style="width:${progress}%"></div></div>
        </div>`
-    : `<div class="ship-free-msg">🎉 Gratis verzending bereikt!</div>`;
+    : `<div class="ship-free-msg"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M20 6L9 17l-5-5"></path></svg>Gratis verzending bereikt</div>`;
 
   // Cart items — thumbnail + title link to product page for quick return to that kit
   body.innerHTML = cart.map((item, i) => {
@@ -3254,7 +4016,7 @@ function renderCart() {
     const phref = cslug ? `product.php?slug=${encodeURIComponent(cslug)}` : '';
     const thumbInner = (item.image || item.image2 || item.image3)
       ? `<img src="${productImgSrc(item.image || item.image2 || item.image3)}" alt="${esc(item.name)}" onerror="this.style.display='none'">`
-      : (item.emoji || '👕');
+      : '<span class="citem-noimg" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>';
     const thumbBlock = cslug
       ? `<a class="citem-img citem-thumb-link" href="${phref}" title="Product bekijken">${thumbInner}</a>`
       : `<div class="citem-img">${thumbInner}</div>`;
@@ -3274,16 +4036,16 @@ function renderCart() {
         <select class="citem-size-select" data-cart-index="${i}" onchange="setCartItemSize(${i}, this.value)">
           ${['XS','S','M','L','XL','XXL','2XL','3XL'].map(s => `<option value="${s}" ${item.size===s?'selected':''}>${s}</option>`).join('')}
         </select>
-        <p class="citem-meta" style="margin-top:8px">${esc(item.league)}${item.season ? ' · ' + esc(item.season) : ''}${item.printing_option==='custom' ? ' · ' + esc(item.print_name||'') + (item.print_number ? ' #' + esc(item.print_number) : '') : ''}</p>
+        <p class="citem-meta" style="margin-top:8px">${item.version==='player' ? 'Player · ' : ''}${esc(item.league)}${item.season ? ' · ' + esc(item.season) : ''}${item.printing_option==='custom' ? ' · ' + esc(item.print_name||'') + (item.print_number ? ' #' + esc(item.print_number) : '') : ''}</p>
         <div class="citem-row">
           <div class="qrow">
-            <button class="qbtn" data-cart-index="${i}" data-cart-delta="-1" onclick="chQ(${i},-1)" aria-label="Aantal verlagen">−</button>
+            <button type="button" class="qbtn" data-cart-index="${i}" data-cart-delta="-1" onclick="chQ(${i},-1)" aria-label="Aantal verlagen">−</button>
             <span class="qval">${item.qty}</span>
-            <button class="qbtn" data-cart-index="${i}" data-cart-delta="1" onclick="chQ(${i},1)" aria-label="Aantal verhogen">+</button>
+            <button type="button" class="qbtn" data-cart-index="${i}" data-cart-delta="1" onclick="chQ(${i},1)" aria-label="Aantal verhogen">+</button>
           </div>
           <span class="citem-price">€${(item.price * item.qty).toFixed(2)}</span>
         </div>
-        <button class="crm" data-cart-remove="${i}" onclick="rmItem(${i})">Verwijderen</button>
+        <button type="button" class="crm" data-cart-remove="${i}" onclick="rmItem(${i})">Verwijderen</button>
       </div>
     </div>`;
   }).join('');
@@ -3329,7 +4091,7 @@ function setCartItemSize(i, size) {
   cart[i].size = size;
   const p = PRODUCTS.find(x => x.id === cart[i].id);
   if (p) {
-    const max = maxQtyForProductSize(p, size);
+    const max = maxQtyForProductSize(p, size, cart[i].version);
     if (cart[i].qty > max) {
       cart[i].qty = max;
       if (max <= 0) {
@@ -3500,10 +4262,10 @@ function renderUpsell() {
   document.getElementById('upsellGrid').innerHTML = suggestions.map(p => `
     <div class="upsell-card" onclick="window.location.href='product.php?slug='+getProductShareParam(p)">
       <div class="upsell-img">
-        ${(p.image || p.image2 || p.image3) ? `<img src="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${p.name}" onerror="this.style.display='none'">` : `<span style="font-size:32px">${p.emoji || '👕'}</span>`}
+        ${(p.image || p.image2 || p.image3) ? `<img src="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" onerror="this.style.display='none'">` : `<span class="pcard-noimg" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.2" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>`}
       </div>
       <div class="upsell-info">
-        <p class="upsell-name">${p.name}</p>
+        <p class="upsell-name">${esc(p.name)}</p>
         <p class="upsell-price">€${p.price.toFixed(2)}</p>
       </div>
     </div>`).join('');
@@ -3645,7 +4407,7 @@ async function placeOrder() {
     const extra = i.printing_option==='custom'
       ? ' · ' + (i.print_name||'') + (i.print_number ? ' #' + i.print_number : '') + (i.print_badges ? ' (' + i.print_badges + ')' : '')
       : '';
-    return `${i.qty}x ${i.name} (Maat: ${i.size}${extra}) — €${(i.price * i.qty).toFixed(2)}`;
+    return `${i.qty}x ${i.name} (${i.version==='player'?'Player · ':''}Maat: ${i.size}${extra}) — €${(i.price * i.qty).toFixed(2)}`;
   }).join('\n');
   const ordersForEmail = snap.map(i => {
     const extra = i.printing_option==='custom'
@@ -3686,7 +4448,7 @@ async function placeOrder() {
   };
   const emailPayload = { ...params, to_email: email, to_name: name };
 
-  const waUrl = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(msg);
+  const waUrl = 'https://wa.me/' + kbeWaDigits() + '?text=' + encodeURIComponent(msg);
   window.open(waUrl, '_blank');
 
   // Clear cart only after server confirms success
@@ -3697,19 +4459,44 @@ async function placeOrder() {
   closeModal();
   showConfirm(orderId, email, verTotal, verShip, snap, verDiscount, waUrl, undefined);
 
-  emailjs.send(CONFIG.emailjsService, CONFIG.emailjsTemplate, emailPayload)
-    .then(() => {
-      const el = document.getElementById('csub');
-      if (!el || !email) return;
+  const kbeOrderEmailFailMsg = (function () {
+    const h = orderRes && orderRes.order_email_hint;
+    if (h === 'emailjs_allow_nonbrowser') {
+      return 'Bestelling geplaatst. Geen mail: EmailJS → Account → Security → zet “Allow EmailJS API for non-browser applications” aan (nodig voor mail vanaf de server).';
+    }
+    if (h === 'emailjs_private_key') {
+      return 'Bestelling geplaatst. Geen mail: zet in .env KITS_EMAILJS_ACCESS_TOKEN (private key uit EmailJS Security), of schakel die verplichting uit.';
+    }
+    return 'Bestelling geplaatst! E-mail niet verstuurd — neem zonodig contact op via WhatsApp.';
+  })();
+
+  if (orderRes.order_email_sent) {
+    const el = document.getElementById('csub');
+    if (el && email) {
       el.className = 'csub';
       el.textContent = 'Bevestigingsmail verstuurd naar ' + email + '. Je ontvangt een Tikkie (meestal binnen 24 uur).';
-    })
-    .catch(() => {
-      const el = document.getElementById('csub');
-      if (!el || !email) return;
+    }
+  } else if (typeof emailjs !== 'undefined' && CONFIG.emailjsPk && CONFIG.emailjsService && CONFIG.emailjsTemplate) {
+    emailjs.send(CONFIG.emailjsService, CONFIG.emailjsTemplate, emailPayload, kbeEmailJsSendOpts())
+      .then(() => {
+        const el = document.getElementById('csub');
+        if (!el || !email) return;
+        el.className = 'csub';
+        el.textContent = 'Bevestigingsmail verstuurd naar ' + email + '. Je ontvangt een Tikkie (meestal binnen 24 uur).';
+      })
+      .catch(() => {
+        const el = document.getElementById('csub');
+        if (!el || !email) return;
+        el.className = 'csub err';
+        el.textContent = kbeOrderEmailFailMsg;
+      });
+  } else {
+    const el = document.getElementById('csub');
+    if (el && email) {
       el.className = 'csub err';
-      el.textContent = 'Bestelling geplaatst! E-mail niet verstuurd — neem zonodig contact op via WhatsApp.';
-    });
+      el.textContent = kbeOrderEmailFailMsg;
+    }
+  }
 
   btn.disabled = false;
   btn.innerHTML = `<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Verstuur naar WhatsApp`;
@@ -3745,7 +4532,7 @@ function showConfirm(orderId, email, total, ship, items, discount, waUrl, emailO
     html += `<div class="cord-item">
       <div class="cord-item-name">
         ${i.qty > 1 ? '<strong>' + i.qty + '×</strong> ' : ''}${i.name}
-        <small>Maat: ${i.size}${print ? ' · ' + print : ''}</small>
+        <small>${i.version==='player'?'Player · ':''}Maat: ${i.size}${print ? ' · ' + print : ''}</small>
       </div>
       <span style="white-space:nowrap;font-weight:600">€${(i.price * i.qty).toFixed(2)}</span>
     </div>`;
@@ -3771,11 +4558,26 @@ function backShop() {
 }
 
 // ── UTILITIES ──
-function showToast(msg) {
+function showToast(msg, type) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  msg = String(msg);
+  if (!type) {
+    if (/^\s*(⚠️|❌|✗)/.test(msg)) type = 'error';
+    else if (/^\s*(✓|✅)/.test(msg)) type = 'success';
+    else if (/^\s*(♥|♡)/.test(msg)) type = 'wish';
+  }
+  msg = msg.replace(/^\s*(⚠️|❌|✗|✓|✅|♥|♡)\s*/, '');
+  const icons = {
+    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16.4v.01"></path></svg>',
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>',
+    wish:    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9C.5 8.5 2 5 5.5 5 8 5 9.3 6.7 12 9c2.7-2.3 4-4 6.5-4C22 5 23.5 8.5 22 12c-2.5 4.4-10 9-10 9z"></path></svg>'
+  };
+  t.className = 'toast' + (type ? ' toast--' + type : '');
+  t.innerHTML = (icons[type] ? `<span class="toast-ico">${icons[type]}</span>` : '') + '<span class="toast-msg"></span>';
+  t.querySelector('.toast-msg').textContent = msg;
   t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), 2800);
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('on'), 2800);
 }
 
 function initRevealAnimations() {
@@ -3787,8 +4589,44 @@ function initRevealAnimations() {
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 }
 
-function toggleNav() {
-  document.getElementById('navLinks').classList.toggle('open');
+function initKbeNavToggleAria() {
+  const cb = document.getElementById('kbeNavToggle');
+  const ham = document.getElementById('ham');
+  const nav = document.getElementById('navLinks');
+  if (!cb || !ham || !nav) return;
+  const sync = () => ham.setAttribute('aria-expanded', cb.checked ? 'true' : 'false');
+  cb.addEventListener('change', sync);
+  nav.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', () => {
+      cb.checked = false;
+      sync();
+    });
+  });
+  sync();
+}
+
+function initKbeMobileTapFixes() {
+  initKbeNavToggleAria();
+  const catTabs = document.getElementById('catTabs');
+  if (catTabs && !catTabs.dataset.kbeDelegated) {
+    catTabs.dataset.kbeDelegated = '1';
+    catTabs.addEventListener('click', function (e) {
+      const btn = e.target && e.target.closest ? e.target.closest('button.ftab') : null;
+      if (!btn || !catTabs.contains(btn)) return;
+      if (btn.id === 'ftab-voorraad') {
+        goToShopVoorraad();
+        return;
+      }
+      const filter = btn.getAttribute('data-cat-filter');
+      if (filter != null && filter !== '') setTypeFilter(filter, btn);
+    });
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initKbeMobileTapFixes);
+} else {
+  initKbeMobileTapFixes();
 }
 
 // ── MATENGIDS TABS ──
