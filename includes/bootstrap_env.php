@@ -30,9 +30,15 @@ function kits_load_dotenv(string $baseDir): void
         $key = substr($line, 0, $eq);
         $val = substr($line, $eq + 1);
         $val = trim($val, " \t\"'");
-        if ($key !== '' && getenv($key) === false) {
-            putenv($key . '=' . $val);
-            $_ENV[$key] = $val;
+        if ($key === '') {
+            continue;
         }
+        $cur = getenv($key);
+        // Non-empty real environment wins. Empty string or unset → .env may fill (some hosts predefine empty KITS_*).
+        if ($cur !== false && $cur !== '') {
+            continue;
+        }
+        putenv($key . '=' . $val);
+        $_ENV[$key] = $val;
     }
 }

@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+
+      - name: Lint PHP files
+        run: |
+          set -e
+          files=$(git ls-files '*.php')
+          for f in $files; do
+            php -l "$f"
+          done
+
+      - name: Ensure .env is not tracked
+        run: |
+          if git ls-files --error-unmatch .env >/dev/null 2>&1; then
+            echo ".env must not be tracked"
+            exit 1
+          fi
+
+      - name: Basic route smoke checks
+        run: |
+          test -f "api/healthz.php"
+          test -f "voorraad.php"
+          test -f "tools/migrate_schema.php"

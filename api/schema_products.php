@@ -48,4 +48,23 @@ function ensure_products_kits_path_column(PDO $pdo): void
             // Column already exists or cannot be added
         }
     }
+
+    // Migrate: Player-versie prijs + per-maat voorraad. Fan blijft de basis (price / stock_sizes);
+    // een product biedt beide versies aan. player_price NULL = val terug op fan price.
+    $chk->execute([$schema, 'products', 'player_price']);
+    if ((int)$chk->fetchColumn() === 0) {
+        try {
+            $pdo->exec('ALTER TABLE products ADD COLUMN player_price DECIMAL(10,2) DEFAULT NULL COMMENT \'Player-versie prijs; NULL = zelfde als fan price\'');
+        } catch (Throwable $e) {
+            // Column already exists or cannot be added
+        }
+    }
+    $chk->execute([$schema, 'products', 'player_stock_sizes']);
+    if ((int)$chk->fetchColumn() === 0) {
+        try {
+            $pdo->exec('ALTER TABLE products ADD COLUMN player_stock_sizes TEXT DEFAULT NULL COMMENT \'JSON per-size player stock: {"S":5,"M":3,...}\'');
+        } catch (Throwable $e) {
+            // Column already exists or cannot be added
+        }
+    }
 }

@@ -1,13 +1,15 @@
 <?php
 // Secure session cookie: HttpOnly, SameSite=Strict, Secure when on HTTPS
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path'     => '/',
-    'secure'   => isset($_SERVER['HTTPS']),
-    'httponly' => true,
-    'samesite' => 'Strict',
-]);
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path'     => '/',
+        'secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'httponly' => true,
+        'samesite' => 'Strict',
+    ]);
+    session_start();
+}
 require_once __DIR__ . '/includes/session.php';
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -20,6 +22,7 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
 
 // ── CONFIG — edit config.php to change any values ──────
 $cfg = require __DIR__ . '/config.php';
+require_once __DIR__ . '/includes/emailjs_send.php';
 require_once __DIR__ . '/includes/kits_admin_guard.php';
 if (!kits_admin_ip_allowed($cfg)) {
     kits_destroy_session();
@@ -29,12 +32,12 @@ if (!kits_admin_ip_allowed($cfg)) {
     exit;
 }
 
-define('EMAILJS_PK',      $cfg['emailjs_pk']);
+define('EMAILJS_PK',      trim((string)$cfg['emailjs_pk']));
 define('EMAILJS_SVC_ORDER', $cfg['emailjs_service_order']);
 define('EMAILJS_SVC_RESTOCK', $cfg['emailjs_service_restock']);
 define('EMAILJS_TPL',     $cfg['emailjs_template_paid']);
 define('EMAILJS_RESTOCK', $cfg['emailjs_template_restock'] ?? '');
-define('ADMIN_NOTIFY_EMAIL', trim($cfg['admin_email'] ?? ''));
+define('ADMIN_NOTIFY_EMAIL', trim((string)($cfg['notify_bcc_email'] ?? 'KitsByElbaa@outlook.com')));
 
 $DB = ['host'=>$cfg['db_host'],'db'=>$cfg['db_name'],'user'=>$cfg['db_user'],'pass'=>$cfg['db_pass']];
 
@@ -101,13 +104,19 @@ if ($auth) {
     }
 }
 
-// ── AJAX API (called with X-Action header) ─────────────
-if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
+// ── AJAX API (called with X-Action header; body fallback for strict proxies) ─────────────
+$__rawAdminBody = file_get_contents('php://input');
+$__adminData = json_decode($__rawAdminBody ?: '[]', true);
+if (!is_array($__adminData)) {
+    $__adminData = [];
+}
+$__adminAction = (string)($_SERVER['HTTP_X_ACTION'] ?? ($__adminData['action'] ?? ''));
+if ($auth && $__adminAction !== '') {
     ini_set('display_errors', '0'); // prevent PHP warnings from corrupting JSON
     header('Content-Type: application/json');
-    $d   = json_decode(file_get_contents('php://input'), true) ?? [];
-    $act = $_SERVER['HTTP_X_ACTION'];
-    $csrfHeader = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+    $d   = $__adminData;
+    $act = $__adminAction;
+    $csrfHeader = (string)($_SERVER['HTTP_X_CSRF_TOKEN'] ?? ($d['csrf'] ?? ''));
     if (!hash_equals($_SESSION['csrf_token'] ?? '', (string)$csrfHeader)) {
         http_response_code(403);
         echo json_encode(['error' => 'Ongeldig CSRF-token']);
@@ -238,21 +247,53 @@ if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
             break;
 
         case 'save_product':
-            // Per-size stock: build and validate JSON, derive total stock from it
-            $validSizes = ['S','M','L','XL','2XL','3XL','4XL'];
+            // Zelfde maten als api/stock_notify.php + productpagina (anders geen nabestel-match)
+            $validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL', '4XL'];
             $sizesInput = $d['stock_sizes'] ?? null;
             $stockSizesJson = null;
             $totalStock = max(0, (int)($d['stock'] ?? 0));
+            $restockedSizes = [];
+            $oldSizes = [];
+            if (!empty($d['id']) && is_array($sizesInput)) {
+                $oldStmt = $pdo->prepare('SELECT stock_sizes FROM products WHERE id=?');
+                $oldStmt->execute([(int)$d['id']]);
+                $oldRow = $oldStmt->fetch(PDO::FETCH_ASSOC);
+                $oldSizes = !empty($oldRow['stock_sizes']) ? json_decode((string)$oldRow['stock_sizes'], true) : [];
+                if (!is_array($oldSizes)) {
+                    $oldSizes = [];
+                }
+            }
             if (is_array($sizesInput)) {
+                $verIn = in_array($d['version'] ?? '', ['fan', 'player'], true) ? $d['version'] : '';
                 $cleaned = [];
                 $sum = 0;
                 foreach ($validSizes as $sz) {
                     $qty = max(0, (int)($sizesInput[$sz] ?? 0));
+                    if ($verIn === 'player' && in_array($sz, ['2XL', '3XL', '4XL'], true)) {
+                        $qty = 0;
+                    }
                     $cleaned[$sz] = $qty;
                     $sum += $qty;
+                    $oldQ = (int)($oldSizes[$sz] ?? 0);
+                    if ($qty > 0 && $oldQ === 0) {
+                        $restockedSizes[] = $sz;
+                    }
                 }
                 $stockSizesJson = json_encode($cleaned);
                 $totalStock = $sum; // total derived from sizes
+            }
+            // Player-versie: aparte prijs (nullable) + per-maat voorraad (alleen XS..XXL)
+            $playerPrice = null;
+            if (isset($d['player_price']) && trim((string)$d['player_price']) !== '') {
+                $playerPrice = max(0.0, (float)$d['player_price']);
+            }
+            $playerStockJson = null;
+            if (isset($d['player_stock_sizes']) && is_array($d['player_stock_sizes'])) {
+                $pClean = [];
+                foreach (['XS', 'S', 'M', 'L', 'XL', 'XXL'] as $sz) {
+                    $pClean[$sz] = max(0, (int)($d['player_stock_sizes'][$sz] ?? 0));
+                }
+                $playerStockJson = json_encode($pClean);
             }
             $f = [
                 'name'       => trim($d['name'] ?? ''),
@@ -276,6 +317,8 @@ if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
                 'sort_order'  => (int)($d['sort'] ?? 0),
                 'stock'       => $totalStock,
                 'stock_sizes' => $stockSizesJson,
+                'player_price' => $playerPrice,
+                'player_stock_sizes' => $playerStockJson,
                 'in_voorraad' => (int)(!empty($d['in_voorraad'])),
             ];
             // Images: set only if the key is present in request.
@@ -293,7 +336,14 @@ if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
                 $sets = implode(',', array_map(fn($k) => "$k=?", array_keys($f)));
                 $stmt = $pdo->prepare("UPDATE products SET $sets WHERE id=?");
                 $stmt->execute([...array_values($f), (int)$d['id']]);
-                echo json_encode(['ok'=>true, 'id'=>(int)$d['id']]);
+                $out = ['ok' => true, 'id' => (int)$d['id']];
+                if ($restockedSizes !== []) {
+                    $out['restocked_sizes'] = $restockedSizes;
+                    $re = kits_emailjs_try_restock($pdo, $cfg, (int)$d['id'], $restockedSizes);
+                    // Geen JS-dubbeling als PHP klaar is zonder mislukte sends; bij failures mag admin-EmailJS de rest proberen.
+                    $out['restock_email_done'] = $re['attempted'] && $re['failed'] === 0;
+                }
+                echo json_encode($out);
             } else {
                 $cols = implode(',', array_keys($f));
                 $phs  = implode(',', array_fill(0, count($f), '?'));
@@ -322,8 +372,8 @@ if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
             }
             $sort = (int)$p['sort_order'] + 1;
             $ins = $pdo->prepare(
-                'INSERT INTO products (name, version, league, cat, emoji, description, fit_info, size_advice, material_info, shipping_info, returns_info, personalization_policy, care_instructions, image_order, stock, price, badge, image, image2, image3, active, sort_order, stock_sizes, kits_path)
-                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NULL)'
+                'INSERT INTO products (name, version, league, cat, emoji, description, fit_info, size_advice, material_info, shipping_info, returns_info, personalization_policy, care_instructions, image_order, stock, price, badge, image, image2, image3, active, sort_order, stock_sizes, player_price, player_stock_sizes, kits_path)
+                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NULL)'
             );
             $ins->execute([
                 $newName,
@@ -349,6 +399,8 @@ if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
                 $p['active'],
                 $sort,
                 $p['stock_sizes'],
+                $p['player_price'],
+                $p['player_stock_sizes'],
             ]);
             echo json_encode(['ok' => true, 'id' => (int)$pdo->lastInsertId()]);
             break;
@@ -382,14 +434,18 @@ if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
             $sizes = $d['stock_sizes'] ?? null;
             if (!$id || !is_array($sizes)) { echo json_encode(['ok'=>false]); break; }
             // Get old stock to detect which sizes went from 0 → stocked
-            $old = $pdo->prepare('SELECT stock_sizes FROM products WHERE id=?');
+            $old = $pdo->prepare('SELECT stock_sizes, version FROM products WHERE id=?');
             $old->execute([$id]);
             $oldRow = $old->fetch(PDO::FETCH_ASSOC);
             $oldSizes = !empty($oldRow['stock_sizes']) ? json_decode($oldRow['stock_sizes'], true) : [];
-            $validSizes = ['S','M','L','XL','2XL','3XL','4XL'];
+            $isPlayerQr = (($oldRow['version'] ?? '') === 'player');
+            $validSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL', '4XL'];
             $cleaned = []; $total = 0; $restocked = [];
             foreach ($validSizes as $sz) {
                 $qty = max(0,(int)($sizes[$sz] ?? 0));
+                if ($isPlayerQr && in_array($sz, ['2XL', '3XL', '4XL'], true)) {
+                    $qty = 0;
+                }
                 $cleaned[$sz] = $qty; $total += $qty;
                 if ($qty > 0 && (int)($oldSizes[$sz] ?? 0) === 0) {
                     $restocked[] = $sz; // this size just came back in stock
@@ -397,7 +453,12 @@ if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
             }
             $pdo->prepare('UPDATE products SET stock_sizes=?, stock=? WHERE id=?')
                 ->execute([json_encode($cleaned), $total, $id]);
-            echo json_encode(['ok'=>true,'stock'=>$total,'restocked_sizes'=>$restocked]);
+            $qr = ['ok' => true, 'stock' => $total, 'restocked_sizes' => $restocked];
+            if ($restocked !== []) {
+                $re = kits_emailjs_try_restock($pdo, $cfg, $id, $restocked);
+                $qr['restock_email_done'] = $re['attempted'] && $re['failed'] === 0;
+            }
+            echo json_encode($qr);
             break;
 
         case 'toggle_voorraad':
@@ -430,6 +491,19 @@ if ($auth && !empty($_SERVER['HTTP_X_ACTION'])) {
                 "DELETE FROM stock_notifications WHERE product_id=? AND size IN ($ph)"
             )->execute(array_merge([$id], array_values($sizes)));
             echo json_encode(['ok'=>true]);
+            break;
+
+        case 'clear_stock_notification_row':
+            $pid = (int)($d['id'] ?? 0);
+            $email = strtolower(trim((string)($d['email'] ?? '')));
+            $size = strtoupper(trim((string)($d['size'] ?? '')));
+            if ($pid <= 0 || $email === '' || $size === '') {
+                echo json_encode(['ok' => false]);
+                break;
+            }
+            $pdo->prepare('DELETE FROM stock_notifications WHERE product_id = ? AND email = ? AND size = ?')
+                ->execute([$pid, $email, $size]);
+            echo json_encode(['ok' => true]);
             break;
 
         case 'save_order_note':
@@ -788,7 +862,12 @@ textarea.finput{resize:vertical;min-height:72px}
 @keyframes loginShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 
 /* ── TOAST ── */
-.toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:200}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;z-index:200;display:inline-flex;align-items:center;gap:9px;max-width:min(92vw,460px)}
+.toast .toast-ico{display:inline-flex;flex-shrink:0}
+.toast .toast-ico svg{width:16px;height:16px;display:block}
+.toast .toast-msg{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.toast.toast--success{background:#2d5a27;color:#fff}
+.toast.toast--error{background:#c0392b;color:#fff}
 .toast.on{opacity:1;transform:translateY(0)}
 
 /* ── IMAGE UPLOAD ── */
@@ -1064,7 +1143,7 @@ textarea.finput{resize:vertical;min-height:72px}
   .login-wrap{padding-left:max(16px, env(safe-area-inset-left));padding-right:max(16px, env(safe-area-inset-right));padding-bottom:max(24px, env(safe-area-inset-bottom));padding-top:max(24px, env(safe-area-inset-top))}
 }
 </style>
-<link rel="stylesheet" href="css/responsive-global.css?v=10">
+<link rel="stylesheet" href="css/responsive-global.css?v=15">
 </head>
 <body>
 
@@ -1155,7 +1234,7 @@ textarea.finput{resize:vertical;min-height:72px}
       <div class="page-sub">Welkom terug — dit is de stand van zaken.</div>
       <div class="stats">
         <div class="stat-card">
-          <div class="stat-icon" style="background:#dbeafe">📦</div>
+          <div class="stat-icon" style="background:#dbeafe"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="1.7" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg></div>
           <div><div class="stat-val" id="s-orders">—</div><div class="stat-lbl">Bestellingen totaal</div></div>
         </div>
         <div class="stat-card">
@@ -1163,7 +1242,7 @@ textarea.finput{resize:vertical;min-height:72px}
           <div><div class="stat-val" id="s-revenue">—</div><div class="stat-lbl">Omzet totaal</div></div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon" style="background:#fef3c7">⏳</div>
+          <div class="stat-icon" style="background:#fef3c7"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5V12l3 2"></path></svg></div>
           <div><div class="stat-val" id="s-pending">—</div><div class="stat-lbl">In afwachting</div></div>
         </div>
         <div class="stat-card">
@@ -1178,10 +1257,10 @@ textarea.finput{resize:vertical;min-height:72px}
         </div>
         <div class="dash-card">
           <h3>Vereist actie</h3>
-          <div id="dash-attention"><div class="empty"><div class="empty-ico">🎉</div><p>Je bent helemaal bij!</p></div></div>
+          <div id="dash-attention"><div class="empty"><div class="empty-ico"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg></div><p>Je bent helemaal bij!</p></div></div>
         </div>
         <div class="dash-card">
-          <h3>⚠️ Lage / geen voorraad</h3>
+          <h3>Lage / geen voorraad</h3>
           <p class="page-sub" style="margin:-8px 0 12px;font-size:12px">Klik een rij om de kit in de winkel te openen (nieuw tabblad). Bijvullen onder <strong>Producten</strong>.</p>
           <div id="dash-low-stock"><div class="empty"><div class="empty-ico">✅</div><p>Alle producten op voorraad</p></div></div>
         </div>
@@ -1367,7 +1446,7 @@ textarea.finput{resize:vertical;min-height:72px}
                   <img src="<?= $_src ?>" alt="" loading="lazy" style="width:52px;height:52px;object-fit:cover;border-radius:7px;display:block">
                 </a>
                 <?php else: ?>
-                <div style="width:52px;height:52px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px"><?= htmlspecialchars($_p['emoji'] ?? '👕', ENT_QUOTES, 'UTF-8') ?></div>
+                <div style="width:52px;height:52px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></div>
                 <?php endif; ?>
               </td>
               <td style="font-weight:600"><?= htmlspecialchars($_p['name']) ?></td>
@@ -1586,14 +1665,14 @@ textarea.finput{resize:vertical;min-height:72px}
             <option value="hemdsetjes">Hemdsetjes</option>
           </select>
         </div>
-        <div class="fg"><label class="flabel">Versie</label>
+        <div class="fg" style="display:none"><label class="flabel">Versie</label>
           <select class="fselect" id="p-version">
             <option value="">Beide / niet gespecificeerd</option>
             <option value="fan">Fanversie</option>
             <option value="player">Spelersversie</option>
           </select>
         </div>
-        <div class="fg"><label class="flabel">Emoji (als er geen foto is)</label><input class="finput" id="p-emoji" placeholder="👕" maxlength="4"></div>
+        <div class="fg" style="display:none"><label class="flabel">Emoji (als er geen foto is)</label><input class="finput" id="p-emoji" placeholder="👕" maxlength="4"></div>
         <div class="fg"><label class="flabel">Prijs (€) *</label><input class="finput" id="p-price" type="number" step="0.01" min="0" placeholder="29.99"></div>
         <div class="fg full">
           <label class="flabel">Voorraad per maat <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);font-size:11px">— totaal wordt automatisch berekend</span></label>
@@ -1607,22 +1686,40 @@ textarea.finput{resize:vertical;min-height:72px}
             </div>
           </div>
           <div class="size-stock-grid">
+            <div class="ss-item"><span class="ss-lbl">XS</span><input class="finput ss-input" id="ss-XS" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
             <div class="ss-item"><span class="ss-lbl">S</span><input class="finput ss-input" id="ss-S" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
             <div class="ss-item"><span class="ss-lbl">M</span><input class="finput ss-input" id="ss-M" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
             <div class="ss-item"><span class="ss-lbl">L</span><input class="finput ss-input" id="ss-L" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
             <div class="ss-item"><span class="ss-lbl">XL</span><input class="finput ss-input" id="ss-XL" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
-            <div class="ss-item"><span class="ss-lbl">2XL</span><input class="finput ss-input" id="ss-2XL" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
-            <div class="ss-item"><span class="ss-lbl">3XL</span><input class="finput ss-input" id="ss-3XL" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
-            <div class="ss-item"><span class="ss-lbl">4XL</span><input class="finput ss-input" id="ss-4XL" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
+            <div class="ss-item"><span class="ss-lbl">XXL</span><input class="finput ss-input" id="ss-XXL" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
+            <div class="ss-item ss-item--fan-only"><span class="ss-lbl">2XL</span><input class="finput ss-input" id="ss-2XL" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
+            <div class="ss-item ss-item--fan-only"><span class="ss-lbl">3XL</span><input class="finput ss-input" id="ss-3XL" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
+            <div class="ss-item ss-item--fan-only"><span class="ss-lbl">4XL</span><input class="finput ss-input" id="ss-4XL" type="number" min="0" step="1" value="0" oninput="recalcTotalStock()"></div>
           </div>
           <div class="ss-total">Voorraad totaal: <strong id="ss-total-val">0</strong></div>
+        </div>
+        <div class="fg full" style="padding-top:18px;border-top:1px solid var(--line);margin-top:4px">
+          <label class="flabel">Player-versie <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);font-size:11px">— laat prijs leeg én voorraad 0 als dit product geen player-versie heeft</span></label>
+          <div style="margin:8px 0 12px;max-width:220px">
+            <label class="flabel">Player-prijs (€)</label>
+            <input class="finput" id="p-player-price" type="number" step="0.01" min="0" placeholder="bijv. 39.99">
+          </div>
+          <label class="flabel">Player-voorraad per maat <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink3);font-size:11px">— player heeft geen 2XL/3XL/4XL</span></label>
+          <div class="size-stock-grid">
+            <div class="ss-item"><span class="ss-lbl">XS</span><input class="finput ss-input" id="ps-XS" type="number" min="0" step="1" value="0"></div>
+            <div class="ss-item"><span class="ss-lbl">S</span><input class="finput ss-input" id="ps-S" type="number" min="0" step="1" value="0"></div>
+            <div class="ss-item"><span class="ss-lbl">M</span><input class="finput ss-input" id="ps-M" type="number" min="0" step="1" value="0"></div>
+            <div class="ss-item"><span class="ss-lbl">L</span><input class="finput ss-input" id="ps-L" type="number" min="0" step="1" value="0"></div>
+            <div class="ss-item"><span class="ss-lbl">XL</span><input class="finput ss-input" id="ps-XL" type="number" min="0" step="1" value="0"></div>
+            <div class="ss-item"><span class="ss-lbl">XXL</span><input class="finput ss-input" id="ps-XXL" type="number" min="0" step="1" value="0"></div>
+          </div>
         </div>
         <input type="hidden" id="p-stock">
         <div class="fg"><label class="flabel">Badge</label>
           <select class="fselect" id="p-badge">
             <option value="">Geen</option>
             <option value="new">Nieuw</option>
-            <option value="hot">Hot</option>
+            <option value="hot">Populair</option>
           </select>
         </div>
         <div class="fg"><label class="flabel">Sorteervolgorde</label><input class="finput" id="p-sort" type="number" min="0" placeholder="0"></div>
@@ -1648,24 +1745,76 @@ textarea.finput{resize:vertical;min-height:72px}
 <div class="toast" id="toast"></div>
 
 <script>
-emailjs.init('<?= EMAILJS_PK ?>');
-const EJSVC_ORDER = '<?= EMAILJS_SVC_ORDER ?>';
-const EJSVC_RESTOCK = '<?= EMAILJS_SVC_RESTOCK ?>';
-const EJTPL  = '<?= EMAILJS_TPL ?>';
-const CSRF_TOKEN = '<?= $_SESSION['csrf_token'] ?>';
-let productsCache = <?= json_encode($_allProducts, JSON_HEX_TAG | JSON_HEX_AMP) ?>;
+const KBE_EMAILJS_PUBLIC_KEY = <?= json_encode((string)EMAILJS_PK, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+/** Wacht op EmailJS (`defer` in head), roept init één keer aan — ook vlak vóór send() betrouwbaar. */
+function ensureEmailJsInitialized() {
+  return new Promise((resolve, reject) => {
+    if (!KBE_EMAILJS_PUBLIC_KEY) {
+      reject(new Error('Geen KITS_EMAILJS_PK in .env (EmailJS public key).'));
+      return;
+    }
+    let n = 0;
+    (function tick() {
+      if (typeof emailjs !== 'undefined') {
+        try {
+          if (!window.__kbeEmailJsInited) {
+            emailjs.init({ publicKey: KBE_EMAILJS_PUBLIC_KEY });
+            window.__kbeEmailJsInited = true;
+          }
+        } catch (e) {
+          reject(e);
+          return;
+        }
+        resolve();
+        return;
+      }
+      if (++n >= 150) {
+        reject(new Error('EmailJS-script niet geladen (netwerk of geblokkeerd).'));
+        return;
+      }
+      setTimeout(tick, 20);
+    })();
+  });
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    ensureEmailJsInitialized().catch((e) => console.warn('[emailjs] vroege init', e));
+  });
+} else {
+  ensureEmailJsInitialized().catch((e) => console.warn('[emailjs] vroege init', e));
+}
+
+const EJSVC_ORDER = <?= json_encode((string)EMAILJS_SVC_ORDER, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+const EJSVC_RESTOCK = <?= json_encode((string)EMAILJS_SVC_RESTOCK, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+const EJTPL = <?= json_encode((string)EMAILJS_TPL, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+const CSRF_TOKEN = <?= json_encode((string)($_SESSION['csrf_token'] ?? ''), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+let productsCache = <?= json_encode($_allProducts, JSON_HEX_TAG | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' ?>;
 /** Admin inbox — BCC copy when sending payment mail (must match optional “Bcc” field in EmailJS template, e.g. {{bcc}}) */
 const ADMIN_NOTIFY_EMAIL  = <?= json_encode(ADMIN_NOTIFY_EMAIL, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 const EMAIL_PUBLIC_BASE   = <?= json_encode(rtrim($cfg['public_site_url'] ?? '', '/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-const EMAILJS_RESTOCK_TPL = '<?= EMAILJS_RESTOCK ?>';
+const EMAILJS_RESTOCK_TPL = <?= json_encode((string)EMAILJS_RESTOCK, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+/** EmailJS v4: publicKey op elke send() — zelfde prioriteit als in de officiële docs; vangt init-races af. */
+function kbeEmailJsSendOpts() {
+  return KBE_EMAILJS_PUBLIC_KEY ? { publicKey: KBE_EMAILJS_PUBLIC_KEY } : {};
+}
 
 // ── UTILS ─────────────────────────────────────────────
 function api(action, body={}) {
+  const payload = { ...body, action, csrf: CSRF_TOKEN };
   return fetch('admin.php', {
     method: 'POST',
     headers: {'Content-Type':'application/json','X-Action':action,'X-CSRF-Token':CSRF_TOKEN},
-    body: JSON.stringify(body)
-  }).then(r => r.json());
+    body: JSON.stringify(payload)
+  }).then(async r => {
+    const text = await r.text();
+    try {
+      return JSON.parse(text);
+    } catch (_) {
+      throw new Error(`API ${action} gaf geen geldige JSON terug`);
+    }
+  });
 }
 
 function esc(v) {
@@ -1675,6 +1824,9 @@ function esc(v) {
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;')
     .replace(/'/g,'&#39;');
+}
+function jss(v) {
+  return JSON.stringify(String(v ?? ''));
 }
 /** Public storefront URL for a product (same slug as index.html / product.php). */
 function storeProductSlug(id, name) {
@@ -1706,8 +1858,21 @@ function productImgSrc(file) {
 
 function toast(msg, dur=2800) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('on');
-  setTimeout(() => t.classList.remove('on'), dur);
+  msg = String(msg);
+  let type = '';
+  if (/^\s*(⚠️|❌|✗)/.test(msg)) type = 'error';
+  else if (/^\s*(✓|✅)/.test(msg)) type = 'success';
+  msg = msg.replace(/^\s*(⚠️|❌|✗|✓|✅)\s*/, '');
+  const icons = {
+    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16.4v.01"></path></svg>',
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>'
+  };
+  t.className = 'toast' + (type ? ' toast--' + type : '');
+  t.innerHTML = (icons[type] ? `<span class="toast-ico">${icons[type]}</span>` : '') + '<span class="toast-msg"></span>';
+  t.querySelector('.toast-msg').textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('on'), dur);
 }
 
 function openAdminSidebar() {
@@ -1760,7 +1925,7 @@ function statusLabelNl(status) {
   const m = {
     pending: 'In afwachting', confirmed: 'Bevestigd', paid: 'Betaald',
     shipped: 'Verzonden', delivered: 'Bezorgd', cancelled: 'Geannuleerd',
-    new: 'Nieuw', hot: 'Hot',
+    new: 'Nieuw', hot: 'Populair',
   };
   return m[status] || status;
 }
@@ -1845,7 +2010,7 @@ function buildPaidEmailParams(o) {
       return cc !== 'NL' ? base + ', ' + orderCountryLabel(cc) : base;
     })(),
     site_url: (typeof EMAIL_PUBLIC_BASE === 'string' && EMAIL_PUBLIC_BASE) ? EMAIL_PUBLIC_BASE : '',
-    logo_url: (typeof EMAIL_PUBLIC_BASE === 'string' && EMAIL_PUBLIC_BASE) ? (EMAIL_PUBLIC_BASE + '/images/logo.png') : '',
+    logo_url: (typeof EMAIL_PUBLIC_BASE === 'string' && EMAIL_PUBLIC_BASE) ? (EMAIL_PUBLIC_BASE + '/images/logo.jpeg') : '',
   };
   // Kopie naar admin (alleen als anders dan klant-mail). Zet in EmailJS bij deze template Bcc = {{bcc}}
   if (ADMIN_NOTIFY_EMAIL && String(o.email || '').toLowerCase() !== ADMIN_NOTIFY_EMAIL.toLowerCase()) {
@@ -1855,7 +2020,8 @@ function buildPaidEmailParams(o) {
 }
 
 async function sendPaidConfirmationEmail(o) {
-  await emailjs.send(EJSVC_ORDER, EJTPL, buildPaidEmailParams(o));
+  await ensureEmailJsInitialized();
+  await emailjs.send(EJSVC_ORDER, EJTPL, buildPaidEmailParams(o), kbeEmailJsSendOpts());
 }
 
 async function sendOrderConfirmationEmailFromId(id) {
@@ -1919,7 +2085,7 @@ function tab(name) {
   tabEl.classList.add('on');
   if (name === 'dash')     loadDash();
   if (name === 'orders')   loadOrders('all');
-  if (name === 'products')  loadProducts();
+  if (name === 'products')  loadProducts(false);
   if (name === 'voorraad')  loadVoorraadManagement();
   if (name === 'coupons')   loadCoupons();
   if (name === 'promo')     loadPromoSettings();
@@ -1969,7 +2135,7 @@ function renderVoorraadTable(q) {
     const shopUrl = storeProductUrl(p);
     const imgCell = img
       ? `<a class="vr-thumb-link" href="${esc(shopUrl)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" title="Open in winkel"><img src="${productImgSrc(img)}" alt="" loading="lazy" style="width:52px;height:52px;object-fit:cover;border-radius:7px;display:block"></a>`
-      : `<div style="width:52px;height:52px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px">${esc(p.emoji || '👕')}</div>`;
+      : `<div style="width:52px;height:52px;border-radius:7px;background:var(--bg);display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></div>`;
     return `<tr id="vr-row-${p.id}" onclick="openProductModal(${p.id})" style="cursor:pointer" title="Klik om te bewerken (foto = winkel)">
       <td onclick="event.stopPropagation()">${imgCell}</td>
       <td style="font-weight:600">${esc(p.name)}</td>
@@ -2021,7 +2187,7 @@ function loadCoupons() {
         <td style="white-space:nowrap">${c.created_at ? c.created_at.slice(0,10) : '—'}</td>
         <td>
           <button class="btn btn-sm" style="background:var(--line);color:var(--ink2);margin-right:4px" onclick='editCoupon(${JSON.stringify(c)})'>Bewerken</button>
-          <button class="btn btn-sm" style="background:#fee2e2;color:#991b1b" onclick="deleteCoupon(${c.id},'${esc(c.code)}')">Verwijder</button>
+          <button class="btn btn-sm" style="background:#fee2e2;color:#991b1b" onclick='deleteCoupon(${c.id},${jss(c.code)})'>Verwijder</button>
         </td>
       </tr>`).join('');
   });
@@ -2153,7 +2319,7 @@ function loadDash() {
           <div><div class="mo-id">${esc(o.order_id)}</div><div class="mo-name">${esc(o.customer_name)} · ${esc(o.city)}</div></div>
           <div>${badge(o.status)}</div>
         </div>`).join('')
-      : '<div class="empty"><div class="empty-ico">🎉</div><p>Je bent helemaal bij!</p></div>';
+      : '<div class="empty"><div class="empty-ico"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M8.5 12.5l2.5 2.5 4.5-5"></path></svg></div><p>Je bent helemaal bij!</p></div>';
   });
 
   api('low_stock').then(rows => {
@@ -2215,6 +2381,11 @@ function loadOrders(status) {
           ${['confirmed','paid','shipped','delivered'].includes(o.status) ? `<button type="button" class="btn btn-sm" style="background:#fef3c7;color:#92400e;border:none;margin-left:6px" title="Klantmail (bevestigd of betaald)" onclick="event.stopPropagation();sendOrderConfirmationEmailFromId(${o.id})">✉️ E-mail</button>` : ''}
         </td>
       </tr>`).join('');
+  }).catch(() => {
+    const tbody = document.getElementById('orders-body');
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="empty-ico"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l9.2 16.3H2.8z"></path><path d="M12 10v4.2M12 17.2v.02"></path></svg></div><p>Kon bestellingen niet laden. Herlaad de pagina.</p></div></td></tr>`;
+    }
   });
 }
 
@@ -2318,7 +2489,7 @@ function openOrderModal(id) {
             <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.531 3.5 11.815 11.815 0 0012.05 0z"/></svg>
             WhatsApp
           </button>` : ''}
-          <button class="od-qa-btn" onclick="copyAddress('${esc(o.customer_name)}','${esc(o.street)}','${esc(o.zip)}','${esc(o.city)}','${esc(o.country || 'NL')}')">
+          <button class="od-qa-btn" onclick='copyAddress(${jss(o.customer_name)},${jss(o.street)},${jss(o.zip)},${jss(o.city)},${jss(o.country || "NL")})'>
             📋 Adres kopiëren
           </button>
         </div>
@@ -2430,7 +2601,13 @@ function closeConfirm() {
 }
 
 // ── QUICK RESTOCK ─────────────────────────────────────
+/** Zelfde maten als api/stock_notify.php + productpagina (anders geen nabestel-match) */
+const ADMIN_STOCK_SIZES = ['XS','S','M','L','XL','XXL','2XL','3XL','4XL'];
+/** Spelerskits: zelfde maximum als maattabel (3XL/4XL alleen fan). */
+const ADMIN_STOCK_SIZES_PLAYER = ['XS','S','M','L','XL','XXL'];
+const ADMIN_STOCK_SIZES_FAN_ONLY = ['2XL','3XL','4XL'];
 let _restockProductId = null;
+let _restockSizes = ADMIN_STOCK_SIZES;
 let _restockInitialSizes = null;
 function openRestockModalById(id) {
   const p = productsCache.find(x => x.id === id);
@@ -2456,8 +2633,11 @@ function openRestockModal(id, name, stockSizesJson) {
       current = typeof p.stock_sizes === 'string' ? JSON.parse(p.stock_sizes||'{}') : (p.stock_sizes||{});
     }
   }
-  const sizes = ['S','M','L','XL','2XL','3XL','4XL'];
-  _restockInitialSizes = Object.fromEntries(sizes.map(s => [s, Math.max(0, parseInt(current[s] ?? 0, 10) || 0)]));
+  const pMeta = productsCache.find(x => x.id === id);
+  const isPlayerRestock = (pMeta && String(pMeta.version || '') === 'player');
+  const sizes = isPlayerRestock ? ADMIN_STOCK_SIZES_PLAYER : ADMIN_STOCK_SIZES;
+  _restockSizes = sizes;
+  _restockInitialSizes = Object.fromEntries(ADMIN_STOCK_SIZES.map(s => [s, Math.max(0, parseInt(current[s] ?? 0, 10) || 0)]));
   document.getElementById('restock-title').textContent = 'Snel bijvullen';
   document.getElementById('restock-name').textContent  = pName || ('Product #' + id);
   document.getElementById('restock-grid').innerHTML = sizes.map(s => `
@@ -2470,18 +2650,23 @@ function openRestockModal(id, name, stockSizesJson) {
   document.getElementById('restock-modal').classList.add('on');
 }
 function updateRestockTotal() {
-  const total = ['S','M','L','XL','2XL','3XL','4XL'].reduce((sum,s)=>sum+(parseInt(document.getElementById('rs-'+s)?.value)||0),0);
+  const list = _restockSizes || ADMIN_STOCK_SIZES;
+  const total = list.reduce((sum,s)=>sum+(parseInt(document.getElementById('rs-'+s)?.value)||0),0);
   document.getElementById('restock-total').textContent = total;
 }
 function closeRestockModal() {
   document.getElementById('restock-modal').classList.remove('on');
   _restockProductId = null;
   _restockInitialSizes = null;
+  _restockSizes = ADMIN_STOCK_SIZES;
 }
 async function saveQuickRestock() {
   if (!_restockProductId) return;
-  const sizes = ['S','M','L','XL','2XL','3XL','4XL'];
-  const stock_sizes = Object.fromEntries(sizes.map(s=>[s, parseInt(document.getElementById('rs-'+s)?.value)||0]));
+  const sizes = _restockSizes || ADMIN_STOCK_SIZES;
+  const stock_sizes = Object.fromEntries(ADMIN_STOCK_SIZES.map(s => [
+    s,
+    sizes.includes(s) ? (parseInt(document.getElementById('rs-'+s)?.value, 10) || 0) : 0
+  ]));
   const r = await api('quick_restock', { id: _restockProductId, stock_sizes });
   if (!r.ok) { toast('❌ Voorraad bijwerken mislukt'); return; }
   // Save ID before closing modal (closeRestockModal sets it to null)
@@ -2494,13 +2679,13 @@ async function saveQuickRestock() {
   loadDash();
   // Notify sizes that became available (0->>0) OR were increased in this edit.
   const fromApi = Array.isArray(r.restocked_sizes) ? r.restocked_sizes : [];
-  const increasedSizes = sizes.filter(s => {
+  const increasedSizes = ADMIN_STOCK_SIZES.filter(s => {
     const before = parseInt((_restockInitialSizes && _restockInitialSizes[s]) ?? 0, 10) || 0;
     const after = parseInt(stock_sizes[s] ?? 0, 10) || 0;
     return after > 0 && after > before;
   });
   const restockedSizes = Array.from(new Set([...fromApi, ...increasedSizes]));
-  if (restockedSizes.length > 0) {
+  if (restockedSizes.length > 0 && !r.restock_email_done) {
     await sendRestockNotifications(savedId, restockedSizes);
   }
 }
@@ -2619,8 +2804,8 @@ function adminThumbHtml(p) {
   const uniq = [...new Set(extras)];
   const rest = uniq.length > 1 ? uniq.slice(1) : [];
   const imgPart = main
-    ? `<div class="admin-pthumb-wrap"><img class="admin-pthumb" src="${mainSrc}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="admin-pthumb-miss" style="display:none;align-items:center;justify-content:center;width:100%;height:100%">📷</span></div>`
-    : `<div class="admin-pthumb-wrap"><span class="admin-pthumb-miss" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%">${p.emoji || '👕'}</span></div>`;
+    ? `<div class="admin-pthumb-wrap"><img class="admin-pthumb" src="${mainSrc}" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="admin-pthumb-miss" style="display:none;align-items:center;justify-content:center;width:100%;height:100%"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span></div>`
+    : `<div class="admin-pthumb-wrap"><span class="admin-pthumb-miss" style="display:flex;align-items:center;justify-content:center;width:100%;height:100%"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span></div>`;
   const mini = rest.length
     ? `<div class="admin-pmini">${rest.map(u => `<img src="${productImgSrc(u)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">`).join('')}</div>`
     : '';
@@ -2639,7 +2824,7 @@ function renderProductsTableFromCache() {
   }
   if (!view.length) {
     const emptyMsg = prods.length ? 'Geen producten voor deze filters.' : 'Nog geen producten';
-    tbody.innerHTML = `<tr><td colspan="10"><div class="empty"><div class="empty-ico">📦</div><p>${emptyMsg}</p></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10"><div class="empty"><div class="empty-ico"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg></div><p>${emptyMsg}</p></div></td></tr>`;
     return;
   }
   tbody.innerHTML = view.map(p => {
@@ -2688,13 +2873,37 @@ function toggleInVoorraadProducts(id, newVal, toggleEl) {
   });
 }
 
-function loadProducts() {
-  return api('products').then(prods => {
-    productsCache = prods;
+function loadProducts(forceRefresh = false) {
+  if (Array.isArray(productsCache)) {
     renderProductsTableFromCache();
-    renderCatCoverDropdowns(prods);
+    renderCatCoverDropdowns(productsCache);
     refreshVoorraadTableFromCache();
-  });
+  }
+  if (!forceRefresh) {
+    return Promise.resolve(productsCache);
+  }
+  return api('products')
+    .then(prods => {
+      productsCache = Array.isArray(prods) ? prods : [];
+      renderProductsTableFromCache();
+      renderCatCoverDropdowns(productsCache);
+      refreshVoorraadTableFromCache();
+      return productsCache;
+    })
+    .catch(() => {
+      if (Array.isArray(productsCache) && productsCache.length) {
+        toast('⚠️ Live verversen mislukt — cache getoond');
+        renderProductsTableFromCache();
+        renderCatCoverDropdowns(productsCache);
+        refreshVoorraadTableFromCache();
+        return productsCache;
+      }
+      const tbody = document.getElementById('products-body');
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-ico"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l9.2 16.3H2.8z"></path><path d="M12 10v4.2M12 17.2v.02"></path></svg></div><p>Kon producten niet laden. Herlaad de pagina.</p></div></td></tr>';
+      }
+      throw new Error('products_load_failed');
+    });
 }
 
 // Same logic as detectProductType in shop.html
@@ -2712,11 +2921,31 @@ function detectProductType(p) {
   return 'shirts';
 }
 function detectProductVersion(p) {
-  const v = (p.version || '').toLowerCase();
-  if (v === 'player') return 'player';
-  if (v === 'fan') return 'fan';
-  const hay = (String(p.name||'') + ' ' + String(p.description||'')).toLowerCase();
-  if (/player version|player fit|\bplayer\b/.test(hay)) return 'player';
+  if (!p) return 'fan';
+  const v = String(p.version || '').trim().toLowerCase();
+  if (v === 'player' || v === 'fan') return v;
+  const hay = `${p.name || ''} ${p.description || ''} ${p.fit_info || ''} ${p.size_advice || ''}`.toLowerCase();
+  if (
+    hay.includes('player version') ||
+    hay.includes('player fit') ||
+    hay.includes('players version') ||
+    /\bplayer\b/.test(hay)
+  ) {
+    return 'player';
+  }
+  if (
+    hay.includes('spelersversie') ||
+    hay.includes('spelerversie') ||
+    hay.includes('spelers versie') ||
+    hay.includes('speler versie') ||
+    hay.includes('spelers kit') ||
+    hay.includes('spelerseditie') ||
+    hay.includes('spelers editie')
+  ) {
+    return 'player';
+  }
+  if (hay.includes('fan version') || hay.includes('fan fit') || /\bfan\b/.test(hay)) return 'fan';
+  if (hay.includes('fanversie') || hay.includes('fan versie') || hay.includes('fansversie')) return 'fan';
   return 'fan';
 }
 
@@ -2789,7 +3018,7 @@ function renderCoverPickerGrid(q) {
     const isCover = parseInt(p.cat_cover);
     return `<div onclick="pickCover(${p.id})" style="cursor:pointer;border:2px solid ${isCover ? 'var(--ink)' : 'var(--line)'};border-radius:8px;overflow:hidden;background:var(--bg);transition:border-color .15s" id="cover-pick-${p.id}">
       <div style="width:100%;height:90px;background:var(--bg2);background-size:cover;background-position:center;${img ? `background-image:url('${productImgSrc(img)}')` : ''}"></div>
-      <div style="padding:5px 6px;font-size:11px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+      <div style="padding:5px 6px;font-size:11px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.name)}</div>
       ${isCover ? '<div style="padding:0 6px 5px;font-size:10px;font-weight:700;color:var(--ink)">✓ Huidige</div>' : ''}
     </div>`;
   }).join('');
@@ -2815,13 +3044,26 @@ async function pickCover(pid) {
 
 function applyProductFiltersAndRender() {
   if (!productsCache.length) {
-    loadProducts();
+    loadProducts(true);
     return;
   }
   renderProductsTableFromCache();
 }
 
-// ── PRODUCT MODAL ─────────────────────────────────────
+// ── PRODUCT MODAL — spelersversie: alleen XS–XXL (2XL/3XL/4XL = fan) ──
+function isAdminPlayerVersion() {
+  return (document.getElementById('p-version')?.value || '') === 'player';
+}
+function adminStockSizesForProductForm() {
+  return isAdminPlayerVersion() ? ADMIN_STOCK_SIZES_PLAYER : ADMIN_STOCK_SIZES;
+}
+function syncAdminStockGridForVersion() {
+  const showFan = !isAdminPlayerVersion();
+  document.querySelectorAll('.size-stock-grid .ss-item--fan-only').forEach(el => {
+    el.style.display = showFan ? '' : 'none';
+  });
+}
+
 function openProductModal(id) {
   document.getElementById('product-modal').classList.add('on');
   document.getElementById('pm-title').textContent = id ? 'Product bewerken' : 'Product toevoegen';
@@ -2839,8 +3081,11 @@ function openProductModal(id) {
     document.getElementById('p-img-order').value = '1,2,3';
     document.getElementById('p-active').checked = true;
     document.getElementById('p-in-voorraad').checked = false;
-    ['S','M','L','XL','2XL','3XL','4XL'].forEach(s => { document.getElementById('ss-'+s).value = '0'; });
+    ADMIN_STOCK_SIZES.forEach(s => { document.getElementById('ss-'+s).value = '0'; });
+    ADMIN_STOCK_SIZES_PLAYER.forEach(s => { document.getElementById('ps-'+s).value = '0'; });
+    document.getElementById('p-player-price').value = '';
     document.getElementById('p-version').value = '';
+    syncAdminStockGridForVersion();
     recalcTotalStock();
     const kpr = document.getElementById('p-kits-path-row');
     const kp = document.getElementById('p-kits-path');
@@ -2870,10 +3115,17 @@ function openProductModal(id) {
     document.getElementById('p-stock').value    = p.stock ?? 0;
     // Per-size stock
     const sizes = p.stock_sizes ? JSON.parse(p.stock_sizes) : {};
-    ['S','M','L','XL','2XL','3XL','4XL'].forEach(s => {
+    ADMIN_STOCK_SIZES.forEach(s => {
       document.getElementById('ss-'+s).value = sizes[s] ?? 0;
     });
+    let psizes = {};
+    try { psizes = p.player_stock_sizes ? JSON.parse(p.player_stock_sizes) : {}; } catch (_) { psizes = {}; }
+    ADMIN_STOCK_SIZES_PLAYER.forEach(s => {
+      document.getElementById('ps-'+s).value = psizes[s] ?? 0;
+    });
+    document.getElementById('p-player-price').value = (p.player_price != null && p.player_price !== '') ? p.player_price : '';
     document.getElementById('p-version').value = p.version || '';
+    syncAdminStockGridForVersion();
     recalcTotalStock();
     document.getElementById('p-badge').value    = p.badge;
     document.getElementById('p-sort').value     = p.sort_order;
@@ -2899,7 +3151,7 @@ function openProductModal(id) {
       document.getElementById(`p-img-current-${slot}`).value = val;
       if (val) {
         document.getElementById(`p-img-preview-${slot}`).innerHTML =
-          `<img src="${productImgSrc(val)}" alt="${p.name}">`;
+          `<img src="${productImgSrc(val)}" alt="${esc(p.name)}">`;
         document.getElementById(`p-img-remove-${slot}`).style.display = 'block';
       } else {
         resetImageUISlot(slot);
@@ -2947,23 +3199,32 @@ function closeProductModal() {
   document.getElementById('product-modal').classList.remove('on');
 }
 
-const ADMIN_STOCK_SIZES = ['S','M','L','XL','2XL','3XL','4XL'];
-
 /** Zet elke maat op hetzelfde getal — daarna Product opslaan. Zo verschijnen items met één klik in “op voorraad”. */
 function fillStockPreset(qty) {
   const n = Math.max(0, Math.floor(Number(qty)) || 0);
-  ADMIN_STOCK_SIZES.forEach(s => {
+  adminStockSizesForProductForm().forEach(s => {
     const el = document.getElementById('ss-' + s);
     if (el) el.value = String(n);
   });
+  if (isAdminPlayerVersion()) {
+    ADMIN_STOCK_SIZES_FAN_ONLY.forEach(s => {
+      const el = document.getElementById('ss-' + s);
+      if (el) el.value = '0';
+    });
+  }
   recalcTotalStock();
 }
 
 function recalcTotalStock() {
-  const total = ADMIN_STOCK_SIZES.reduce((sum, s) => sum + (parseInt(document.getElementById('ss-'+s)?.value)||0), 0);
+  const list = adminStockSizesForProductForm();
+  const total = list.reduce((sum, s) => sum + (parseInt(document.getElementById('ss-'+s)?.value, 10) || 0), 0);
   document.getElementById('ss-total-val').textContent = total;
   document.getElementById('p-stock').value = total;
 }
+document.getElementById('p-version')?.addEventListener('change', () => {
+  syncAdminStockGridForVersion();
+  recalcTotalStock();
+});
 
 async function saveProduct() {
   const data = {
@@ -2984,7 +3245,13 @@ async function saveProduct() {
     price:  document.getElementById('p-price').value,
     stock:  document.getElementById('p-stock').value,
     version: document.getElementById('p-version').value,
-    stock_sizes: Object.fromEntries(['S','M','L','XL','2XL','3XL','4XL'].map(s => [s, parseInt(document.getElementById('ss-'+s).value)||0])),
+    stock_sizes: Object.fromEntries(ADMIN_STOCK_SIZES.map(s => {
+      let q = parseInt(document.getElementById('ss-' + s).value, 10) || 0;
+      if (isAdminPlayerVersion() && ADMIN_STOCK_SIZES_FAN_ONLY.includes(s)) q = 0;
+      return [s, q];
+    })),
+    player_price: (document.getElementById('p-player-price').value.trim() === '' ? null : document.getElementById('p-player-price').value),
+    player_stock_sizes: Object.fromEntries(ADMIN_STOCK_SIZES_PLAYER.map(s => [s, parseInt(document.getElementById('ps-' + s).value, 10) || 0])),
     badge:  document.getElementById('p-badge').value,
     sort:   document.getElementById('p-sort').value || 0,
     active:       document.getElementById('p-active').checked ? 1 : 0,
@@ -3033,12 +3300,16 @@ async function saveProduct() {
     }
   }
 
-  api('save_product', data).then(r => {
+  api('save_product', data).then(async (r) => {
     saveBtn.disabled = false; saveBtn.textContent = 'Product opslaan';
     if (r.ok) {
       toast(data.id ? '✓ Product bijgewerkt' : '✓ Product toegevoegd');
+      const pid = parseInt(data.id, 10) || r.id;
+      if (pid && Array.isArray(r.restocked_sizes) && r.restocked_sizes.length > 0 && !r.restock_email_done) {
+        await sendRestockNotifications(pid, r.restocked_sizes);
+      }
       closeProductModal();
-      loadProducts();
+      loadProducts(true);
     } else {
       toast('⚠️ Er ging iets mis');
     }
@@ -3049,7 +3320,7 @@ async function duplicateProductRow(id) {
   const r = await api('duplicate_product', { id });
   if (r.ok && r.id) {
     toast('✓ Duplicaat aangemaakt');
-    loadProducts();
+    loadProducts(true);
     openProductModal(r.id);
   } else {
     toast('⚠️ Dupliceren mislukt');
@@ -3067,7 +3338,7 @@ function deleteProduct(id) {
   const name = p ? `"${p.name}"` : `product #${id}`;
   showConfirm(`${name} verwijderen?`, 'Dit kan niet ongedaan worden gemaakt.', () => {
     api('delete_product', {id}).then(r => {
-      if (r.ok) { toast('🗑️ Product verwijderd'); loadProducts(); }
+      if (r.ok) { toast('🗑️ Product verwijderd'); loadProducts(true); }
     });
   });
 }
@@ -3113,7 +3384,7 @@ async function applyBulkAction() {
         }
         toast(`✓ ${ids.length} product(en) verwijderd`);
         document.getElementById('bulk-select-all').checked = false;
-        loadProducts();
+        loadProducts(true);
       },
       'Ja, verwijderen'
     );
@@ -3160,7 +3431,7 @@ async function applyBulkAction() {
 
   toast(`✓ Bulkbewerking toegepast op ${ids.length} product(en)`);
   document.getElementById('bulk-select-all').checked = false;
-  loadProducts();
+  loadProducts(false);
 }
 
 
@@ -3213,6 +3484,13 @@ async function sendRestockNotifications(productId, restockedSizes) {
     console.warn('[restock] No restocked sizes — skipping');
     return;
   }
+  try {
+    await ensureEmailJsInitialized();
+  } catch (e) {
+    toast('⚠️ ' + (e && e.message ? e.message : 'EmailJS kon niet starten.'), 8000);
+    console.error('[restock] emailjs init', e);
+    return;
+  }
 
   let p = productsCache.find(x => Number(x.id) === Number(productId));
   if (!p) {
@@ -3241,11 +3519,10 @@ async function sendRestockNotifications(productId, restockedSizes) {
   }
 
   let sent = 0, failed = 0;
-  const sentSizes = new Set();
   for (const n of notifications) {
     try {
       console.log('[restock] sending to:', n.email, 'size:', n.size);
-      await emailjs.send(EJSVC_RESTOCK, EMAILJS_RESTOCK_TPL, {
+      const restockParams = {
         to_email:     n.email,
         to_name:      (String(n.email).split('@')[0] || 'klant'),
         product_name: productName,
@@ -3253,19 +3530,19 @@ async function sendRestockNotifications(productId, restockedSizes) {
         product_url:  productUrl,
         product_image: productImage,
         site_url:     EMAIL_PUBLIC_BASE || '',
-        logo_url:     (typeof EMAIL_PUBLIC_BASE === 'string' && EMAIL_PUBLIC_BASE) ? (EMAIL_PUBLIC_BASE + '/images/logo.png') : '',
-      });
+        logo_url:     (typeof EMAIL_PUBLIC_BASE === 'string' && EMAIL_PUBLIC_BASE) ? (EMAIL_PUBLIC_BASE + '/images/logo.jpeg') : '',
+      };
+      if (ADMIN_NOTIFY_EMAIL && String(n.email || '').toLowerCase() !== String(ADMIN_NOTIFY_EMAIL).toLowerCase()) {
+        restockParams.bcc = ADMIN_NOTIFY_EMAIL;
+      }
+      await emailjs.send(EJSVC_RESTOCK, EMAILJS_RESTOCK_TPL, restockParams, kbeEmailJsSendOpts());
       sent++;
-      sentSizes.add(String(n.size || '').trim());
       console.log('[restock] sent OK to', n.email);
+      await api('clear_stock_notification_row', { id: productId, email: n.email, size: n.size });
     } catch(e) {
       failed++;
       console.error('[restock] failed for', n.email, 'service:', EJSVC_RESTOCK, 'template:', EMAILJS_RESTOCK_TPL, e);
     }
-  }
-
-  if (sentSizes.size > 0) {
-    await api('clear_stock_notifications', { id: productId, sizes: Array.from(sentSizes) });
   }
 
   if (sent > 0) toast(`📧 Nabestel-mail naar ${sent} ontvanger(s)`, 4000);

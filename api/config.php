@@ -39,6 +39,7 @@ echo json_encode(array_merge([
     'freeShippingFrom'=> (float)$cfg['free_shipping_from'],
     'shippingCost'    => (float)$cfg['shipping_cost'],
     'customPrintingPrice' => (float)$cfg['custom_printing_price'],
+    'badgeExtraPrice'     => (float)($cfg['badge_extra_price'] ?? 3),
     'publicSiteUrl'   => rtrim((string)($cfg['public_site_url'] ?? ''), '/'),
     'emailjsPk'       => $cfg['emailjs_pk'],
     'emailjsService'  => $cfg['emailjs_service_order'],

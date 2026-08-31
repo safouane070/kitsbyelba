@@ -14,6 +14,17 @@ function ensure_admin_features_schema(PDO $pdo): void
         'SELECT COUNT(*) FROM information_schema.COLUMNS
          WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?'
     );
+    $ensureOrderColumn = static function (string $column, string $ddl) use ($chk, $schema, $pdo): void {
+        $chk->execute([$schema, 'orders', $column]);
+        if ((int)$chk->fetchColumn() === 0) {
+            try {
+                $pdo->exec('ALTER TABLE orders ADD COLUMN ' . $ddl);
+            } catch (Throwable $e) {
+                // ignore if race / already exists
+            }
+        }
+    };
+
     $chk->execute([$schema, 'orders', 'admin_note']);
     if ((int)$chk->fetchColumn() === 0) {
         try {
@@ -29,6 +40,20 @@ function ensure_admin_features_schema(PDO $pdo): void
             $pdo->exec("ALTER TABLE orders ADD COLUMN country CHAR(2) NOT NULL DEFAULT 'NL' AFTER city");
         } catch (Throwable $e) {
             // ignore if race
+        }
+    }
+    $ensureOrderColumn('tracking_number', "tracking_number VARCHAR(64) NULL AFTER admin_note");
+    $ensureOrderColumn('coupon_code', "coupon_code VARCHAR(50) NULL AFTER notes");
+    $ensureOrderColumn('discount', "discount DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER coupon_code");
+    $ensureOrderColumn('user_id', "user_id INT UNSIGNED NULL FIRST");
+
+    // order_items: welke versie (fan/player) is besteld — nodig voor fulfilment.
+    $chk->execute([$schema, 'order_items', 'version']);
+    if ((int)$chk->fetchColumn() === 0) {
+        try {
+            $pdo->exec("ALTER TABLE order_items ADD COLUMN version VARCHAR(10) NOT NULL DEFAULT 'fan' AFTER size");
+        } catch (Throwable $e) {
+            // ignore if race / already exists
         }
     }
 

@@ -2,6 +2,7 @@
 .env
 .env.local
 .env.*.local
+.cursor/mcp.json
 
 # OS / editor
 .DS_Store

@@ -6,7 +6,16 @@ header('Content-Type: application/json; charset=utf-8');
 $cfg = require __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/cors.php';
 kits_emit_cors_headers($cfg, true);
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
+
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -47,10 +56,19 @@ try {
     exit;
 }
 
-require_once __DIR__ . '/schema_admin_features.php';
-ensure_admin_features_schema($pdo);
-
 $input = json_decode((string)file_get_contents('php://input'), true) ?? [];
+$csrfIn = (string)($_SERVER['HTTP_X_CSRF_TOKEN'] ?? $input['csrf_token'] ?? '');
+$csrfSession = $_SESSION['checkout_csrf'] ?? '';
+if (
+    !is_string($csrfSession) ||
+    $csrfSession === '' ||
+    $csrfIn === '' ||
+    !hash_equals($csrfSession, $csrfIn)
+) {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'error' => 'Beveiligingssessie verlopen. Vernieuw de pagina en probeer opnieuw.']);
+    exit;
+}
 $email = strtolower(trim((string)($input['email'] ?? '')));
 $productId = (int)($input['product_id'] ?? 0);
 $size = strtoupper(trim((string)($input['size'] ?? '')));
@@ -90,8 +108,9 @@ if (!$row) {
 
 $total = (int)$row['stock'];
 $ss = !empty($row['stock_sizes']) ? json_decode((string)$row['stock_sizes'], true) : null;
-if (is_array($ss) && array_key_exists($size, $ss)) {
-    $qty = (int)$ss[$size];
+// Zelfde logica als product.php (renderProduct): bij JSON-per-maat ontbreekt een key = 0, niet “alles op voorraad”.
+if (is_array($ss)) {
+    $qty = (int)($ss[$size] ?? 0);
 } else {
     $qty = $total > 0 ? 999 : 0;
 }
