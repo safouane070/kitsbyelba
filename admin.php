@@ -3456,14 +3456,11 @@ let productFilterTimer = null;
 
 // ── RESTOCK NOTIFICATIONS ─────────────────────────────
 async function sendRestockNotifications(productId, restockedSizes) {
-  console.log('[restock] productId:', productId, 'restockedSizes:', restockedSizes);
-
   if (!EMAILJS_RESTOCK_TPL) {
     toast('⚠️ Geen nabestel-mail template-ID ingesteld', 6000);
     console.error('[restock] EMAILJS_RESTOCK_TPL is empty');
     return;
   }
-  console.log('[restock] template:', EMAILJS_RESTOCK_TPL);
 
   if (!restockedSizes || restockedSizes.length === 0) {
     console.warn('[restock] No restocked sizes — skipping');
@@ -3493,10 +3490,8 @@ async function sendRestockNotifications(productId, restockedSizes) {
     image2: p.image2,
     image3: p.image3,
   }) : '';
-  console.log('[restock] product:', productName, 'url:', productUrl);
 
   const notifications = await api('get_stock_notifications', { id: productId, sizes: restockedSizes });
-  console.log('[restock] notifications found:', notifications);
 
   if (!notifications || !notifications.length) {
     console.warn('[restock] No notifications in DB for these sizes');
@@ -3506,7 +3501,6 @@ async function sendRestockNotifications(productId, restockedSizes) {
   let sent = 0, failed = 0;
   for (const n of notifications) {
     try {
-      console.log('[restock] sending to:', n.email, 'size:', n.size);
       const restockParams = {
         to_email:     n.email,
         to_name:      (String(n.email).split('@')[0] || 'klant'),
@@ -3522,7 +3516,6 @@ async function sendRestockNotifications(productId, restockedSizes) {
       }
       await emailjs.send(EJSVC_RESTOCK, EMAILJS_RESTOCK_TPL, restockParams, kbeEmailJsSendOpts());
       sent++;
-      console.log('[restock] sent OK to', n.email);
       await api('clear_stock_notification_row', { id: productId, email: n.email, size: n.size });
     } catch(e) {
       failed++;

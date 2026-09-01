@@ -168,6 +168,27 @@ analytics/marketing is een echte opt-in-banner (scripts laden ná consent) nodig
 De asset-helper heet nu `kits_asset()` (was `kbe_asset()`) — consistent met de rest
 van de codebase (`kits_pdo`, `kits_session_start`, `kits_env`, `kits_log`, …).
 
+## JSON-endpoints: error-guard gecentraliseerd — includes/json_guard.php (finding #14)
+
+Het blok `ini_set('display_errors','0') + display_startup_errors + error_reporting(E_ALL) + ob_start()`
+stond identiek bovenaan `place-order.php`, `api/auth.php` en `api/checkout_csrf.php`
+(display_errors uit zodat PHP-warnings de JSON niet corrumperen; error_log blijft
+vol). Nu één `kits_json_guard()` in `includes/json_guard.php`, als állereerste
+require aangeroepen (vóór andere requires, want een require die warnt zou anders de
+JSON al breken). Wil je een endpoint lokaal debuggen: zet `display_errors` op `'1'`
+op die ene plek. `admin.php` (regel ~100) houdt z'n eigen inline-variant — die zit
+in een andere context (de AJAX-tak van de monoliet) en wordt meegenomen bij de
+admin-split, niet nu. Live geverifieerd: checkout_csrf/auth/place-order geven alle
+drie geldige JSON, geen PHP-output gelekt.
+
+## admin.php: restock-debuglogs verwijderd (finding #15)
+
+`sendRestockNotifications()` had 6 achtergebleven `console.log('[restock] …')`-regels
+van tijdens het debuggen; één logde klant-e-mailadressen (`n.email`) naar de
+browserconsole. Admin-only (achter login) dus geen datalek, maar rommelig + PII in
+console → verwijderd. De `console.error`-regels in de catch-blokken blijven: dat is
+echte foutdiagnostiek voor de admin als een mail faalt.
+
 ## css/app.css — z-index schaal (finding #4)
 
 Alle globale overlay-`z-index`-waarden lopen nu via semantische tokens in

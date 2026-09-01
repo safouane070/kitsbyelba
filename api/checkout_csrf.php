@@ -4,10 +4,9 @@
  */
 declare(strict_types=1);
 
-ob_start();
-ini_set('display_errors', '0');
-ini_set('display_startup_errors', '0');
-error_reporting(E_ALL);
+// Hide PHP errors from the browser + buffer output so nothing corrupts the JSON.
+require_once __DIR__ . '/../includes/json_guard.php';
+kits_json_guard();
 
 require_once __DIR__ . '/../includes/session.php';
 kits_session_start('Lax', 60 * 120);  // gc_maxlifetime nu vóór start (was erna = no-op)

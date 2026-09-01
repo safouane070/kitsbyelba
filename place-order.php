@@ -1,11 +1,7 @@
 <?php
-// Never output PHP errors/warnings to the browser — they break JSON parsing
-ini_set('display_errors', '0');
-ini_set('display_startup_errors', '0');
-error_reporting(E_ALL); // still logs to error_log, just not to browser output
-
-// Buffer all output so accidental whitespace/notices don't corrupt JSON
-ob_start();
+// Hide PHP errors from the browser + buffer output so nothing corrupts the JSON.
+require_once __DIR__ . '/includes/json_guard.php';
+kits_json_guard();
 
 // Start session so we can read user_id if the customer is logged in
 require_once __DIR__ . '/includes/session.php';
