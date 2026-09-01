@@ -544,7 +544,7 @@ main,
     padding: 8px 20px 14px;
     gap: 0;
     box-shadow: 0 8px 24px rgba(28, 26, 23, 0.08);
-    z-index: 89;
+    z-index:var(--z-nav-menu);
     max-height: calc(100dvh - 74px);
     overflow: auto;
     list-style: none;
