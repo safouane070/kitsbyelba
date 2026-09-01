@@ -38,6 +38,26 @@
   --shadow-sm:0 1px 3px rgba(24,26,23,.05),0 1px 2px rgba(24,26,23,.04);
   --shadow:0 6px 24px rgba(24,26,23,.08);
   --shadow-lg:0 16px 48px rgba(24,26,23,.12);
+  /* z-index schaal — één semantische ladder voor alle globale overlays.
+     Waarden behouden de bestaande stapelvolgorde. Lokale/component-interne
+     stacking (0–25) blijft rauw; alleen page-chrome & overlays gebruiken tokens. */
+  --z-nav-menu:89;      /* uitklappend mobiel nav-menu, net onder de balk */
+  --z-nav:90;           /* sticky nav-balk */
+  --z-back-to-top:140;  /* zwevende terug-naar-boven knop */
+  --z-float:150;        /* whatsapp-float / generieke drawer-backdrop */
+  --z-float-raised:151; /* drawer boven zijn backdrop */
+  --z-drawer-bg:180;    /* shop filter/refine backdrop */
+  --z-drawer:181;       /* shop refine-paneel */
+  --z-modal-bg:200;     /* nav-search / account modal backdrop */
+  --z-modal:201;        /* modal-inhoud */
+  --z-cart-bg:220;      /* winkelwagen / pdp-cart backdrop */
+  --z-cart:221;         /* winkelwagen / pdp-cart paneel */
+  --z-nav-mega:260;     /* mega-menu boven overlays */
+  --z-menu-bg:300;      /* mobiel menu-scherm (.mbg) */
+  --z-checkout:400;     /* checkout-overlay (.cscreen) */
+  --z-lightbox:500;     /* fullscreen product-lightbox */
+  --z-popup:600;        /* promo-popup */
+  --z-toast:700;        /* toasts — altijd bovenop */
 }
 
 @media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
@@ -67,7 +87,7 @@ body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-
 /* ── NAV ── */
 nav{
   background:var(--cream);border-bottom:1px solid var(--line);
-  position:sticky;top:0;z-index:90;backdrop-filter:blur(16px);
+  position:sticky;top:0;z-index:var(--z-nav);backdrop-filter:blur(16px);
   overflow:visible;
 }
 .promo-banner{
@@ -136,7 +156,7 @@ nav{
 .nav-mega{
   position:absolute;top:100%;left:50%;transform:translate(-50%,6px);
   min-width:240px;background:#fff;border:1px solid #e2dbcf;
-  box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:260;
+  box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:var(--z-nav-mega);
   opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .2s ease,visibility .18s;
 }
 .nav-mega a{
@@ -175,13 +195,13 @@ nav{
 .nav-search svg{width:18px;height:18px}
 .nav-search-modal-bg{
   position:fixed;inset:0;background:rgba(18,24,20,.45);opacity:0;pointer-events:none;
-  transition:opacity .2s;z-index:200;
+  transition:opacity .2s;z-index:var(--z-modal-bg);
 }
 .nav-search-modal-bg.on{opacity:1;pointer-events:auto}
 .nav-search-modal{
   position:fixed;left:50%;top:18vh;transform:translate(-50%,-8px);
   width:min(92vw,560px);background:#f8f7f3;border:1px solid var(--line);border-radius:12px;
-  box-shadow:0 18px 50px rgba(0,0,0,.2);padding:16px;opacity:0;pointer-events:none;transition:.2s;z-index:201;
+  box-shadow:0 18px 50px rgba(0,0,0,.2);padding:16px;opacity:0;pointer-events:none;transition:.2s;z-index:var(--z-modal);
 }
 .nav-search-modal.on{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
 .nav-search-modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -238,12 +258,12 @@ nav{
 
 /* ── CART PANEL + SHIPPING PROGRESS + ORDER MODAL (gedeeld: index+shop) ── */
 /* ── CART PANEL ── */
-.cbg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:220;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+.cbg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:var(--z-cart-bg);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 .cbg.on{opacity:1;pointer-events:auto}
 .cpanel{
   position:fixed;top:0;right:0;bottom:0;width:420px;
   background:var(--cream);border-left:1px solid var(--line);
-  z-index:221;transform:translateX(100%);
+  z-index:var(--z-cart);transform:translateX(100%);
   transition:transform .35s cubic-bezier(.4,0,.2,1);
   display:flex;flex-direction:column;box-shadow:-8px 0 48px rgba(28,26,23,.12);
 }
@@ -368,7 +388,7 @@ nav{
 .ship-free-msg{background:var(--accent-light);border:1px solid rgba(45,90,39,.15);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:12px;color:var(--accent);font-weight:600;text-align:center}
 
 /* ── ORDER MODAL ── */
-.mbg{position:fixed;inset:0;background:rgba(28,26,23,.6);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.mbg{position:fixed;inset:0;background:rgba(28,26,23,.6);z-index:var(--z-menu-bg);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
 .mbg.on{display:flex}
 .modal{
   background:var(--cream);border:1px solid var(--line);
@@ -474,7 +494,7 @@ nav{
   background:var(--ink);color:var(--cream);
   padding:12px 22px;border-radius:100px;
   font-size:13px;font-weight:600;letter-spacing:.01em;
-  z-index:500;transition:transform .3s cubic-bezier(.4,0,.2,1);
+  z-index:var(--z-toast);transition:transform .3s cubic-bezier(.4,0,.2,1);
   white-space:nowrap;box-shadow:var(--shadow-lg);
   display:inline-flex;align-items:center;gap:9px;max-width:min(90vw,520px);
 }
@@ -485,7 +505,7 @@ nav{
 .toast--success{background:var(--accent);color:#fff}
 .toast--error{background:var(--red);color:#fff}
 .toast--wish .toast-ico{color:#ff7a7a}
-.promo-popup-bg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:18px}
+.promo-popup-bg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:var(--z-popup);display:none;align-items:center;justify-content:center;padding:18px}
 .promo-popup-bg.on{display:flex}
 .promo-popup{background:var(--cream);border:1px solid var(--line);max-width:430px;width:100%;padding:24px;position:relative;box-shadow:var(--shadow-lg)}
 .promo-close{position:absolute;top:10px;right:10px;width:30px;height:30px;border:1px solid var(--line);background:#fff;cursor:pointer}
@@ -495,7 +515,7 @@ nav{
 
 
 /* ── WHATSAPP FLOAT ── */
-.wa-float{position:fixed;bottom:28px;right:28px;width:56px;height:56px;background:var(--wa);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.45);z-index:150;transition:transform .2s,box-shadow .2s;text-decoration:none;cursor:pointer}
+.wa-float{position:fixed;bottom:28px;right:28px;width:56px;height:56px;background:var(--wa);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.45);z-index:var(--z-float);transition:transform .2s,box-shadow .2s;text-decoration:none;cursor:pointer}
 .wa-float:hover{transform:scale(1.12);box-shadow:0 6px 32px rgba(37,211,102,.55)}
 .wa-float svg{width:28px;height:28px;fill:#fff}
 

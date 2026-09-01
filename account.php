@@ -112,7 +112,7 @@ body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-
 a{text-decoration:none;color:inherit}
 .page{flex:1}
 /* Site header = zelfde patroon als index.html (desktop + hamburger ≤960px in responsive-global.css) */
-.site-nav{background:var(--cream);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:90;backdrop-filter:blur(16px)}
+.site-nav{background:var(--cream);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:var(--z-nav);backdrop-filter:blur(16px)}
 .promo-banner{background:var(--accent-light);border-bottom:1px solid rgba(45,90,39,.15);text-align:center;padding:9px 16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700}
 .nav-top{max-width:1360px;margin:0 auto;padding:0 48px;height:74px;display:flex;align-items:center;justify-content:space-between;position:relative}
 .logo{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:.02em;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
@@ -128,7 +128,7 @@ a{text-decoration:none;color:inherit}
 .nav-links .has-mega>.top-link{display:inline-flex;align-items:center;gap:6px}
 .nav-links .has-mega>.top-link::before{content:''}
 .nav-links .has-mega>.top-link::after{content:'▾';font-size:10px;line-height:1;opacity:.65;position:static;background:none;transform:none;height:auto;transition:transform .2s ease}
-.nav-mega{position:absolute;top:100%;left:50%;transform:translate(-50%,6px);min-width:240px;background:#fff;border:1px solid #e2dbcf;box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:260;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .2s ease,visibility .18s}
+.nav-mega{position:absolute;top:100%;left:50%;transform:translate(-50%,6px);min-width:240px;background:#fff;border:1px solid #e2dbcf;box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:var(--z-nav-mega);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .2s ease,visibility .18s}
 .nav-mega a{display:flex;align-items:center;gap:10px;padding:8px 12px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);border-bottom:1px solid #eee7da;white-space:nowrap;border-radius:8px}
 .nav-mega a:last-child{border-bottom:none}
 .nav-mega a::after{display:none}
@@ -217,7 +217,7 @@ a{text-decoration:none;color:inherit}
 .btn-danger{padding:12px 24px;background:var(--red);color:#fff;border:none;font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:background .18s}
 .btn-danger:hover{background:#a93226}
 /* Modal */
-.modal-bg{position:fixed;inset:0;background:rgba(28,26,23,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-bg{position:fixed;inset:0;background:rgba(28,26,23,.55);z-index:var(--z-modal-bg);display:none;align-items:center;justify-content:center;padding:24px}
 .modal-bg.on{display:flex}
 .modal{background:#fff;padding:36px;max-width:420px;width:100%;position:relative}
 .modal h3{font-family:var(--font-display);font-size:22px;margin-bottom:8px}

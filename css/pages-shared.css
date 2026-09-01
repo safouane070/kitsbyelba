@@ -406,7 +406,7 @@
 
 
 /* ── DETAIL DRAWER ── */
-.dbg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:150;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+.dbg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:var(--z-float);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 
 
 .dbg.on{opacity:1;pointer-events:auto}
@@ -414,7 +414,7 @@
 
 .drawer{
   position:fixed;bottom:0;left:0;right:0;background:var(--cream);
-  border-top:1px solid var(--line);z-index:151;border-radius:20px 20px 0 0;
+  border-top:1px solid var(--line);z-index:var(--z-float-raised);border-radius:20px 20px 0 0;
   transform:translateY(100%);transition:transform .36s cubic-bezier(.4,0,.2,1);
   max-height:min(92dvh,92vh);overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,0);
 }
@@ -605,7 +605,7 @@
 
 /* ── CONFIRM SCREEN ── */
 .cscreen{
-  position:fixed;inset:0;background:var(--cream);z-index:400;
+  position:fixed;inset:0;background:var(--cream);z-index:var(--z-checkout);
   display:none;flex-direction:column;overflow-y:auto;
 }
 
