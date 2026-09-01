@@ -507,8 +507,8 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .cta{width:100%;padding:14px}
 }
 </style>
-<link rel="stylesheet" href="css/app.css?v=7">
-<link rel="stylesheet" href="css/responsive-global.css?v=15">
+<link rel="stylesheet" href="css/app.css?v=8">
+<link rel="stylesheet" href="css/responsive-global.css?v=16">
 <script defer src="js/kbe-ios-helpers.js?v=2"></script>
 </head>
 <body>

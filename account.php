@@ -249,8 +249,8 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .orders-table .hide-mobile{display:none}
 }
 </style>
-<link rel="stylesheet" href="css/app.css?v=7">
-<link rel="stylesheet" href="css/responsive-global.css?v=15">
+<link rel="stylesheet" href="css/app.css?v=8">
+<link rel="stylesheet" href="css/responsive-global.css?v=16">
 <script defer src="js/kbe-ios-helpers.js?v=2"></script>
 </head>
 <body class="account-page">
