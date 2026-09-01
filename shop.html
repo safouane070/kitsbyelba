@@ -1,5 +1,9 @@
 <?php
 /**
+ * LET OP: dit .html-bestand draait als PHP via .htaccess (SetHandler
+ * application/x-httpd-php). Zonder die regel verdwijnen nav/footer/announce STIL.
+ * Zie NOTES.md.
+ *
  * Server-side per-categorie SEO (finding #6). Voorheen serveerden shirts/sets/kids/
  * retro/voorraad/hemdsetjes ALLEMAAL identiek shop.html met canonical -> shop.html,
  * en pas client-side JS herschreef title/canonical. Crawlers zien nu direct een
