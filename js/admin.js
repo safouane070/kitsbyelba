@@ -55,11 +55,16 @@ function api(action, body={}) {
     body: JSON.stringify(payload)
   }).then(async r => {
     const text = await r.text();
+    let data;
     try {
-      return JSON.parse(text);
+      data = JSON.parse(text);
     } catch (_) {
-      throw new Error(`API ${action} gaf geen geldige JSON terug`);
+      if (r.status === 401 || r.status === 403) {
+        throw new Error('Sessie verlopen of geen toegang — log opnieuw in.');
+      }
+      throw new Error(`API ${action} gaf geen geldige JSON terug (HTTP ${r.status})`);
     }
+    return data;
   });
 }
 
@@ -310,7 +315,13 @@ async function sendConfirmationForCurrentOrder() {
 }
 
 function fmtDate(str) {
-  const d = new Date(str);
+  let d = new Date(str);
+  // MySQL 'YYYY-MM-DD HH:MM:SS' (met spatie) is niet-standaard in sommige engines → Invalid Date.
+  if (isNaN(d)) {
+    const m = String(str || '').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);
+    if (m) d = new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]);
+  }
+  if (isNaN(d)) return String(str || '');
   return d.toLocaleDateString('nl-NL',{day:'2-digit',month:'short',year:'numeric'});
 }
 
@@ -335,6 +346,7 @@ function tab(name) {
   if (name === 'voorraad')  loadVoorraadManagement();
   if (name === 'coupons')   loadCoupons();
   if (name === 'promo')     loadPromoSettings();
+  if (name === 'orders')    pollOrderBadge();
 }
 
 // ── VOORRAAD BEHEER ───────────────────────────────────
@@ -822,7 +834,6 @@ async function saveTracking() {
 }
 
 // ── CONFIRM DIALOG ────────────────────────────────────
-let _confirmCallback = null;
 function showConfirm(title, msg, onOk, okText) {
   const okBtn = document.getElementById('confirm-ok');
   if (okBtn) {
@@ -833,11 +844,9 @@ function showConfirm(title, msg, onOk, okText) {
   document.getElementById('confirm-title').textContent = title;
   document.getElementById('confirm-msg').textContent   = msg;
   document.getElementById('confirm-modal').classList.add('on');
-  _confirmCallback = onOk;
 }
 function closeConfirm() {
   document.getElementById('confirm-modal').classList.remove('on');
-  _confirmCallback = null;
   const ok = document.getElementById('confirm-ok');
   if (ok) {
     ok.textContent = 'Verwijderen';
@@ -982,7 +991,7 @@ async function markAsPaid() {
   const r = await api('update_status', {id: o.id, status: 'paid'});
   if (!r.ok) {
     toast('⚠️ Opslaan als betaald mislukt');
-    if (btn) { btn.disabled = false; btn.textContent = 'Markeer als betaald & stuur bevestiging'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Markeer als betaald & stuur betaalmail'; }
     return;
   }
   o.status = 'paid';
@@ -1198,16 +1207,6 @@ function detectProductVersion(p) {
 const catCoverProducts = {};
 let _coverPickerCat = null;
 
-function productHasSellableStockAdmin(p) {
-  if (!p) return false;
-  let ss = p.stock_sizes;
-  if (typeof ss === 'string' && ss) { try { ss = JSON.parse(ss); } catch (e) { ss = null; } }
-  if (ss && typeof ss === 'object' && Object.keys(ss).length) {
-    return Object.values(ss).some(q => Number(q) > 0);
-  }
-  return Number(p.stock || 0) > 0;
-}
-
 function getProdsForCoverCat(prods, cat) {
   if (cat === 'player') return prods.filter(p => detectProductVersion(p) === 'player');
   if (cat === 'voorraad') return prods.filter(p => parseInt(p.in_voorraad, 10) === 1);
@@ -1311,6 +1310,7 @@ function syncAdminStockGridForVersion() {
 }
 
 function openProductModal(id) {
+  productFormDirty = false;
   document.getElementById('product-modal').classList.add('on');
   document.getElementById('pm-title').textContent = id ? 'Product bewerken' : 'Product toevoegen';
   document.getElementById('p-id').value = id || '';
@@ -1442,6 +1442,15 @@ function removeImageSlot(slot) {
 }
 
 function closeProductModal() {
+  if (productFormDirty) {
+    showConfirm('Niet-opgeslagen wijzigingen', 'Je hebt niet-opgeslagen wijzigingen. Toch sluiten?', () => {
+      productFormDirty = false;
+      document.getElementById('product-modal').classList.remove('on');
+    });
+    document.getElementById('confirm-ok').textContent = 'Sluiten zonder opslaan';
+    document.getElementById('confirm-ok').style.background = '#f59e0b';
+    return;
+  }
   document.getElementById('product-modal').classList.remove('on');
 }
 
@@ -1549,6 +1558,7 @@ async function saveProduct() {
   api('save_product', data).then(async (r) => {
     saveBtn.disabled = false; saveBtn.textContent = 'Product opslaan';
     if (r.ok) {
+      productFormDirty = false;
       toast(data.id ? '✓ Product bijgewerkt' : '✓ Product toegevoegd');
       const pid = parseInt(data.id, 10) || r.id;
       if (pid && Array.isArray(r.restocked_sizes) && r.restocked_sizes.length > 0 && !r.restock_email_done) {
@@ -1788,8 +1798,6 @@ async function sendRestockNotifications(productId, restockedSizes) {
   if (failed > 0) toast(`⚠️ ${failed} e-mail(s) mislukt — zie console`, 4000);
 }
 
-function error_log_client(msg) { console.warn(msg); }
-
 // ── UNSAVED CHANGES WARNING ───────────────────────────
 let productFormDirty = false;
 function markProductDirty() { productFormDirty = true; }
@@ -1798,36 +1806,6 @@ document.getElementById('product-modal').querySelectorAll('input,textarea,select
   el.addEventListener('input', markProductDirty);
   el.addEventListener('change', markProductDirty);
 });
-
-const _origCloseProductModal = closeProductModal;
-closeProductModal = function() {
-  if (productFormDirty) {
-    showConfirm('Niet-opgeslagen wijzigingen', 'Je hebt niet-opgeslagen wijzigingen. Toch sluiten?', () => {
-      productFormDirty = false;
-      _origCloseProductModal();
-    });
-    document.getElementById('confirm-ok').textContent = 'Sluiten zonder opslaan';
-    document.getElementById('confirm-ok').style.background = '#f59e0b';
-  } else {
-    _origCloseProductModal();
-  }
-};
-
-// Reset dirty flag when modal opens
-const _origOpenProductModal = openProductModal;
-openProductModal = function(id) {
-  productFormDirty = false;
-  _origOpenProductModal(id);
-};
-
-// Reset dirty on successful save
-const _origSaveProduct = saveProduct;
-saveProduct = async function() {
-  const before = JSON.stringify(productsCache || []);
-  await _origSaveProduct();
-  const after = JSON.stringify(productsCache || []);
-  if (before !== after) productFormDirty = false;
-};
 
 // ── NEW ORDER BADGE POLLING ───────────────────────────
 let _lastPendingCount = null;
@@ -1851,16 +1829,6 @@ function pollOrderBadge() {
     _lastPendingCount = count;
   }).catch(()=>{});
 }
-
-// Hide badge when opening Orders tab
-const _origTab = tab;
-tab = function(name) {
-  _origTab(name);
-  if (name === 'orders') {
-    // Badge stays until orders are resolved — just keep it accurate
-    pollOrderBadge();
-  }
-};
 
 // Poll every 60 seconds
 pollOrderBadge();
