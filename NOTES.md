@@ -80,6 +80,94 @@ bovenaan het inline-script kleine no-op shims + defaults
 (`currentVersion='fan'`, `currentSeason=null`, `renderDrawerVersion(){}`, enz.).
 De homepage-winkelwagen gedraagt zich nu identiek aan de shop (versie 'fan').
 
+## Inline-CSS index vs shop — GEEN dedup (finding #8)
+
+Onderzocht of de ~39 selectors die inline in ZOWEL `index.html` als `shop.html`
+voorkomen (`.hero`, `.banner-*`, `.catcard`, `.cats-grid`, `.how-step`, …) naar
+`pages-shared.css` gehoist konden worden. **Conclusie: nee, bewust laten.**
+
+Alle 39 hebben *verschillende* regel-bodies per pagina — het is geen toevallige
+drift maar **echte per-pagina divergentie onder gedeelde classnamen**:
+- `.hero` = op de homepage een donkere radial-gradient-achtergrond; op shop een
+  tweekoloms grid-layout. Totaal andere component, zelfde naam.
+- `.cats-grid` = index `flex/wrap` (carousel), shop `grid 3-col`.
+- `.banner-content` = index links uitgelijnd, shop gecentreerd.
+- `.hero-trust` / `.hs-icon` / `.hero-sub` = index licht-op-donker, shop
+  donker-op-licht.
+
+Samenvoegen zou óf beide pagina's identiek forceren (breekt het bedoelde
+per-pagina ontwerp) óf per-pagina overrides vereisen (heft de dedup weer op).
+Dit is dezelfde situatie als de JS grid/filter-architectuur (zie dedup-notitie
+hierboven): gedeeld van naam, niet van gedrag. De inline-CSS blijft dus per
+pagina. Vergelijkingsscript-logica: elke top-level selector-body genormaliseerd
+en gediff't — 0 identieke, 39 verschillend.
+
+## Cache-busting via filemtime — includes/asset.php (finding #9)
+
+Handmatige `?v=N` op CSS/JS (die je moest onthouden te bumpen na elke edit, en
+die tussen pagina's kon gaan driften) is vervangen door `kbe_asset('css/app.css')`
+in `includes/asset.php`: hangt `?v=<filemtime>` aan, verandert automatisch bij
+elke bestandswijziging, identiek over alle pagina's. Gebruikt in `index.html`,
+`shop.html` (+ category-stubs via include) en `includes/nav.php` (nav-mega.js →
+werkt zo ook op product.php/account.php). Guard `function_exists` maakt
+dubbel-include veilig. Let op: dit is weer inline-PHP in de `.html`-pagina's, dus
+het valt onder dezelfde SetHandler-afhankelijkheid als nav/footer (zie boven).
+
+## EmailJS via CDN — SRI-pinning (finding #10)
+
+`@emailjs/browser@4/dist/email.min.js` (range-versie, geen integrity) is gepind
+op `@4.4.1` mét `integrity="sha384-…"` + `crossorigin` + `referrerpolicy`, in
+`index.html`, `shop.html` en `admin.php`. Reden: het script draait op de
+checkout-pagina; zonder SRI zou een gecompromitteerde jsdelivr vreemde JS met
+zicht op besteldata kunnen injecteren. LET OP bij upgraden: de exacte versie in
+de URL én de hash moeten samen mee — een kale `@4` mét integrity breekt zodra
+jsdelivr een nieuwe 4.x publiceert (hash-mismatch → script geblokkeerd → checkout
+stuk). Nieuwe hash: `curl -sL <url> | openssl dgst -sha384 -binary | openssl base64 -A`.
+
+## Sessie-start gecentraliseerd — includes/session.php (finding #11)
+
+Het `session_set_cookie_params([...]) + session_start()`-blok stond **10× gekopieerd**
+(admin, account, place-order, api/auth, checkout_csrf, healthz, upload, stock_notify,
+sync, reorganize) en was gedrift: 3 verschillende `secure`-checks (o.a. het foute
+`isset($_SERVER['HTTPS'])` → true bij `HTTPS='off'` → Secure over HTTP → sessie stuk
+achter een TLS-proxy) en `samesite` Strict/Lax door elkaar op dezelfde `PHPSESSID`.
+Nu één `kits_session_start(string $sameSite='Lax', ?int $gcMaxlifetime=null)`:
+- `secure` via `kits_request_is_https()` — checkt `$_SERVER['HTTPS']` én
+  `X-Forwarded-Proto` (reverse-proxy TLS, spiegelt de .htaccess-proxyregel).
+- **SameSite overal `Lax`** (was mixed): blokkeert cross-site POST (CSRF-vector) én
+  houdt login-redirects werkend; de echte CSRF-verdediging blijft de tokens. Admin/
+  healthz/upload/sync gingen van Strict → Lax zodat één gedeelde cookie één policy heeft.
+- `gc_maxlifetime` wordt nu **vóór** `session_start()` gezet; in place-order.php en
+  checkout_csrf.php stond het erná = no-op (stille bug), nu gefixt.
+Live geverifieerd: Set-Cookie op alle endpoints = `HttpOnly; SameSite=Lax`, geen Secure
+over HTTP; login/checkout-CSRF/upload-403 werken.
+
+## PDO-verbinding gecentraliseerd — includes/db.php (finding #12)
+
+`new PDO(...)` stond in **14 bestanden** en was gedrift: 6 misten
+`PDO::ATTR_DEFAULT_FETCH_MODE => FETCH_ASSOC` (kregen stil `FETCH_BOTH`). Geverifieerd
+dat geen van die 6 numerieke rij-indexen gebruikt vóór het gelijktrekken. Nu één
+`kits_pdo(array $cfg, bool $withDb=true)` (DSN + `ERRMODE_EXCEPTION` + `FETCH_ASSOC`);
+`$withDb=false` voor healthz' bare server/login-probe zonder dbname. `db.php` wordt
+via `config.php` geladen (elk endpoint laadt config toch), dus geen 14 losse requires.
+Aanroepers houden hun eigen try/catch. admin.php's dode `$DB`-array verwijderd.
+
+## Cookies & toestemming — geen banner, wél transparantie (finding #13)
+
+Onderzocht wat de site opslaat: `PHPSESSID` (login/cart/CSRF = strikt noodzakelijk) +
+localStorage (`kbe_cart_main`, wishlist, coupon, promo-popup-flag = functioneel). Geen
+analytics/pixels; Snapchat/TikTok in de footer zijn gewone profiel-links. Onder
+ePrivacy 5.3 + NL-cookiewet zijn functionele cookies/opslag vrijgesteld → **geen
+toestemmingsbanner vereist**. Openstaand (aanbevolen, nog te doen): (A) Google Fonts
+**self-hosten** (nu 3rd-party IP-verzending naar Google — LG München 2022), (B) korte
+**privacyverklaring** in de footer (AVG art. 13 transparantie). Pas bij toekomstige
+analytics/marketing is een echte opt-in-banner (scripts laden ná consent) nodig.
+
+## Naamconventie: kits_asset (finding #9 vervolg)
+
+De asset-helper heet nu `kits_asset()` (was `kbe_asset()`) — consistent met de rest
+van de codebase (`kits_pdo`, `kits_session_start`, `kits_env`, `kits_log`, …).
+
 ## css/app.css — z-index schaal (finding #4)
 
 Alle globale overlay-`z-index`-waarden lopen nu via semantische tokens in
