@@ -75,7 +75,7 @@ $__leagues = [
   </div>
 </nav>
 <!-- Verbergt league-links zonder producten uit de mega-menu (voorkomt lege pagina's). -->
-<script defer src="js/nav-mega.js?v=2"></script>
+<?php require_once __DIR__ . '/asset.php'; ?><script defer src="<?= kits_asset('js/nav-mega.js') ?>"></script>
 <?php
 unset(
   $navActive, $navHomePrefix, $navSearch, $navCartOnclick, $navCartNumId, $navClass,
