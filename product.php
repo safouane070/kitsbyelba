@@ -20,12 +20,7 @@ $pdpWaHref = $pdpWaDigits !== '' ? 'https://wa.me/' . $pdpWaDigits : '';
 
 if ($slugQ !== '' && preg_match('/^(\d+)/', $slugQ, $m)) {
     try {
-        $pdoSeo = new PDO(
-            'mysql:host=' . $cfg['db_host'] . ';dbname=' . $cfg['db_name'] . ';charset=utf8mb4',
-            $cfg['db_user'],
-            $cfg['db_pass'],
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-        );
+        $pdoSeo = kits_pdo($cfg);
         $st = $pdoSeo->prepare('SELECT id, name, description, image, price FROM products WHERE id = ? AND active = 1 LIMIT 1');
         $st->execute([(int)$m[1]]);
         $row = $st->fetch(PDO::FETCH_ASSOC);

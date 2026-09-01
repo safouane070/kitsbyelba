@@ -1,15 +1,7 @@
 <?php
 // Must match admin.php so the admin session cookie is recognized on fetch() to this endpoint.
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path'     => '/',
-    'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-    'httponly' => true,
-    'samesite' => 'Strict',
-]);
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../includes/session.php';
+kits_session_start('Lax');
 
 // Only logged-in admin can upload
 if (empty($_SESSION['admin'])) {

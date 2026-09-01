@@ -11,10 +11,7 @@ kits_emit_cors_headers($cfg, false);
 try {
     $view = strtolower(trim((string)($_GET['view'] ?? 'list')));
     $isDetail = $view === 'detail';
-    $pdo = new PDO(
-        "mysql:host={$cfg['db_host']};dbname={$cfg['db_name']};charset=utf8mb4",
-        $cfg['db_user'], $cfg['db_pass'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $pdo = kits_pdo($cfg);
     // Ensure player_price / player_stock_sizes (and other) columns exist before selecting them.
     require_once __DIR__ . '/schema_products.php';
     ensure_products_kits_path_column($pdo);

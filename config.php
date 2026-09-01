@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/bootstrap_env.php';
+require_once __DIR__ . '/includes/db.php'; // stelt kits_pdo() beschikbaar overal waar config geladen wordt
 kits_load_dotenv(__DIR__);
 
 /**

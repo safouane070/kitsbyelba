@@ -8,13 +8,8 @@ error_reporting(E_ALL); // still logs to error_log, just not to browser output
 ob_start();
 
 // Start session so we can read user_id if the customer is logged in
-session_set_cookie_params([
-    'lifetime' => 0, 'path' => '/',
-    'secure'   => isset($_SERVER['HTTPS']),
-    'httponly' => true, 'samesite' => 'Lax',
-]);
-session_start();
-ini_set('session.gc_maxlifetime', (string)(60 * 120));
+require_once __DIR__ . '/includes/session.php';
+kits_session_start('Lax', 60 * 120);  // gc_maxlifetime nu vóór start (was erna = no-op)
 
 header('Content-Type: application/json');
 $cfg = require __DIR__ . '/config.php';
@@ -48,11 +43,7 @@ if (
 
 // ===== CONNECT =====
 try {
-    $pdo = new PDO(
-        "mysql:host={$cfg['db_host']};dbname={$cfg['db_name']};charset=utf8mb4",
-        $cfg['db_user'], $cfg['db_pass'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
+    $pdo = kits_pdo($cfg);
 } catch (PDOException $e) {
     ob_end_clean();
     kits_log('error', 'place_order_db_connect_failed', ['error' => $e->getMessage()]);
