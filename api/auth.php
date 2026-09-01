@@ -10,15 +10,8 @@ ini_set('display_errors', '0');
 ini_set('display_startup_errors', '0');
 error_reporting(E_ALL); // still logs, just not to browser output
 
-session_set_cookie_params([
-    'lifetime' => 0,               // expires when browser closes
-    'path'     => '/',
-    'secure'   => isset($_SERVER['HTTPS']),
-    'httponly' => true,            // JS cannot read the cookie
-    'samesite' => 'Lax',           // allows normal page navigation
-]);
-session_start();
-ini_set('session.gc_maxlifetime', (string)(60 * 120));
+require_once __DIR__ . '/../includes/session.php';
+kits_session_start('Lax', 60 * 120);
 
 header('Content-Type: application/json');
 $cfg = require __DIR__ . '/../config.php';
@@ -48,11 +41,7 @@ function jsonOk(array $data = []): void {
 
 // ── DB ──────────────────────────────────────────────────────
 try {
-    $pdo = new PDO(
-        "mysql:host={$cfg['db_host']};dbname={$cfg['db_name']};charset=utf8mb4",
-        $cfg['db_user'], $cfg['db_pass'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-    );
+    $pdo = kits_pdo($cfg);
 } catch (PDOException $e) {
     kits_log('error', 'auth_db_connect_failed', ['error' => $e->getMessage()]);
     jsonError('Geen verbinding met de database. Probeer het later opnieuw.', 500);

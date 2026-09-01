@@ -1,16 +1,7 @@
 <?php
-// Secure session cookie: HttpOnly, SameSite=Strict, Secure when on HTTPS
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_set_cookie_params([
-        'lifetime' => 0,
-        'path'     => '/',
-        'secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-        'httponly' => true,
-        'samesite' => 'Strict',
-    ]);
-    session_start();
-}
+// Secure session cookie: HttpOnly, SameSite=Lax, Secure via kits_request_is_https().
 require_once __DIR__ . '/includes/session.php';
+kits_session_start('Lax');
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -38,8 +29,6 @@ define('EMAILJS_SVC_RESTOCK', $cfg['emailjs_service_restock']);
 define('EMAILJS_TPL',     $cfg['emailjs_template_paid']);
 define('EMAILJS_RESTOCK', $cfg['emailjs_template_restock'] ?? '');
 define('ADMIN_NOTIFY_EMAIL', trim((string)($cfg['notify_bcc_email'] ?? 'KitsByElbaa@outlook.com')));
-
-$DB = ['host'=>$cfg['db_host'],'db'=>$cfg['db_name'],'user'=>$cfg['db_user'],'pass'=>$cfg['db_pass']];
 
 // ── LOGOUT ─────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['_a'] ?? '') === 'logout') {
@@ -90,11 +79,7 @@ $auth = !empty($_SESSION['admin']);
 $pdo  = null;
 if ($auth) {
     try {
-        $pdo = new PDO(
-            "mysql:host={$DB['host']};dbname={$DB['db']};charset=utf8mb4",
-            $DB['user'], $DB['pass'],
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-        );
+        $pdo = kits_pdo($cfg);
         require_once __DIR__ . '/api/schema_products.php';
         require_once __DIR__ . '/api/schema_admin_features.php';
         ensure_products_kits_path_column($pdo);
@@ -647,7 +632,7 @@ if ($auth) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>KitsByElbaa — Beheer</title>
-<script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js" integrity="sha384-SALc35EccAf6RzGw4iNsyj7kTPr33K7RoGzYu+7heZhT8s0GZouafRiCg1qy44AS" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{

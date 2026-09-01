@@ -8,14 +8,8 @@ require_once __DIR__ . '/../includes/cors.php';
 kits_emit_cors_headers($cfg, true);
 header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
 
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-    'httponly' => true,
-    'samesite' => 'Lax',
-]);
-session_start();
+require_once __DIR__ . '/../includes/session.php';
+kits_session_start('Lax');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -43,12 +37,7 @@ if (
 }
 
 try {
-    $pdo = new PDO(
-        'mysql:host=' . $cfg['db_host'] . ';dbname=' . $cfg['db_name'] . ';charset=utf8mb4',
-        $cfg['db_user'],
-        $cfg['db_pass'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-    );
+    $pdo = kits_pdo($cfg);
 } catch (PDOException $e) {
     error_log('[stock_notify] ' . $e->getMessage());
     http_response_code(500);

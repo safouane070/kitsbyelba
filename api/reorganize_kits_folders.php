@@ -20,16 +20,8 @@ require_once __DIR__ . '/../includes/kits_admin_guard.php';
 
 $cfg = require __DIR__ . '/../config.php';
 $secret = (string)($cfg['import_secret'] ?? '');
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path' => '/',
-    'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-    'httponly' => true,
-    'samesite' => 'Strict',
-]);
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../includes/session.php';
+kits_session_start('Lax');
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['error' => 'Method not allowed']);
@@ -89,12 +81,7 @@ function reorganize_pruneEmptyDirs(string $root): void
 $pdo = null;
 if ($updateDb && !$dryRun) {
     try {
-        $pdo = new PDO(
-            "mysql:host={$cfg['db_host']};dbname={$cfg['db_name']};charset=utf8mb4",
-            $cfg['db_user'],
-            $cfg['db_pass'],
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-        );
+        $pdo = kits_pdo($cfg);
         ensure_products_kits_path_column($pdo);
     } catch (Exception $e) {
         http_response_code(500);

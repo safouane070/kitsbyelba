@@ -26,12 +26,7 @@ if ($base !== '') {
 }
 
 try {
-    $pdo = new PDO(
-        'mysql:host=' . $cfg['db_host'] . ';dbname=' . $cfg['db_name'] . ';charset=utf8mb4',
-        $cfg['db_user'],
-        $cfg['db_pass'],
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
+    $pdo = kits_pdo($cfg);
     $rows = $pdo->query('SELECT id, name FROM products WHERE active = 1 ORDER BY sort_order, id')->fetchAll(PDO::FETCH_ASSOC);
     foreach ($rows as $r) {
         if ($base === '') {

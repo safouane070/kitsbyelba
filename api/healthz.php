@@ -11,16 +11,8 @@ $cfg = require $root . '/config.php';
 // infrastructure info and must not be exposed to anonymous visitors. Require an
 // admin session OR the import secret (header or ?secret=). Everyone else gets a
 // bare liveness probe only.
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path'     => '/',
-    'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-    'httponly' => true,
-    'samesite' => 'Strict',
-]);
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once $root . '/includes/session.php';
+kits_session_start('Lax');
 $importSecret   = (string)($cfg['import_secret'] ?? '');
 $secretProvided = (string)($_SERVER['HTTP_X_IMPORT_SECRET'] ?? $_GET['secret'] ?? '');
 $authorized = !empty($_SESSION['admin'])
@@ -47,12 +39,7 @@ $dbn = (string)($cfg['db_name'] ?? '');
 $checks['db_server_login'] = false;
 if ($host !== '' && $user !== '') {
     try {
-        $pdoBare = new PDO(
-            'mysql:host=' . $host . ';charset=utf8mb4',
-            $user,
-            $pass,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-        );
+        $pdoBare = kits_pdo($cfg, false); // false = zonder dbname: test server/login los van DB-naam
         $pdoBare->query('SELECT 1');
         $checks['db_server_login'] = true;
     } catch (Throwable $e) {
@@ -64,12 +51,7 @@ if ($host !== '' && $user !== '') {
 }
 
 try {
-    $pdo = new PDO(
-        'mysql:host=' . $host . ';dbname=' . $dbn . ';charset=utf8mb4',
-        $user,
-        $pass,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-    );
+    $pdo = kits_pdo($cfg);
     $pdo->query('SELECT 1');
     $checks['db'] = true;
 } catch (Throwable $e) {
