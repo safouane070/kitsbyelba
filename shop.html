@@ -41,83 +41,33 @@
   }
 }
 </script>
+<link rel="stylesheet" href="css/pages-shared.css?v=1">
 <style>
-/* ── BANNER SLIDER ── */
-/* To use real photos: add style="background-image:url('...')" to .banner-slide-1 and .banner-slide-2 in the HTML */
-.banner-slider{position:relative;overflow:hidden}
-.banner-track{display:flex;transition:transform .65s cubic-bezier(.4,0,.2,1)}
+
 .banner-slide{
   min-width:100%;height:55vh;min-height:340px;
   display:flex;align-items:center;justify-content:center;
   position:relative;background-size:cover;background-position:center;
 }
-.banner-slide-1{background-color:var(--ink)}
-.banner-slide-2{background:linear-gradient(135deg,#1a3d17 0%,var(--accent) 100%)}
-.banner-slide.has-photo{
-  background:none;
-  background-color:#0f1115;
-}
-.banner-bg-blur{
-  position:absolute;inset:0;
-  background-size:cover;background-position:center center;background-repeat:no-repeat;
-  filter:blur(18px);
-  transform:scale(1.08);
-  opacity:.62;
-  z-index:1;
-  pointer-events:none;
-}
-.banner-photo{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:contain;object-position:center center;
-  z-index:2;pointer-events:none;
-}
-.banner-photo.hide{display:none}
-.banner-overlay{position:absolute;inset:0;background:linear-gradient(120deg, rgba(20,18,16,.62), rgba(20,18,16,.34));z-index:3}
+
 .banner-content{
   position:relative;z-index:4;text-align:center;
   max-width:660px;padding:0 48px;
 }
-.banner-tag{
-  display:inline-block;
-  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);
-  padding:5px 16px;border-radius:100px;
-  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(255,255,255,.9);margin-bottom:18px;
-}
+
 .banner-title{
   font-family:var(--font-display);
   font-size:clamp(32px,5vw,62px);font-weight:700;
   color:#fff;line-height:1.05;margin-bottom:16px;
 }
 .banner-title em{font-style:italic;color:var(--gold2)}
-.banner-sub{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:28px}
+
 .banner-btn{
   background:#fff;color:var(--ink);border:none;
   padding:14px 36px;font-family:var(--font-body);
   font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
   cursor:pointer;transition:all .22s;
 }
-.banner-btn:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.25)}
-.banner-arrow{
-  position:absolute;top:50%;transform:translateY(-50%);
-  width:44px;height:44px;border-radius:50%;
-  background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.28);
-  color:#fff;font-size:24px;font-weight:300;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  z-index:10;transition:all .2s;line-height:1;
-}
-.banner-arrow:hover{background:rgba(255,255,255,.28);transform:translateY(-50%) scale(1.06)}
-.banner-arrow.prev{left:20px}
-.banner-arrow.next{right:20px}
-.banner-dots{
-  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
-  display:flex;gap:8px;z-index:10;
-}
-.banner-dot{
-  width:8px;height:8px;border-radius:4px;
-  background:rgba(255,255,255,.35);border:none;cursor:pointer;transition:all .25s;
-}
-.banner-dot.active{width:24px;background:#fff}
 
 /* ── HERO ── */
 .hero{
@@ -145,20 +95,7 @@
   font-size:16px;font-weight:400;color:var(--ink3);
   line-height:1.8;max-width:440px;margin-bottom:44px;
 }
-.hero-btns{display:flex;gap:14px;align-items:center}
-.btn-primary{
-  background:var(--ink);color:var(--cream);border:none;padding:16px 40px;
-  font-family:var(--font-body);font-size:12px;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:all .22s;
-}
-.btn-primary:hover{background:var(--accent);transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,90,39,.25)}
-.btn-sec{
-  background:transparent;color:var(--ink);border:1.5px solid var(--line2);
-  padding:15px 30px;font-family:var(--font-body);
-  font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  cursor:pointer;transition:all .2s;
-}
-.btn-sec:hover{border-color:var(--ink)}
+
 .hero-trust{
   display:flex;gap:32px;margin-top:56px;padding-top:40px;border-top:1px solid var(--line);
 }
@@ -181,47 +118,16 @@
   display:flex;align-items:center;justify-content:center;
   font-size:64px;position:relative;
 }
-.hcard-badge{
-  position:absolute;top:12px;right:12px;
-  font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 9px;
-}
-.hcard-badge.new{background:var(--accent);color:#fff}
-.hcard-badge.hot{background:var(--ink);color:var(--cream)}
-.hcard-info{padding:14px 16px}
-.hcard-name{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
-.hcard-price{font-size:12px;color:var(--accent);font-weight:600}
 
-/* ── SHOP ── */
-.shop{max-width:1360px;margin:0 auto;padding:80px 48px}
-.shop{scroll-margin-top:130px}
-.shop{scroll-margin-top:130px}
-.shop-voorraad-lede{margin:0 0 22px;padding:0;max-width:56rem;border:1px solid var(--line);border-radius:10px;background:var(--white);box-shadow:0 2px 14px rgba(28,26,23,.06);overflow:hidden}
-.shop-voorraad-inner{display:flex;gap:14px;align-items:flex-start;padding:16px 18px 16px 14px;border-left:4px solid #2d5a27}
-.shop-voorraad-lede--out .shop-voorraad-inner{border-left-color:#b45309}
-.shop-voorraad-ico{flex-shrink:0;width:40px;height:40px;border-radius:10px;background:linear-gradient(145deg,rgba(45,90,39,.14),rgba(45,90,39,.06));display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1}
-.shop-voorraad-lede--out .shop-voorraad-ico{background:linear-gradient(145deg,rgba(180,83,9,.12),rgba(180,83,9,.05))}
-.shop-voorraad-lede-p{margin:0;font-size:14px;color:var(--ink);line-height:1.55;font-weight:500}
-.shop-voorraad-lede-p strong{font-weight:700;color:var(--ink)}
-.shop-voorraad-lede-sub{margin:10px 0 0;font-size:13px;color:var(--ink3);line-height:1.5}
-.shop-header{
-  display:flex;align-items:flex-end;justify-content:space-between;
-  margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid var(--line);
-}
 .sh-left .sh-eyebrow{display:none}
-.sh-title{font-family:var(--font-display);font-size:48px;font-weight:700;color:var(--ink);line-height:1}
-.sh-lede{margin:10px 0 0;font-size:13px;color:var(--ink3);line-height:1.55;max-width:700px}
-.sh-count{font-size:12px;color:var(--ink4);padding-bottom:4px;letter-spacing:.04em}
 
-/* Filter pills */
-.filter-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:36px}
 .fpill{
   background:var(--white);border:1.5px solid var(--line);color:var(--ink3);
   padding:7px 18px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
   cursor:pointer;border-radius:100px;transition:all .18s;
   display:inline-flex;align-items:center;gap:8px;line-height:1;
 }
-.fpill:hover{border-color:var(--ink);color:var(--ink)}
-.fpill.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
+
 .fpill-logo{width:32px;height:32px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;margin-left:-8px;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:3px}
 .fpill-logo img{width:100%;height:100%;object-fit:contain;display:block}
 .fpill-logo--emoji{font-size:19px;padding:0;line-height:1}
@@ -235,178 +141,13 @@
   grid-template-columns:repeat(auto-fill,minmax(min(100%,276px),1fr));
   gap:24px;
 }
-.no-results{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--ink3)}
-.no-results strong{display:block;font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px}
-.no-results p{font-size:14px;margin-bottom:20px}
-.no-results .btn-sec{display:inline-block}
-.no-results-tips{margin:18px auto 0;padding:0;max-width:440px;list-style:disc;text-align:left;font-size:13px;color:var(--ink2);line-height:1.55}
-.no-results-tips li{margin:8px 0;padding-left:4px}
-.no-results-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
-.no-results-actions button{padding:8px 12px;border:1px solid var(--line);background:var(--white);font-size:11px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
-.no-results-actions button:hover{border-color:var(--ink);color:var(--ink)}
-.pcard{
-  background:var(--white);border:1px solid #e0d9cc;
-  overflow:hidden;cursor:pointer;transition:transform .28s,box-shadow .28s,border-color .28s;
-  box-shadow:0 4px 18px rgba(28,26,23,.06);display:flex;flex-direction:column;border-radius:12px;
-}
-.pcard.card-enter{opacity:0;transform:translateY(12px);animation:cardIn .42s ease forwards}
-@keyframes cardIn{to{opacity:1;transform:translateY(0)}}
-.pcard:hover{transform:translateY(-6px);box-shadow:0 16px 34px rgba(28,26,23,.14);border-color:#cec5b7}
-.pcard.card-enter{opacity:0;transform:translateY(12px);animation:cardIn .42s ease forwards}
-@keyframes cardIn{to{opacity:1;transform:translateY(0)}}
-.pimg-wrap{
-  aspect-ratio:4/5;
-  background:linear-gradient(155deg,var(--cream2),var(--cream3));
-  display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;border-bottom:1px solid #ece4d8;
-}
-.pimg-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
-.pcard:hover .pimg-wrap img{transform:scale(1.04)}
-.pnoimg{
-  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;
-  color:var(--ink4);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
-}
-.pnoimg .icon{font-size:30px;opacity:.5}
-.pimg-wrap::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to bottom,transparent 55%,rgba(28,26,23,.04));
-}
-.pwish-btn{
-  position:absolute;top:12px;right:12px;z-index:2;width:34px;height:34px;border-radius:50%;
-  border:1px solid rgba(28,26,23,.14);background:rgba(255,255,255,.96);color:#a3a3a3;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;
-  box-shadow:0 6px 16px rgba(28,26,23,.08);
-  transition:transform .18s ease,box-shadow .2s ease,border-color .2s ease,color .2s ease,background .2s ease;
-}
-.pwish-btn:hover{border-color:rgba(185,28,28,.35);color:#b91c1c;transform:translateY(-1px)}
-.pwish-btn:active{transform:scale(.95)}
-.pwish-btn.on{
-  background:linear-gradient(180deg,#ef4444,#b91c1c);
-  border-color:#b91c1c;color:#fff;
-  box-shadow:0 10px 20px rgba(185,28,28,.32);
-  animation:wishPop .28s ease;
-}
-@keyframes wishPop{
-  0%{transform:scale(.82)}
-  55%{transform:scale(1.08)}
-  100%{transform:scale(1)}
-}
-.pbadge{
-  position:absolute;top:14px;left:14px;z-index:1;
-  font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;
-}
-.pbadge.new{background:var(--accent);color:#fff}
-.pbadge.hot{background:var(--ink);color:var(--cream)}
-.pbadge.bestseller{background:#2d5a27;color:#fff}
-.fpill .fpill-count{opacity:.7;font-weight:600}
-.pbody{padding:16px 16px 18px;flex:1;display:flex;flex-direction:column}
-.pleague{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px}
-.pname{
-  font-family:var(--font-display);font-size:20px;font-weight:600;
-  color:var(--ink);line-height:1.18;margin-bottom:4px;flex:1;
-}
-.pseason{font-size:11px;color:var(--ink4);margin-bottom:8px}
-.stock-pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;width:max-content}
-.stock-pill.ok{background:#d1fae5;color:#065f46}
-.stock-pill.low{background:#fef3c7;color:#92400e}
-.stock-pill.out{background:#fee2e2;color:#991b1b}
-.pfooter{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
-.pprice{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--ink)}
-.padd-btn{
-  width:44px;height:44px;
-  background:var(--cream2);border:1.5px solid var(--line);
-  color:var(--ink);font-size:20px;font-weight:300;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .18s;
-}
-.padd-btn:hover{background:var(--ink);border-color:var(--ink);color:var(--cream)}
-.shop-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
-.shop-toolbar .finput{max-width:420px}
-.shop-mobile-filter-btn{
-  display:none;
-  border:1px solid var(--line);
-  background:var(--white);
-  color:var(--ink);
-  border-radius:8px;
-  padding:10px 14px;
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  cursor:pointer;
-}
-.shop-mobile-filter-btn:hover{border-color:var(--ink)}
-.shop-view-toggle{display:none;gap:6px;align-items:center}
-.shop-view-btn{
-  width:42px;height:42px;border:1px solid var(--line);background:var(--white);color:var(--ink2);
-  border-radius:8px;cursor:pointer;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;
-}
-.shop-view-btn.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
-.fselect{
-  background:var(--white);border:1.5px solid var(--line);color:var(--ink);
-  padding:11px 14px;font-family:var(--font-body);font-size:13px;border-radius:4px;outline:none;
-}
 
-/* ── DETAIL DRAWER ── */
-.dbg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:150;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
-.dbg.on{opacity:1;pointer-events:auto}
-.drawer{
-  position:fixed;bottom:0;left:0;right:0;background:var(--cream);
-  border-top:1px solid var(--line);z-index:151;border-radius:20px 20px 0 0;
-  transform:translateY(100%);transition:transform .36s cubic-bezier(.4,0,.2,1);
-  max-height:min(92dvh,92vh);overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,0);
-}
-.drawer.on{transform:translateY(0)}
-.drawer-pill{width:40px;height:4px;background:var(--line2);border-radius:2px;margin:16px auto 0}
-.drawer-body{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:60px;max-width:880px;margin:0 auto;padding:36px 48px 56px;
-}
-
-.d-gallery{display:flex;flex-direction:column;gap:12px}
-.d-thumbs{display:flex;gap:10px;flex-wrap:wrap}
-.d-thumb{
-  width:72px;height:90px;border:1px solid var(--line);border-radius:4px;
-  overflow:hidden;cursor:pointer;background:linear-gradient(145deg,var(--cream2),var(--cream3));
-  opacity:.85;transition:all .15s;flex-shrink:0;
-}
-.d-thumb.on{opacity:1;border-color:var(--accent);transform:translateY(-2px)}
-.d-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-
-.d-img{
-  aspect-ratio:3/4;background:linear-gradient(145deg,var(--cream2),var(--cream3));
-  border:1px solid var(--line);border-radius:4px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:110px;overflow:hidden;position:relative;
-}
-.d-img img{width:100%;height:100%;object-fit:cover}
-.d-arrow{
-  position:absolute;top:50%;transform:translateY(-50%);
-  width:38px;height:38px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.55);background:rgba(28,26,23,.35);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;
-  cursor:pointer;transition:all .16s;backdrop-filter:blur(2px);z-index:2;
-}
-.d-arrow:hover{background:rgba(28,26,23,.58);transform:translateY(-50%) scale(1.05)}
-.d-arrow:disabled{opacity:.35;cursor:not-allowed;transform:translateY(-50%)}
-.d-arrow.prev{left:10px}
-.d-arrow.next{right:10px}
-.d-league{font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
-.d-name{font-family:var(--font-display);font-size:40px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:14px}
-.d-desc{font-size:14px;color:var(--ink3);line-height:1.8;margin-bottom:16px}
-.d-price{font-family:var(--font-display);font-size:46px;font-weight:700;color:var(--ink);margin-bottom:18px}
-.stock-msg{font-size:12px;margin:2px 0 12px}
-.stock-msg.ok{color:#065f46}
-.stock-msg.low{color:#92400e}
-.stock-msg.out{color:#991b1b;font-weight:700}
 .voorraad-info{background:var(--cream2);border:1px solid var(--line);padding:10px 14px;margin:10px 0;border-radius:2px}
 .voorraad-row{display:flex;gap:10px;align-items:flex-start}
 .voorraad-icon{font-size:18px;flex-shrink:0}
 .voorraad-info strong{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
 .voorraad-info p{font-size:13px;color:var(--ink3);margin-top:3px}
-.sz-label{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink4);margin-bottom:12px}
-.sz-required{color:var(--red)}
-.sz-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+
 .versie-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .versie-btn{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:9px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:1px;font-family:var(--font-body);transition:all .16s;min-width:96px}
 .versie-btn:hover{border-color:var(--ink)}
@@ -422,148 +163,17 @@
   cursor:pointer;transition:all .16s;min-width:48px;
 }
 .sz:hover{border-color:var(--ink);color:var(--ink)}
-.sz.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
-.sz-hint{font-size:12px;color:var(--ink4);margin-bottom:20px;font-style:italic}
-.sz-hint.error{color:var(--red);font-style:normal;font-weight:600}
-/* KIDS chart in drawer — zelfde als index #sizeguide-kids */
-.kids-jersey-drawer{margin:-2px 0 14px;max-width:100%;min-width:0}
-.kids-jersey-drawer .kids-maten-drawer-card{margin:0 auto;max-width:100%}
 
-/* Custom printing option */
-.print-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.popt{
-  border:1.5px solid var(--line);background:var(--white);color:var(--ink3);
-  padding:12px 16px;font-family:var(--font-body);font-size:12px;font-weight:700;
-  letter-spacing:.06em;cursor:pointer;transition:all .16s;border-radius:8px;
-}
-.popt:hover{border-color:var(--ink);color:var(--ink)}
-.popt.on{background:var(--ink);border-color:var(--ink);color:var(--cream)}
-
-.print-fields{
-  border:1px solid var(--line);
-  background:var(--cream2);
-  border-radius:8px;padding:14px 14px;margin-bottom:14px;
-}
-.print-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.print-grid .finput{background:var(--white)}
-.print-hint{font-size:11px;color:var(--ink3);line-height:1.55;margin:-2px 0 10px;max-width:40em}
-.print-hint strong{color:var(--ink);font-weight:600}
-.shop-sort-select{min-width:0}
-
-.policy{
-  border-top:1px solid var(--line);
-  margin-top:18px;padding-top:18px;
-  color:var(--ink3);font-size:13px;line-height:1.8;
-}
-.policy h3{
-  font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink4);
-  margin-bottom:10px;
-}
-.d-add{
-  width:100%;background:var(--ink);color:var(--cream);border:none;padding:18px;
-  font-family:var(--font-body);font-size:13px;font-weight:600;
-  letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;
-}
-.d-add:hover:not(:disabled){background:var(--accent);transform:translateY(-2px)}
-.d-add:disabled{background:var(--ink4);cursor:not-allowed;transform:none;opacity:.7}
-
-/* ── CONFIRM SCREEN ── */
-.cscreen{
-  position:fixed;inset:0;background:var(--cream);z-index:400;
-  display:none;flex-direction:column;overflow-y:auto;
-}
-.cscreen.on{display:flex}
-@keyframes cpop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes cup{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-/* confirm nav */
-.cscreen-nav{
-  flex-shrink:0;padding:0 32px;height:64px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:#fff;border-bottom:1px solid var(--line);
-}
-.cscreen-logo{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)}
-.cscreen-back{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;border:1px solid var(--line);background:#fff;padding:8px 18px;font-family:var(--font-body);transition:all .18s}
-.cscreen-back:hover{border-color:var(--ink);color:var(--ink)}
-
-/* confirm body */
-.cscreen-body{
-  flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;max-width:1000px;
-  width:100%;margin:0 auto;padding:48px 32px;gap:40px;align-items:start;
-}
-
-/* left column */
-.cscreen-left{animation:cup .45s .05s both}
-.ccheck{
-  width:68px;height:68px;background:var(--accent);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:28px;
-  margin-bottom:24px;animation:cpop .5s cubic-bezier(.175,.885,.32,1.275) both;
-}
-.ctitle{
-  font-family:var(--font-display);font-size:clamp(32px,4.5vw,52px);
-  font-weight:700;color:var(--ink);line-height:1.1;margin-bottom:12px;
-}
-.ctitle em{font-style:italic;color:var(--accent)}
-.csub{font-size:14px;color:var(--ink3);line-height:1.75;margin-bottom:28px;max-width:400px}
-.csub.err{color:var(--red)}
-
-/* steps timeline */
-.steps{display:flex;flex-direction:column;gap:0;margin-bottom:32px}
-.step{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
-.step:last-child{border-bottom:none}
 .step-i{width:36px;height:36px;background:var(--accent-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.step-text{display:flex;flex-direction:column;gap:2px;padding-top:4px}
-.step-l{font-size:13px;font-weight:600;color:var(--ink)}
-.step-d{font-size:12px;color:var(--ink3)}
 
-.wa-confirm-btn{
-  display:inline-flex;align-items:center;gap:10px;
-  background:var(--wa);color:#fff;border:none;padding:14px 28px;
-  border-radius:100px;font-family:var(--font-body);font-size:12px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;
-  transition:all .2s;margin-right:12px;
-}
-.wa-confirm-btn:hover{background:#1ebe5a;transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.3)}
-.wa-confirm-btn svg{width:18px;height:18px;fill:#fff}
-
-/* right column — order card */
-.cscreen-right{animation:cup .45s .12s both}
-.ccard{
-  background:var(--white);border:1px solid var(--line);
-  padding:0;position:sticky;top:80px;
-}
-.ccard-head{
-  padding:20px 24px;border-bottom:1px solid var(--line);background:var(--ink);
-}
-.cord-lbl{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(250,248,244,.5);margin-bottom:4px}
-.cord-id{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--cream);letter-spacing:.04em}
-.ccard-body{padding:20px 24px}
-.cord-item{display:flex;justify-content:space-between;font-size:13px;color:var(--ink2);padding:10px 0;border-bottom:1px solid var(--cream3)}
-.cord-item-name{flex:1;padding-right:12px;line-height:1.4}
-.cord-item-name small{display:block;font-size:11px;color:var(--ink4);margin-top:2px}
-.cord-meta{display:flex;justify-content:space-between;font-size:13px;color:var(--ink3);padding:8px 0}
-.cord-total{
-  display:flex;justify-content:space-between;
-  font-family:var(--font-display);font-size:18px;font-weight:700;
-  color:var(--ink);padding:16px 24px;background:var(--cream2);
-  border-top:2px solid var(--line);margin:0;
-}
-
-/* ── HOW IT WORKS ── */
-.how{background:var(--cream2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:80px 48px}
-.how-inner{max-width:1360px;margin:0 auto}
 .how-head{text-align:center;margin-bottom:56px}
 .how-title{font-family:var(--font-display);font-size:48px;font-weight:700;color:var(--ink);line-height:1}
-.how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+
 .how-step{background:var(--white);border:1px solid var(--line);padding:32px 28px;position:relative;transition:transform .22s,box-shadow .22s}
-.how-step:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+
 .hs-num{font-family:var(--font-display);font-size:60px;font-weight:700;color:var(--line);position:absolute;top:12px;right:18px;line-height:1}
 .hs-icon{font-size:32px;margin-bottom:16px;display:block}
 .how-step h3{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--ink);margin-bottom:10px}
-.how-step p{font-size:13.5px;color:var(--ink3);line-height:1.75}
-
-/* ── FOOTER ── */
-footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
 
 /* ── CATEGORY CARDS ── */
 .cats{
@@ -571,7 +181,7 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
   background:var(--cream);
   border-top:1px solid var(--line);
 }
-.cats-inner{max-width:1200px;margin:0 auto}
+
 .cats-head{text-align:center;margin-bottom:40px}
 .cats-grid{
   display:grid;
@@ -585,52 +195,9 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
   transition:transform .25s cubic-bezier(.4,0,.2,1);
 }
 .catcard:hover{transform:scale(1.02)}
-.catcard:hover .catcard-img{transform:scale(1.06)}
-.catcard-img{
-  position:absolute;inset:0;
-  background-size:cover;background-position:center;
-  background-color:var(--ink2);
-  transition:transform .4s cubic-bezier(.4,0,.2,1);
-}
-.catcard-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top, rgba(28,26,23,.85) 0%, rgba(28,26,23,.2) 60%, transparent 100%);
-}
-.catcard-label{
-  position:absolute;bottom:0;left:0;right:0;
-  padding:20px 22px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.catcard-name{
-  font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--cream);
-}
-.catcard-arrow{
-  width:32px;height:32px;background:var(--cream);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;color:var(--ink);
-  transition:background .2s;flex-shrink:0;
-}
-.catcard:hover .catcard-arrow{background:var(--gold2)}
-
-/* ── SHOP FILTER REDESIGN ── */
-.filter-type-tabs{
-  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;width:100%;max-width:100%;
-}
-.ftab{
-  padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--ink3);
-  border:1px solid var(--line);border-radius:8px;background:var(--white);
-  cursor:pointer;font-family:var(--font-body);transition:background .18s,color .18s,border-color .18s,box-shadow .18s;
-  box-shadow:0 1px 2px rgba(28,26,23,.04);
-}
-.ftab.on{background:var(--ink);color:var(--cream);border-color:var(--ink);box-shadow:none}
-.ftab:not(.on):hover{background:var(--cream3);border-color:var(--ink3);color:var(--ink)}
-#ftab-voorraad:not(.on){border-color:rgba(26,45,26,.28);color:#243524}
-#ftab-voorraad.on{background:#1a2d1a;border-color:#1a2d1a;color:#faf8f4}
 
 .filter-league-wrap{margin-bottom:18px}
-.filter-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0}
+
 /* Extra filters: version, kit type, voorraad */
 .shop-refine-wrap{margin-bottom:14px}
 .shop-refine-toggle{
@@ -642,22 +209,9 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
   box-shadow:0 3px 16px rgba(28,26,23,.05);
 }
 .shop-refine-toggle:hover{border-color:var(--ink);color:var(--ink);box-shadow:0 5px 18px rgba(28,26,23,.08)}
-.shop-refine-hint{
-  font-weight:500;text-transform:none;letter-spacing:0;color:var(--ink4);font-size:12px;
-}
-.shop-refine-badge{
-  font-size:10px;min-width:22px;height:22px;padding:0 7px;
-  display:inline-flex;align-items:center;justify-content:center;
-  background:var(--ink);color:var(--cream);border-radius:100px;font-weight:700;
-}
-.shop-refine-badge[hidden]{display:none !important}
-.shop-refine-chevron{margin-left:auto;font-size:9px;transition:transform .2s;opacity:.7;flex-shrink:0}
-.shop-refine-toggle-text{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
-.shop-refine-toggle[aria-expanded="true"] .shop-refine-chevron{transform:rotate(-180deg)}
+
 .shop-refine-panel{display:none;padding-top:8px}
-.shop-refine-panel.is-open{display:block}
-.shop-filter-drawer-bg{display:none}
-.shop-filter-drawer-head{display:none}
+
 .shop-refine{
   display:flex;flex-wrap:wrap;align-items:center;gap:10px;
   padding:14px;
@@ -677,9 +231,7 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
 }
 .shop-refine-select:hover{border-color:#c2b9ab}
 .shop-refine-select:focus{border-color:var(--ink);box-shadow:0 0 0 3px rgba(28,26,23,.08);outline:none}
-.shop-refine-toggle[aria-expanded="true"]{
-  border-radius:8px;background:var(--white);
-}
+
 .collection-page .filter-type-tabs{display:none}
 .collection-page .filter-league-wrap{display:block}
 .collection-page .shop-refine-wrap{margin-bottom:14px}
@@ -725,15 +277,6 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
 .wishlist-page .collection-sidebar{display:none !important}
 .wishlist-page .collection-layout{display:block}
 .wishlist-page .collection-content{max-width:1360px;margin:0 auto}
-.foot-inner{
-  max-width:1360px;margin:0 auto;padding:64px 48px 40px;
-  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;
-}
-.foot-logo{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
-footer p,footer a{display:block;font-size:13px;color:rgba(250,248,244,.5);text-decoration:none;margin-bottom:10px;line-height:1.7;transition:color .18s}
-footer a:hover{color:var(--cream)}
-footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
-.foot-bottom{border-top:1px solid rgba(250,248,244,.08);padding:20px 48px;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;font-size:11px;color:rgba(250,248,244,.3);letter-spacing:.06em}
 
 /* ── RESPONSIVE ── */
 @media(max-width:960px){
@@ -792,95 +335,18 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .banner-arrow{display:none}
   .upsell-grid{grid-template-columns:1fr 1fr}
 }
-@media(max-width:480px){
-  .sz{padding:14px 16px;min-width:52px;font-size:13px}
-  .padd-btn{width:48px;height:48px}
-  .upsell-grid{grid-template-columns:repeat(3,1fr)}
-}
 
-@media(max-width:720px){
-  .cscreen-body{grid-template-columns:1fr;padding:24px 20px;gap:24px}
-  .cscreen-right{order:-1}
-  .ccard{position:static}
-  .cscreen-nav{padding:0 20px}
-}
-
-/* ── MATENGIDS SECTION ── */
-.maten{
-  padding:96px 48px;
-  background:var(--cream2);
-  border-top:1px solid var(--line);
-}
-.section-header{
-  text-align:center;margin-bottom:56px;
-}
-.section-eyebrow{
-  font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--accent);margin-bottom:14px;
-}
 .section-title{
   font-family:var(--font-display);
   font-size:clamp(30px,4vw,44px);font-weight:700;letter-spacing:.03em;
   color:var(--ink);margin-bottom:14px;
 }
-.section-sub{font-size:14px;color:var(--ink3);max-width:480px;margin:0 auto;line-height:1.7}
 
-.maten-grid{
-  max-width:1100px;margin:0 auto 40px;
-  display:grid;grid-template-columns:1.1fr 1fr;gap:24px;
-}
-.maten-card{
-  background:var(--cream);border:1px solid var(--line);padding:32px;
-}
-.maten-card-title{
-  font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--ink2);margin-bottom:24px;padding-bottom:14px;
-  border-bottom:1px solid var(--line);
-}
-.size-chips{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
-}
-.size-chip{
-  background:var(--cream2);border:1px solid var(--line2);
-  padding:14px 10px;text-align:center;
-  transition:border-color .2s,background .2s;
-}
-.size-chip:hover{border-color:var(--ink3);background:var(--cream3)}
 .size-chip-lbl{font-size:14px;font-weight:600;letter-spacing:.08em;color:var(--ink);margin-bottom:5px}
 .size-chip-info{font-size:11px;color:var(--ink3);line-height:1.6}
-.maten-info-block{margin-bottom:22px}
-.maten-info-block:last-child{margin-bottom:0}
-.maten-info-heading{
-  display:flex;align-items:center;gap:10px;
-  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink2);margin-bottom:10px;
-}
-.maten-info-heading::before{content:'';width:3px;height:14px;background:var(--accent);flex-shrink:0}
-.maten-info-text{font-size:13px;color:var(--ink3);line-height:1.75}
-.maten-note{
-  display:inline-flex;align-items:center;gap:6px;
-  margin-top:12px;background:var(--cream2);border:1px solid var(--line2);
-  padding:6px 12px;font-size:11px;color:var(--ink3);
-}
-.maten-note::before{content:'●';color:var(--gold);font-size:9px}
 
-.maten-table-wrap{
-  max-width:1100px;margin:0 auto 40px;
-  background:var(--cream);border:1px solid var(--line);overflow:hidden;
-}
-.vtabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
-.vtab{
-  padding:16px 24px;text-align:center;
-  font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink4);cursor:pointer;border:none;background:transparent;
-  font-family:var(--font-body);transition:all .2s;
-}
-.vtab:first-child{border-right:1px solid var(--line)}
 .vtab.on{background:var(--cream2);color:var(--ink)}
-.vtab:not(.on):hover{background:var(--cream2);color:var(--ink3)}
-.vtpanel{display:none}
-.vtpanel.on{display:block}
-.maten-table{width:100%;border-collapse:collapse}
+
 .maten-table th{
   padding:13px 24px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
   color:var(--ink3);text-align:left;border-bottom:1px solid var(--line);
@@ -889,33 +355,9 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   padding:13px 24px;font-size:13px;color:var(--ink2);
   border-bottom:1px solid var(--line);transition:background .15s;
 }
-.maten-table tr:last-child td{border-bottom:none}
-.maten-table tbody tr:hover td{background:var(--cream2)}
-.maten-table td:first-child{
-  font-weight:700;color:var(--ink);position:sticky;left:0;z-index:2;
-  background:var(--cream2);box-shadow:1px 0 0 var(--line);
-}
-.maten-table th:first-child{
-  position:sticky;left:0;z-index:3;background:var(--cream2);box-shadow:1px 0 0 var(--line);
-}
 
-/* KIDS Jersey — zelfde als index #sizeguide-kids */
-.maten-kids-jersey .maten-table-wrap{margin-bottom:0}
-.kids-maten-banner{
-  text-align:center;background:var(--cream2);border-bottom:1px solid var(--line);
-  padding:16px 20px 14px;
-}
-.kids-maten-title{
-  font-family:var(--font-display);font-size:clamp(20px,2.8vw,26px);font-weight:700;color:var(--ink);margin:0 0 6px;
-}
-.kids-maten-remark{margin:0;font-size:12px;font-weight:600;color:var(--ink3);line-height:1.45}
-.kids-maten-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
-.maten-scroll-hint{
-  display:none;font-size:11px;font-weight:600;color:var(--ink2);text-align:center;
-  padding:8px 12px;margin:10px auto 0;border:1px dashed var(--line2);background:var(--cream2);
-  border-radius:999px;max-width:max-content;
-  opacity:.9;
-}
+.maten-table tbody tr:hover td{background:var(--cream2)}
+
 @media(max-width:720px){
   .kids-maten-scroll{
     border:1px solid var(--line);border-radius:12px;background:var(--cream);
@@ -950,78 +392,6 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .maten-scroll-hint{display:block}
 }
 
-.maten-cta{text-align:center}
-
-/* ── FAQ SECTION ── */
-.faq-sec{
-  padding:96px 48px;
-  background:var(--ink);
-}
-.faq-sec .section-eyebrow{color:var(--gold2)}
-.faq-sec .section-title{color:var(--cream)}
-.faq-sec .section-sub{color:rgba(250,248,244,.5)}
-
-.faq-cols{
-  max-width:1100px;margin:0 auto;
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
-}
-.faqitem{
-  border:1px solid rgba(250,248,244,.1);
-  transition:border-color .2s;
-}
-.faqitem.on{border-color:rgba(250,248,244,.2)}
-.faqbtn{
-  width:100%;text-align:left;padding:22px 24px;
-  background:rgba(250,248,244,.04);border:none;cursor:pointer;
-  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
-  font-family:var(--font-body);transition:background .18s;
-}
-.faqitem.on .faqbtn,.faqbtn:hover{background:rgba(250,248,244,.08)}
-.faq-q-wrap{display:flex;align-items:flex-start;gap:14px}
-.faq-n{
-  font-size:11px;font-weight:700;letter-spacing:.08em;
-  color:rgba(250,248,244,.3);flex-shrink:0;padding-top:1px;
-}
-.faq-q-lbl{
-  font-size:14px;font-weight:600;color:var(--cream);text-align:left;line-height:1.4;
-}
-.faq-ico{
-  width:26px;height:26px;border:1px solid rgba(250,248,244,.2);
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;font-size:16px;color:rgba(250,248,244,.5);
-  transition:all .22s;
-}
-.faqitem.on .faq-ico{background:var(--gold2);border-color:var(--gold2);color:var(--ink)}
-.faq-ans{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)}
-.faqitem.on .faq-ans{max-height:300px}
-.faq-ans-inner{
-  padding:0 24px 22px 52px;
-  font-size:13px;color:rgba(250,248,244,.55);line-height:1.8;
-}
-.faq-ans-inner strong{color:var(--cream);font-weight:600}
-.faq-ans-inner a{color:var(--gold2);text-decoration:underline}
-
-.faq-bottom{
-  max-width:1100px;margin:48px auto 0;
-  display:flex;align-items:center;justify-content:space-between;
-  padding-top:40px;border-top:1px solid rgba(250,248,244,.1);
-  flex-wrap:wrap;gap:20px;
-}
-.faq-bottom-text h3{
-  font-family:var(--font-display);font-size:22px;font-weight:700;
-  color:var(--cream);margin-bottom:6px;
-}
-.faq-bottom-text p{font-size:13px;color:rgba(250,248,244,.45)}
-.faq-wa-btn{
-  display:inline-flex;align-items:center;gap:10px;
-  background:var(--wa);color:#fff;padding:14px 28px;
-  font-family:var(--font-body);font-size:12px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;border:none;
-  cursor:pointer;text-decoration:none;transition:filter .2s;flex-shrink:0;
-}
-.faq-wa-btn:hover{filter:brightness(1.1)}
-.faq-wa-btn svg{width:18px;height:18px;fill:#fff}
-
 @media(max-width:960px){
   .maten{padding:64px 24px}
   .maten-grid{grid-template-columns:1fr}
@@ -1052,8 +422,6 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 @media(max-width:960px){
   .page-shop .shop-page-head{padding:22px 24px 12px}
 }
-
-
 
 /* ── Mobile UX polish ── */
 @media (max-width:960px){
@@ -1120,16 +488,6 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .pcard{min-width:0}
   .wa-float{width:52px;height:52px;right:14px;bottom:18px}
 }
-@media (max-width:560px){
-  .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .pgrid.pgrid-view-list{grid-template-columns:1fr !important}
-  .drawer{border-radius:16px 16px 0 0}
-  .drawer-body{padding:18px 14px 20px}
-  .cpanel{width:100%}
-  .shop-page-head,.faq-page-head{padding-left:16px !important;padding-right:16px !important}
-  .shop-header{gap:8px}
-  .sh-title{font-size:34px}
-}
 
 /* Small screens: align with homepage breakpoints */
 @media(max-width:480px){
@@ -1152,21 +510,10 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .mhead,.mbody{padding-left:16px;padding-right:16px}
   .cscreen-body{padding:20px 16px}
 }
-@media(max-width:375px){
-  .size-chips{grid-template-columns:1fr}
-  .nav-top .logo{font-size:19px}
-  .logo-img{height:50px}
-  .logo-mark{width:28px;height:28px;font-size:12px}
-  .nav-cart{padding:7px 9px}
-  .sh-title{font-size:28px}
-  .hero h1{font-size:40px}
-  .section-title{font-size:26px}
-  .how-title{font-size:24px}
-  .maten-table th,.maten-table td{padding:10px 12px;font-size:11px}
-}
+
 
 </style>
-<link rel="stylesheet" href="css/app.css?v=2">
+<link rel="stylesheet" href="css/app.css?v=7">
 <link rel="stylesheet" href="css/responsive-global.css?v=15">
 </head>
 <body class="page-shop">
@@ -1174,7 +521,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 <!-- ANNOUNCEMENT BAR -->
 <?php include __DIR__ . '/includes/announce.php'; ?>
 
-<?php $navSearch = true; include __DIR__ . '/includes/nav.php'; ?>
+<?php $navSearch = true; $navClass = 'site-nav'; include __DIR__ . '/includes/nav.php'; ?>
 <div class="nav-search-modal-bg" id="navSearchBg" onclick="closeNavSearch()"></div>
 <div class="nav-search-modal" id="navSearchModal" role="dialog" aria-modal="true" aria-label="Zoek producten">
   <div class="nav-search-modal-head">
@@ -1283,13 +630,13 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
     <div class="filter-pills" id="leaguePills">
       <button type="button" class="fpill on" onclick="doFilter('all',this)"><span class="fpill-label">Alle competities</span></button>
       <button type="button" class="fpill" onclick="doFilter('premier',this)"><span class="fpill-logo"><img src="images/leagues/premier.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/premier.svg'"></span><span class="fpill-label">Premier League</span></button>
-      <button type="button" class="fpill" onclick="doFilter('laliga',this)"><span class="fpill-logo"><img src="images/leagues/laliga.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/laliga.svg'"></span><span class="fpill-label">La Liga</span></button>
+      <button type="button" class="fpill" onclick="doFilter('laliga',this)"><span class="fpill-logo"><img src="images/leagues/laliga.png" alt="" loading="lazy"></span><span class="fpill-label">La Liga</span></button>
       <button type="button" class="fpill" onclick="doFilter('bundesliga',this)"><span class="fpill-logo"><img src="images/leagues/bundesliga.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/bundesliga.svg'"></span><span class="fpill-label">Bundesliga</span></button>
       <button type="button" class="fpill" onclick="doFilter('seriea',this)"><span class="fpill-logo"><img src="images/leagues/seriea.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/seriea.svg'"></span><span class="fpill-label">Serie A</span></button>
       <button type="button" class="fpill" onclick="doFilter('ligue1',this)"><span class="fpill-logo"><img src="images/leagues/ligue1.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/ligue1.svg'"></span><span class="fpill-label">Ligue 1</span></button>
       <button type="button" class="fpill" onclick="doFilter('eredivisie',this)"><span class="fpill-logo"><img src="images/leagues/eredivisie.png" alt="" loading="lazy" onerror="this.onerror=null;this.src='images/leagues/eredivisie.svg'"></span><span class="fpill-label">Eredivisie</span></button>
-      <button type="button" class="fpill" onclick="doFilter('national',this)"><span class="fpill-logo fpill-logo--emoji">🌍</span><span class="fpill-label">Nationale teams</span></button>
-      <button type="button" class="fpill" onclick="doFilter('overig',this)"><span class="fpill-logo fpill-logo--emoji">⚽</span><span class="fpill-label">Overig</span></button>
+      <button type="button" class="fpill" onclick="doFilter('national',this)"><span class="fpill-logo"><img src="images/leagues/national.svg" alt="" loading="lazy"></span><span class="fpill-label">Nationale teams</span></button>
+      <button type="button" class="fpill" onclick="doFilter('overig',this)"><span class="fpill-logo"><img src="images/leagues/overig.svg" alt="" loading="lazy"></span><span class="fpill-label">Overig</span></button>
     </div>
   </div>
   </aside>
@@ -1328,7 +675,7 @@ include __DIR__ . '/includes/footer.php';
           <span class="voorraad-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"></path><path d="M3 8l9 5 9-5"></path><path d="M12 13v8"></path></svg></span>
           <div>
             <strong>Voorraad</strong>
-            <p id="dVoorraadText">Op voorraad: levering binnen 1–2 dagen</p>
+            <p id="dVoorraadText">Op voorraad: levering binnen 1–2 werkdagen</p>
           </div>
         </div>
       </div>
@@ -1599,6 +946,7 @@ include __DIR__ . '/includes/footer.php';
 
 <div class="toast" id="toast"></div>
 
+<script src="js/shop-core.js?v=1"></script>
 <script>
 // ── CONFIG filled from api/config.php (no EmailJS keys in page source) ──
 let CONFIG = {
@@ -1615,10 +963,6 @@ let CONFIG = {
   publicSiteUrl:    '',
 };
 
-function kbeWaDigits() {
-  const d = String(CONFIG.whatsapp || '31684446255').replace(/\D/g, '');
-  return d || '31684446255';
-}
 
 let PRODUCTS = [];
 let cart = [];
@@ -1639,36 +983,8 @@ let navSearchSuggestions = [];
 let navSearchActiveIndex = -1;
 const NAV_SEARCH_POPULAR = ['Real Madrid', 'Barcelona', 'PSG', 'Retro', 'Kids', 'Manchester'];
 
-function setShopCardView(view) {
-  currentShopCardView = (view === 'list') ? 'list' : 'grid';
-  const grid = document.getElementById('grid');
-  if (grid) grid.classList.toggle('pgrid-view-list', currentShopCardView === 'list');
-  const g = document.getElementById('shopViewGridBtn');
-  const l = document.getElementById('shopViewListBtn');
-  if (g) g.classList.toggle('on', currentShopCardView === 'grid');
-  if (l) l.classList.toggle('on', currentShopCardView === 'list');
-}
 
-function openNavSearch() {
-  const bg = document.getElementById('navSearchBg');
-  const modal = document.getElementById('navSearchModal');
-  const input = document.getElementById('navSearchInput');
-  if (bg) bg.classList.add('on');
-  if (modal) modal.classList.add('on');
-  if (input) {
-    input.value = currentSearchTerm || '';
-    setTimeout(() => input.focus(), 50);
-  }
-  renderNavSearchSuggestions((input && input.value) || '');
-}
 
-function closeNavSearch() {
-  const bg = document.getElementById('navSearchBg');
-  const modal = document.getElementById('navSearchModal');
-  if (bg) bg.classList.remove('on');
-  if (modal) modal.classList.remove('on');
-  navSearchActiveIndex = -1;
-}
 
 function applyNavSearch() {
   const input = document.getElementById('navSearchInput');
@@ -1690,187 +1006,18 @@ function applyNavSearch() {
   renderGrid(currentFilterCat);
 }
 
-function getNavSearchSuggestions(queryRaw, limit = 8) {
-  const q = String(queryRaw || '').trim();
-  if (!Array.isArray(PRODUCTS) || !PRODUCTS.length) return [];
-  if (!q) {
-    return PRODUCTS
-      .filter((p) => (p.image || p.image2 || p.image3))
-      .slice(0, limit);
-  }
-  return PRODUCTS
-    .map((p) => ({ p, score: getProductSearchScore(p, q) }))
-    .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((x) => x.p);
-}
 
-function applyPopularNavSearch(term) {
-  const input = document.getElementById('navSearchInput');
-  if (!input) return;
-  input.value = term;
-  renderNavSearchSuggestions(term);
-  input.focus();
-}
 
-function openProductFromNavSearch(id) {
-  closeNavSearch();
-  goToProductPage(id);
-}
 
-function setNavSearchActiveIndex(nextIdx) {
-  navSearchActiveIndex = nextIdx;
-  const items = Array.from(document.querySelectorAll('#navSearchResults .nav-search-item'));
-  items.forEach((el, idx) => el.classList.toggle('is-active', idx === navSearchActiveIndex));
-}
 
-function handleNavSearchKeydown(event) {
-  const input = document.getElementById('navSearchInput');
-  const count = navSearchSuggestions.length;
-  if (event.key === 'Escape') {
-    closeNavSearch();
-    return;
-  }
-  if (event.key === 'ArrowDown') {
-    event.preventDefault();
-    if (!count) return;
-    const next = navSearchActiveIndex < count - 1 ? navSearchActiveIndex + 1 : 0;
-    setNavSearchActiveIndex(next);
-    return;
-  }
-  if (event.key === 'ArrowUp') {
-    event.preventDefault();
-    if (!count) return;
-    const next = navSearchActiveIndex > 0 ? navSearchActiveIndex - 1 : count - 1;
-    setNavSearchActiveIndex(next);
-    return;
-  }
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    applyNavSearch();
-    return;
-  }
-  if (input) {
-    setTimeout(() => renderNavSearchSuggestions(input.value), 0);
-  }
-}
 
-function renderNavSearchSuggestions(queryRaw) {
-  const box = document.getElementById('navSearchResults');
-  if (!box) return;
-  const q = String(queryRaw || '').trim();
-  const items = getNavSearchSuggestions(q, 8);
-  navSearchSuggestions = items;
-  navSearchActiveIndex = -1;
-  if (!items.length) {
-    box.innerHTML = `<div class="nav-search-empty">${q ? 'Geen resultaten. Probeer een andere club of competitie.' : 'Type om direct producten te zien.'}</div>`;
-    return;
-  }
-  const popular = !q ? `<div class="nav-search-popular">${NAV_SEARCH_POPULAR.map(t => `<button type="button" class="nav-search-chip" data-popular-term="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : '';
-  box.innerHTML = popular + items.map((p, idx) => {
-    const img = productImgSrc(p.image || p.image2 || p.image3);
-    return `<button type="button" class="nav-search-item" onmouseenter="setNavSearchActiveIndex(${idx})" onclick="openProductFromNavSearch(${Number(p.id)})">
-      ${img ? `<img src="${img}" alt="${esc(p.name || '')}" width="48" height="58" loading="lazy" decoding="async">` : `<div></div>`}
-      <div>
-        <div class="nav-search-item-name">${esc(p.name || '')}</div>
-        <div class="nav-search-item-meta">${esc(p.league || '')}</div>
-      </div>
-      <div class="nav-search-item-price">€${Number(p.price || 0).toFixed(2)}</div>
-    </button>`;
-  }).join('');
-  box.querySelectorAll('.nav-search-chip').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const term = btn.getAttribute('data-popular-term') || btn.textContent || '';
-      applyPopularNavSearch(term);
-    });
-  });
-}
 
-function unitPrintingExtra() {
-  const v = Number(CONFIG.customPrintingPrice);
-  return Number.isFinite(v) && v >= 0 ? v : 5;
-}
-function unitBadgeExtra() {
-  const v = Number(CONFIG.badgeExtraPrice);
-  return Number.isFinite(v) && v >= 0 ? v : 3;
-}
-function linePrintingExtraForCart(i) {
-  if ((i.printing_option || 'none') !== 'custom') return 0;
-  const pn = String(i.print_name || '').trim();
-  const num = String(i.print_number || '').trim();
-  return pn || num ? unitPrintingExtra() : 0;
-}
-function lineBadgeExtraForCart(i) {
-  if ((i.printing_option || 'none') !== 'custom') return 0;
-  return String(i.print_badges || '').trim() ? unitBadgeExtra() : 0;
-}
 
-function recalcCartPrintingPrices() {
-  if (!Array.isArray(cart) || !PRODUCTS.length) return;
-  let changed = false;
-  cart.forEach(i => {
-    const p = PRODUCTS.find(x => x.id === i.id);
-    if (!p) return;
-    const expected = Number(p.price) + linePrintingExtraForCart(i) + lineBadgeExtraForCart(i);
-    if (Math.abs(Number(i.price) - expected) > 0.005) {
-      i.price = expected;
-      changed = true;
-    }
-  });
-  if (changed) persistCartState();
-}
 
 // HTML escape helper — always use when inserting user/db data into innerHTML
-function esc(s) {
-  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-function jss(v) {
-  return JSON.stringify(String(v ?? ''));
-}
-function productImgSrc(file) {
-  if (!file) return '';
-  let s = String(file).trim().replace(/\\/g, '/').replace(/^\/+/, '');
-  if (/^https?:\/\//i.test(s)) return s;
-  const enc = (seg) => encodeURIComponent(seg);
-  const prefix = 'uploads/products/';
-  while (s.toLowerCase().startsWith(prefix)) {
-    s = s.slice(prefix.length);
-  }
-  if (!s) return '';
-  if (s.indexOf('/') !== -1) return prefix + s.split('/').filter(Boolean).map(enc).join('/');
-  return prefix + enc(s);
-}
 
-function getPublicSiteBase() {
-  const fromCfg = (CONFIG.publicSiteUrl || '').trim().replace(/\/$/, '');
-  if (fromCfg) return fromCfg;
-  try {
-    const { origin, pathname } = window.location;
-    let p = pathname;
-    if (/\.html?$/i.test(p)) p = p.replace(/\/[^/]+$/, '');
-    if (p.length > 1) p = p.replace(/\/$/, '');
-    return origin + (p || '');
-  } catch (_) {
-    return '';
-  }
-}
 
-function primaryImageFileForCartLine(line) {
-  const f = line.image || line.image2 || line.image3;
-  if (f) return f;
-  const p = PRODUCTS.find(x => x.id === line.id);
-  return p ? (p.image || p.image2 || p.image3) : '';
-}
 
-function absoluteProductImgUrl(file) {
-  const rel = productImgSrc(file);
-  if (!rel) return '';
-  if (/^https?:\/\//i.test(rel)) return rel;
-  const base = getPublicSiteBase().replace(/\/$/, '');
-  if (!base) return '';
-  return base + '/' + rel.replace(/^\//, '');
-}
 
 // Vaste site-promo (banner): 10% met KITSBYELBA. Extra codes in admin → api/coupon_validate.php
 let appliedCoupon = null;
@@ -1907,23 +1054,7 @@ const PROMO_POPUP_KEY = 'kbe_seen_promo_10';
 const WISHLIST_STORAGE_KEY = 'kbe_wishlist_main';
 
 /** EmailJS `defer` in <head> — init pas als `emailjs` bestaat (voorkomt race). */
-function kbeEnsureEmailjsInit(pk) {
-  pk = typeof pk === 'string' ? pk.trim() : pk;
-  if (!pk) return;
-  let n = 0;
-  (function tick() {
-    if (typeof emailjs !== 'undefined') {
-      try { emailjs.init({ publicKey: pk }); } catch (_) {}
-      return;
-    }
-    if (++n < 150) setTimeout(tick, 20);
-  })();
-}
 
-function kbeEmailJsSendOpts() {
-  const pk = (typeof CONFIG !== 'undefined' && CONFIG.emailjsPk) ? String(CONFIG.emailjsPk).trim() : '';
-  return pk ? { publicKey: pk } : {};
-}
 
 // ── INIT ──
 Promise.all([
@@ -1978,49 +1109,9 @@ Promise.all([
   }
 });
 
-function maybeShowPromoPopup() {
-  try {
-    if (localStorage.getItem(PROMO_POPUP_KEY) === '1') return;
-  } catch (_) {}
-  const el = document.getElementById('promoPopup');
-  if (el) el.classList.add('on');
-}
 
-function closePromoPopup() {
-  const el = document.getElementById('promoPopup');
-  if (el) el.classList.remove('on');
-  try { localStorage.setItem(PROMO_POPUP_KEY, '1'); } catch (_) {}
-}
 
-function persistCartState() {
-  try { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); } catch (_) {}
-}
-function persistWishlistState() {
-  try { localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishlist)); } catch (_) {}
-}
-function persistCouponState() {
-  try {
-    if (appliedCoupon) localStorage.setItem(COUPON_STORAGE_KEY, JSON.stringify(appliedCoupon));
-    else localStorage.removeItem(COUPON_STORAGE_KEY);
-  } catch (_) {}
-}
 
-function restoreCartState() {
-  try {
-    const raw = localStorage.getItem(CART_STORAGE_KEY);
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) cart = parsed;
-  } catch (_) {}
-}
-function restoreWishlistState() {
-  try {
-    const raw = localStorage.getItem(WISHLIST_STORAGE_KEY);
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
-    wishlist = Array.isArray(parsed) ? parsed.map(Number).filter(Number.isFinite) : [];
-  } catch (_) { wishlist = []; }
-}
 async function restoreCouponState() {
   try {
     const raw = localStorage.getItem(COUPON_STORAGE_KEY);
@@ -2096,20 +1187,7 @@ let currentColorFilter = 'all';
 let currentSizeFilter = 'all';
 let currentSeason = '25/26'; // default season
 
-function productHaystack(p) {
-  const kp = String(p.kits_path || '').replace(/\\/g, '/');
-  return `${p.name || ''} ${p.description || ''} ${p.league || ''} ${kp}`.toLowerCase();
-}
 
-function normalizeSearchText(s) {
-  return String(s || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s/.-]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 
 function getProductSearchScore(p, queryRaw) {
   const q = normalizeSearchText(queryRaw);
@@ -2149,61 +1227,8 @@ function getProductSearchScore(p, queryRaw) {
   return score;
 }
 
-function detectKitVariant(p) {
-  const h = productHaystack(p);
-  const path = String(p.kits_path || '').toLowerCase().replace(/\\/g, '/');
-  const s = h + ' | ' + path;
-  if (/\bgoalkeeper\b|\bgoalie\b|\bgk\b|(?:^|[\\/])gk(?:[\\/]|$)|keeper kit|keeper shirt/.test(s)) return 'goalkeeper';
-  if (/\bthird\b|\b3rd\b|(?:^|[\\/])third(?:[\\/]|$)|\bthird kit\b/.test(s)) return 'third';
-  if (/\baway\b|(?:^|[\\/])away(?:[\\/]|$)|\baway kit\b/.test(s)) return 'away';
-  if (/\bhome\b|(?:^|[\\/])home(?:[\\/]|$)|\bhome kit\b/.test(s)) return 'home';
-  return 'other';
-}
 
-function detectProductType(p) {
-  const catDb = String(p.cat || '').toLowerCase();
-  if (catDb === 'hemsetjes' || catDb === 'hemdsetjes') return 'hemdsetjes';
-  if (catDb === 'training') return 'shirts';
-  if (catDb === 'retro') return 'retro';
-  if (catDb === 'kids') return 'kids';
-  const name = String(p.name || '').toLowerCase();
-  const desc = String(p.description || '').toLowerCase();
-  if (name.includes('retro kids')) return 'kids';
-  if (name.includes('kids kit') || name.includes(' kids ') || /\bkids\b/.test(name)) return 'kids';
-  if (/\bretro\b|\bvintage\b/.test(name) || /\bretro\b|\bvintage\b/.test(desc)) return 'retro';
-  if (/\bhem\b|\bhemdje\b|\bhemset|\bhemdsetjes\b/.test(name)) return 'hemdsetjes';
-  if (name.includes('full kit set') || name.includes(' kit set') || /\bset\b/.test(name)) return 'sets';
-  return 'shirts';
-}
 
-function detectProductVersion(p) {
-  if (!p) return 'fan';
-  const v = String(p.version || '').trim().toLowerCase();
-  if (v === 'player' || v === 'fan') return v;
-  const hay = `${p.name || ''} ${p.description || ''} ${p.fit_info || ''} ${p.size_advice || ''}`.toLowerCase();
-  if (
-    hay.includes('player version') ||
-    hay.includes('player fit') ||
-    hay.includes('players version') ||
-    /\bplayer\b/.test(hay)
-  ) {
-    return 'player';
-  }
-  if (
-    hay.includes('spelersversie') ||
-    hay.includes('spelerversie') ||
-    hay.includes('spelers versie') ||
-    hay.includes('speler versie') ||
-    hay.includes('spelers kit') ||
-    hay.includes('spelerseditie') ||
-    hay.includes('spelers editie')
-  ) {
-    return 'player';
-  }
-  if (hay.includes('fan version') || hay.includes('fan fit') || /\bfan\b/.test(hay)) return 'fan';
-  if (hay.includes('fanversie') || hay.includes('fan versie') || hay.includes('fansversie')) return 'fan';
-  return 'fan';
-}
 
 function detectProductColors(p) {
   const hay = `${p.name || ''} ${p.description || ''} ${p.league || ''}`.toLowerCase();
@@ -2254,25 +1279,6 @@ function syncShopCategoryTabsFromState() {
   }
 }
 
-function updateShopVoorraadLede() {
-  const el = document.getElementById('shopVoorraadLede');
-  if (!el) return;
-  if (currentVoorraadFilter === 'in_stock') {
-    el.hidden = false;
-    el.className = 'shop-voorraad-lede';
-    el.innerHTML = '<div class="shop-voorraad-inner"><span class="shop-voorraad-ico" aria-hidden="true">📦</span><div><p class="shop-voorraad-lede-p"><strong>Op voorraad</strong> — wat je hier ziet hebben we nu liggen. <strong>Levering 1 à 2 dagen</strong> (kan per week wisselen).</p>' +
-      '<p class="shop-voorraad-lede-sub">Geen voorraad elders op de site: <strong>7 tot 12 werkdagen</strong>. Filter “Niet op voorraad” of “Voorraad — alle” toont de rest.</p></div></div>';
-  } else if (currentVoorraadFilter === 'out_of_stock') {
-    el.hidden = false;
-    el.className = 'shop-voorraad-lede shop-voorraad-lede--out';
-    el.innerHTML = '<div class="shop-voorraad-inner"><span class="shop-voorraad-ico" aria-hidden="true">⏳</span><div><p class="shop-voorraad-lede-p"><strong>Niet op voorraad</strong> — <strong>7 tot 12 werkdagen</strong> levering.</p>' +
-      '<p class="shop-voorraad-lede-sub">Wel snel? Ga naar tab of filter <strong>Alleen op voorraad</strong> — daar geldt <strong>1 à 2 dagen</strong>.</p></div></div>';
-  } else {
-    el.hidden = true;
-    el.className = 'shop-voorraad-lede';
-    el.innerHTML = '';
-  }
-}
 
 function buildShopNoResultsTips(cat) {
   const tips = [];
@@ -2287,46 +1293,9 @@ function buildShopNoResultsTips(cat) {
   return '<ul class="no-results-tips">' + tips.map(t => `<li>${t}</li>`).join('') + '</ul>';
 }
 
-function buildNoResultsActions() {
-  return `<div class="no-results-actions">
-    <button type="button" onclick="resetShopFilters()">Reset alles</button>
-    <button type="button" onclick="doFilter('all')">Alle competities</button>
-    <button type="button" onclick="setTypeFilter('shirts')">Shirts</button>
-    <button type="button" onclick="setTypeFilter('kids')">Kids</button>
-  </div>`;
-}
 
-function updateShopHeroLede() {
-  const el = document.getElementById('shopHeroLede');
-  if (!el) return;
-  const typeMap = {
-    shirts: 'Shirts van topclubs en nationale teams, met fan- en player-opties.',
-    sets: 'Complete sets voor een volledige look, direct gefilterd op competitie.',
-    hemdsetjes: 'Lichte hemdsetjes voor training en warm weer, snel te filteren op league.',
-    retro: 'Retro klassiekers van legendarische seizoenen.',
-    kids: 'Kids tenues met passende maten en snelle selectie op club of competitie.',
-    all: 'Shop per categorie en gebruik filters om snel de juiste club, competitie en maat te vinden.'
-  };
-  const typeKey = typeMap[currentTypeFilter] ? currentTypeFilter : 'all';
-  const leagueMap = { premier:'Premier League', laliga:'La Liga', bundesliga:'Bundesliga', seriea:'Serie A', ligue1:'Ligue 1', eredivisie:'Eredivisie', national:'Nationale teams' };
-  const league = currentFilterCat !== 'all' ? ` Gefilterd op ${leagueMap[currentFilterCat] || 'competitie'}.` : '';
-  el.textContent = typeMap[typeKey] + league;
-}
 
-function isWishlisted(id) {
-  return wishlist.includes(Number(id));
-}
 
-function toggleWishlist(id, btn) {
-  const pid = Number(id);
-  if (!Number.isFinite(pid)) return;
-  const i = wishlist.indexOf(pid);
-  const on = i === -1;
-  if (on) wishlist.push(pid); else wishlist.splice(i, 1);
-  persistWishlistState();
-  if (btn) btn.classList.toggle('on', on);
-  if (typeof showToast === 'function') showToast(on ? '♥ Toegevoegd aan wishlist' : '♡ Verwijderd uit wishlist');
-}
 
 // ── League matching — single source of truth (used by the pills AND the grid) ──
 // A product belongs to a league when its `cat` equals the key OR its `league`
@@ -2563,21 +1532,8 @@ function updateShopRefineUI() {
   }
 }
 
-function doFilter(cat, btn) {
-  document.querySelectorAll('#leaguePills .fpill').forEach(b => b.classList.remove('on'));
-  if (btn) btn.classList.add('on');
-  renderGrid(cat);
-}
 
-function setVersionFromUi(v) {
-  currentVersionFilter = v || 'all';
-  renderGrid();
-}
 
-function setKitVariantFromUi(v) {
-  currentKitVariantFilter = v || 'all';
-  renderGrid();
-}
 
 function setColorFromUi(v) {
   currentColorFilter = v || 'all';
@@ -2615,11 +1571,6 @@ function populateCategoryImages() {
   });
 }
 
-function setActiveTypeNav(type) {
-  document.querySelectorAll('[id^="navType-"]').forEach(a => a.classList.remove('active'));
-  const link = document.getElementById('navType-' + type);
-  if (link) link.classList.add('active');
-}
 
 function setTypeFilter(type, btn) {
   currentWishlistOnly = false;
@@ -2788,27 +1739,10 @@ function setSearchTerm(value) {
   renderGrid();
 }
 
-function setSortMode(value) {
-  currentSortMode = value || 'featured';
-  renderGrid();
-}
 
-function slugifyProductName(name) {
-  return (name || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
 
-function getProductShareParam(p) {
-  return `${p.id}-${slugifyProductName(p.name)}`;
-}
 
 /** Slug for cart lines (same shape as getProductShareParam). */
-function getCartItemSlug(item) {
-  if (!item || item.id == null || item.id === '') return '';
-  return `${item.id}-${slugifyProductName(item.name)}`;
-}
 
 function applyDynamicStoreTexts() {
   const free = Number(CONFIG.freeShippingFrom || 40).toFixed(0);
@@ -2820,21 +1754,7 @@ function applyDynamicStoreTexts() {
   set('trustBarFreeShipText', `Gratis verzending vanaf €${free}`);
 }
 
-function openProductFromUrl() {
-  const url = new URL(window.location.href);
-  const productParam = url.searchParams.get('product');
-  if (!productParam) return;
-  const idPart = String(productParam).split('-')[0];
-  const id = parseInt(idPart, 10);
-  const p = PRODUCTS.find(x => x.id === id);
-  if (p) openDetail(p.id, false);
-}
 
-function goToProductPage(id) {
-  const p = PRODUCTS.find(x => x.id === id);
-  if (!p) return;
-  window.location.href = 'product.php?slug=' + getProductShareParam(p);
-}
 
 function applyBannerImagesFromProducts() {
   const slides = [
@@ -3119,8 +2039,8 @@ function openDetail(id, updateUrl = true) {
   const voorraadEl = document.getElementById('dVoorraadText');
   if (voorraadEl) {
     voorraadEl.textContent = parseInt(p.in_voorraad) === 1
-      ? 'Op voorraad: levering binnen 1 à 2 dagen'
-      : 'Niet op voorraad: 7 tot 12 werkdagen';
+      ? 'Op voorraad: levering binnen 1–2 werkdagen'
+      : 'Niet op voorraad: 7–12 werkdagen';
   }
 
   // Reset season to default 25/26
@@ -3175,54 +2095,9 @@ function setGalleryMainImage(filename, thumbEl) {
   updateGalleryArrows();
 }
 
-function setGalleryMainImageByIndex(index) {
-  if (!currentGalleryImages.length) return;
-  currentGalleryIndex = Math.max(0, Math.min(index, currentGalleryImages.length - 1));
-  const thumbs = document.querySelectorAll('#dThumbs .d-thumb');
-  setGalleryMainImage(currentGalleryImages[currentGalleryIndex], thumbs[currentGalleryIndex] || null);
-}
 
-function goGallery(dir) {
-  if (!currentGalleryImages.length) return;
-  const next = currentGalleryIndex + dir;
-  if (next < 0 || next >= currentGalleryImages.length) return;
-  setGalleryMainImageByIndex(next);
-}
 
-function updateGalleryArrows() {
-  const prevBtn = document.getElementById('dPrevBtn');
-  const nextBtn = document.getElementById('dNextBtn');
-  if (!prevBtn || !nextBtn) return;
-  if (currentGalleryImages.length <= 1) {
-    prevBtn.disabled = true;
-    nextBtn.disabled = true;
-    return;
-  }
-  prevBtn.disabled = currentGalleryIndex <= 0;
-  nextBtn.disabled = currentGalleryIndex >= currentGalleryImages.length - 1;
-}
 
-function getDrawerPolicyHTML() {
-  // Keep content short enough for the drawer; users can still rely on the site footer links.
-  return `
-    <div class="policy">
-      <h3>Verzending</h3>
-      <div>
-        <strong>Op voorraad:</strong> 1–2 werkdagen · <strong>Nabestelling:</strong> 7–12 werkdagen.
-        Gratis verzending vanaf <strong>€${Number(CONFIG.freeShippingFrom || 90).toFixed(0)}</strong>.
-      </div>
-      <h3 style="margin-top:14px">Retour</h3>
-      <div>
-        Wij accepteren geen retouren, tenzij er een fout aan onze kant is — zie ook de FAQ.
-        <strong>Gepersonaliseerde items</strong> zijn uitgesloten van retour.
-      </div>
-      <h3 style="margin-top:14px">Disclaimer</h3>
-      <div>
-        Dit is een <strong>replica</strong> en is <strong>niet gelieerd aan</strong> of <strong>goedgekeurd door</strong> officiële clubs, competities of spelers.
-      </div>
-    </div>
-  `;
-}
 
 function refreshDetailDrawerPrice() {
   const p = PRODUCTS.find(pr => pr.id === currentDetailId);
@@ -3239,25 +2114,6 @@ function refreshDetailDrawerPrice() {
   el.textContent = '€' + total.toFixed(2);
 }
 
-function setPrintingOption(option, btnEl) {
-  currentPrinting = option;
-  const noneBtn = document.getElementById('print-none-btn');
-  const customBtn = document.getElementById('print-custom-btn');
-  const fields = document.getElementById('printFields');
-
-  noneBtn.classList.toggle('on', option === 'none');
-  customBtn.classList.toggle('on', option === 'custom');
-  fields.style.display = option === 'custom' ? 'block' : 'none';
-
-  refreshDetailDrawerPrice();
-
-  // If size is already selected, update add button label.
-  const addBtn = document.getElementById('dAddBtn');
-  if (addBtn && !addBtn.disabled && currentSz) {
-    const extraLbl = option === 'custom' ? ' · Bedrukking' : '';
-    addBtn.textContent = '+ In winkelwagen — Maat ' + currentSz + extraLbl;
-  }
-}
 
 document.getElementById('printName').addEventListener('input', function() {
   this.value = this.value.slice(0, 15);
@@ -3272,43 +2128,7 @@ document.getElementById('printBadges').addEventListener('input', function() {
   if (currentPrinting === 'custom') refreshDetailDrawerPrice();
 });
 
-function closeDetail() {
-  document.getElementById('dbg').classList.remove('on');
-  document.getElementById('drawer').classList.remove('on');
-  currentDetailId = null;
-  currentSz = null;
-  currentPrinting = 'none';
-  currentGalleryImages = [];
-  currentGalleryIndex = 0;
-  const url = new URL(window.location.href);
-  url.searchParams.delete('product');
-  window.history.replaceState({}, '', url.toString());
-}
 
-function pickSz(btn) {
-  const p = PRODUCTS.find(p => p.id === currentDetailId);
-  if (!p || !productHasSellableStock(p)) return;
-  document.querySelectorAll('.sz').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  currentSz = btn.dataset.size || btn.textContent.trim();
-
-  // Enable add button
-  const addBtn = document.getElementById('dAddBtn');
-  addBtn.disabled = false;
-  const extraLbl = currentPrinting === 'custom' ? ' · Bedrukking' : '';
-  addBtn.textContent = '+ In winkelwagen — Maat ' + currentSz + extraLbl;
-
-  // Hide hint
-  document.getElementById('szHint').style.display = 'none';
-
-  // Wire up button to current product + size
-  if (p) {
-    addBtn.onclick = () => {
-      addToCart(p, currentSz);
-      closeDetail();
-    };
-  }
-}
 
 // ── CART ──
 function mergeCartItem(line) {
@@ -3333,19 +2153,6 @@ function mergeCartItem(line) {
   }
 }
 
-function importPendingCartFromProductPage() {
-  const key = 'kbe_cart';
-  let items = [];
-  try { items = JSON.parse(localStorage.getItem(key) || '[]'); } catch (_) { items = []; }
-  if (!Array.isArray(items) || !items.length) return;
-  items.forEach(it => {
-    if (!it || !it.id || !it.size) return;
-    mergeCartItem(it);
-  });
-  localStorage.removeItem(key);
-  persistCartState();
-  updateCount();
-}
 
 function addToCart(p, sz) {
   if (!sz) { showToast('⚠️ Kies eerst een maat'); return; }
@@ -3419,25 +2226,7 @@ function addToCart(p, sz) {
   openCart();
 }
 
-function updateCount() {
-  const count = cart.reduce((s, i) => s + i.qty, 0);
-  document.getElementById('cartN').textContent = count;
-}
 
-function openCart() {
-  const cp = document.getElementById('cpanel');
-  const alreadyOpen = cp.classList.contains('on');
-  document.getElementById('cbg').classList.add('on');
-  cp.classList.add('on');
-  document.body.style.overflow = 'hidden';
-  if (!alreadyOpen) {
-    try {
-      history.pushState({ kbeCart: 1 }, '');
-      __kbeCartHistory++;
-    } catch (_) {}
-  }
-  renderCart();
-}
 
 window.addEventListener('popstate', function () {
   const cp = document.getElementById('cpanel');
@@ -3449,30 +2238,7 @@ window.addEventListener('popstate', function () {
   }
 });
 
-function closeCart() {
-  const cp = document.getElementById('cpanel');
-  if (!cp.classList.contains('on')) return;
-  document.getElementById('cbg').classList.remove('on');
-  cp.classList.remove('on');
-  document.body.style.overflow = '';
-  if (__kbeCartHistory > 0) {
-    __kbeCartHistory--;
-    try {
-      history.back();
-    } catch (_) {}
-  }
-}
 
-function clearCart() {
-  if (!cart.length) return;
-  if (!confirm('Winkelwagen leegmaken?')) return;
-  cart = [];
-  appliedCoupon = null;
-  persistCouponState();
-  persistCartState();
-  updateCount();
-  renderCart();
-}
 
 function renderCart() {
   const body = document.getElementById('cbody');
@@ -3588,12 +2354,6 @@ function chQ(i, d) {
   renderCart();
 }
 
-function rmItem(i) {
-  cart.splice(i, 1);
-  persistCartState();
-  updateCount();
-  renderCart();
-}
 
 function setCartItemSize(i, size) {
   if (!cart[i]) return;
@@ -3621,8 +2381,11 @@ function setCartItemSize(i, size) {
 // ── COUPON ──
 function calcDiscount(subtotal) {
   if (!appliedCoupon) return 0;
-  if (appliedCoupon.type === 'percent') return subtotal * appliedCoupon.value / 100;
-  return Math.min(appliedCoupon.value, subtotal);
+  const d = appliedCoupon.type === 'percent'
+    ? subtotal * Math.min(100, Math.max(0, Number(appliedCoupon.value))) / 100
+    : Number(appliedCoupon.value);
+  // One coupon per order, capped so it can never exceed the order value.
+  return Math.max(0, Math.min(d, subtotal));
 }
 
 async function applyCoupon() {
@@ -3680,105 +2443,12 @@ async function applyCouponFromCart() {
   updateModalRecap();
 }
 
-function removeAppliedCoupon() {
-  appliedCoupon = null;
-  persistCouponState();
-  const cartIn = document.getElementById('cartCouponInput');
-  if (cartIn) { cartIn.value = ''; cartIn.disabled = false; }
-  const modalIn = document.getElementById('couponInput');
-  if (modalIn) { modalIn.value = ''; modalIn.disabled = false; }
-  const cfb = document.getElementById('cartCouponFeedback');
-  if (cfb) { cfb.className = 'cart-coupon-feedback'; cfb.textContent = ''; }
-  const mfb = document.getElementById('couponFeedback');
-  if (mfb) { mfb.className = 'coupon-feedback'; mfb.textContent = ''; }
-  renderCart();
-  updateModalRecap();
-}
 
 // ── ORDER MODAL ──
-function prefillCheckoutFromProfile() {
-  fetch('api/auth.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'me' }),
-    credentials: 'same-origin'
-  })
-    .then(r => r.json())
-    .then(j => {
-      if (!j || !j.ok || !j.user) return;
-      const u = j.user;
-      const set = (id, v) => {
-        const el = document.getElementById(id);
-        if (el && v != null && String(v).trim() !== '') el.value = String(v);
-      };
-      set('fName', u.name);
-      set('fPhone', u.phone);
-      set('fStreet', u.street);
-      set('fZip', u.zip);
-      set('fCity', u.city);
-      set('fEmail', u.email);
-    })
-    .catch(() => {});
-}
 
-function openModal() {
-  closeCart();
-  const cIn = document.getElementById('couponInput');
-  if (cIn) {
-    cIn.disabled = false;
-    cIn.value = appliedCoupon ? appliedCoupon.code : '';
-  }
-  updateModalRecap();
-  renderUpsell();
-  document.getElementById('mbg').classList.add('on');
-  prefillCheckoutFromProfile();
-}
 
-function updateModalRecap() {
-  const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const discount = calcDiscount(sub);
-  const discountedSub = sub - discount;
-  const ship = discountedSub >= CONFIG.freeShippingFrom ? 0 : CONFIG.shippingCost;
-  const total = discountedSub + ship;
 
-  let html = `<p class="mrecap-lbl">Overzicht bestelling</p>`;
-  cart.forEach(i => {
-    html += `<div class="mrecap-row"><span>${i.qty}× ${i.name} (${i.size}${i.printing_option==='custom' ? ' · ' + (i.print_name||'') + (i.print_number ? ' #' + i.print_number : '') : ''})</span><span>€${(i.price * i.qty).toFixed(2)}</span></div>`;
-  });
-  if (discount > 0) {
-    html += `<div class="mrecap-row discount"><span>Korting (${appliedCoupon.type === 'percent' ? appliedCoupon.value + '%' : '€' + Number(appliedCoupon.value).toFixed(2)})</span><span>-€${discount.toFixed(2)}</span></div>`;
-  }
-  html += `<div class="mrecap-row"><span>Verzending</span><span>${ship === 0 ? 'GRATIS' : '€' + ship.toFixed(2)}</span></div>`;
-  html += `<div class="mrecap-tot"><span>Totaal</span><span>€${total.toFixed(2)}</span></div>`;
-  document.getElementById('mrecap').innerHTML = html;
-}
 
-function closeModal() {
-  document.getElementById('mbg').classList.remove('on');
-}
-
-function renderUpsell() {
-  const cartIds = cart.map(i => i.id);
-  const cartCats = [...new Set(cart.map(i => i.cat))];
-  const suggestions = PRODUCTS
-    .filter(p => !cartIds.includes(p.id) && cartCats.includes(p.cat))
-    .slice(0, 3);
-
-  const section = document.getElementById('upsellSection');
-  if (!suggestions.length) { section.style.display = 'none'; return; }
-
-  section.style.display = 'block';
-  document.getElementById('upsellGrid').innerHTML = suggestions.map(p => `
-    <div class="upsell-card" onclick="window.location.href='product.php?slug='+getProductShareParam(p)">
-      <div class="upsell-img">
-        ${(p.image || p.image2 || p.image3) ? `<img src="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" onerror="this.style.display='none'">` : `<span class="pcard-noimg" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.2" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>`}
-      </div>
-      <div class="upsell-info">
-        <p class="upsell-name">${esc(p.name)}</p>
-        <p class="upsell-price">€${p.price.toFixed(2)}</p>
-      </div>
-    </div>`).join('');
-}
 
 async function ensureCheckoutCsrf() {
   if (window.__checkoutCsrf) return window.__checkoutCsrf;
@@ -3787,14 +2457,6 @@ async function ensureCheckoutCsrf() {
   if (!r.ok || !j || !j.ok || !j.csrf) throw new Error('csrf');
   window.__checkoutCsrf = j.csrf;
   return j.csrf;
-}
-function checkoutIdempotencyKey() {
-  if (!window.__checkoutIdempotencyKey) {
-    window.__checkoutIdempotencyKey = (typeof crypto !== 'undefined' && crypto.randomUUID)
-      ? crypto.randomUUID()
-      : ('idem-' + Date.now() + '-' + Math.random().toString(36).slice(2, 12));
-  }
-  return window.__checkoutIdempotencyKey;
 }
 
 // ── PLACE ORDER ──
@@ -4062,32 +2724,8 @@ function showConfirm(orderId, email, total, ship, items, discount, waUrl, emailO
   screen.scrollTop = 0;
 }
 
-function backShop() {
-  document.getElementById('cscreen').classList.remove('on');
-}
 
 // ── UTILITIES ──
-function showToast(msg, type) {
-  const t = document.getElementById('toast');
-  msg = String(msg);
-  if (!type) {
-    if (/^\s*(⚠️|❌|✗)/.test(msg)) type = 'error';
-    else if (/^\s*(✓|✅)/.test(msg)) type = 'success';
-    else if (/^\s*(♥|♡)/.test(msg)) type = 'wish';
-  }
-  msg = msg.replace(/^\s*(⚠️|❌|✗|✓|✅|♥|♡)\s*/, '');
-  const icons = {
-    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16.4v.01"></path></svg>',
-    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>',
-    wish:    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9C.5 8.5 2 5 5.5 5 8 5 9.3 6.7 12 9c2.7-2.3 4-4 6.5-4C22 5 23.5 8.5 22 12c-2.5 4.4-10 9-10 9z"></path></svg>'
-  };
-  t.className = 'toast' + (type ? ' toast--' + type : '');
-  t.innerHTML = (icons[type] ? `<span class="toast-ico">${icons[type]}</span>` : '') + '<span class="toast-msg"></span>';
-  t.querySelector('.toast-msg').textContent = msg;
-  t.classList.add('on');
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => t.classList.remove('on'), 2800);
-}
 
 function initRevealAnimations() {
   const io = new IntersectionObserver((entries) => {
@@ -4098,21 +2736,6 @@ function initRevealAnimations() {
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 }
 
-function initKbeNavToggleAria() {
-  const cb = document.getElementById('kbeNavToggle');
-  const ham = document.getElementById('ham');
-  const nav = document.getElementById('navLinks');
-  if (!cb || !ham || !nav) return;
-  const sync = () => ham.setAttribute('aria-expanded', cb.checked ? 'true' : 'false');
-  cb.addEventListener('change', sync);
-  nav.querySelectorAll('a').forEach((a) => {
-    a.addEventListener('click', () => {
-      cb.checked = false;
-      sync();
-    });
-  });
-  sync();
-}
 
 function initKbeMobileTapFixes() {
   initKbeNavToggleAria();
@@ -4147,18 +2770,6 @@ function switchMaten(v) {
 }
 
 // ── FAQ ACCORDION ──
-function toggleFi(id) {
-  const el = document.getElementById(id);
-  const isOpen = el.classList.contains('on');
-  document.querySelectorAll('.faqitem').forEach(f => {
-    f.classList.remove('on');
-    f.querySelector('.faq-ico').textContent = '+';
-  });
-  if (!isOpen) {
-    el.classList.add('on');
-    el.querySelector('.faq-ico').textContent = '−';
-  }
-}
 
 // Gallery keyboard navigation while drawer is open.
 document.addEventListener('keydown', (e) => {
@@ -4169,33 +2780,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 // ── Adres: lichte client-check (server doet de echte validatie) ──
-function getCheckoutCountry() {
-  const el = document.getElementById('fCountry');
-  return (el && el.value) ? String(el.value).toLowerCase() : 'nl';
-}
-function checkoutAddressClientOk(street, zip, city) {
-  const st = String(street || '').trim();
-  const zp = String(zip || '').trim();
-  const ct = String(city || '').trim();
-  if (zp.length < 2 || zp.length > 20) return 'Vul een geldige postcode in.';
-  if (!/\d/.test(zp)) return 'Postcode moet minstens één cijfer bevatten.';
-  if (!/^[\p{L}\p{N}\s\-.]+$/u.test(zp)) return 'Postcode bevat ongeldige tekens.';
-  if (ct.length < 2 || ct.length > 100) return 'Vul een plaats in.';
-  if (st.length < 3 || st.length > 200) return 'Vul straat en huisnummer in.';
-  if (!/\p{L}/u.test(st) || !/\d/u.test(st)) return 'Vul straat en huisnummer in (met cijfer).';
-  if (!/\p{L}/u.test(ct)) return 'Vul een geldige plaatsnaam in.';
-  return '';
-}
-function syncCheckoutPlaceholders() {
-  const cc = getCheckoutCountry();
-  const z = document.getElementById('fZip');
-  const c = document.getElementById('fCity');
-  if (!z || !c) return;
-  const ph = { nl: ['1234 AB', 'Amsterdam'], be: ['1000', 'Brussel'], de: ['10115', 'Berlijn'], fr: ['75001', 'Parijs'] };
-  const p = ph[cc] || ph.nl;
-  z.placeholder = p[0];
-  c.placeholder = p[1];
-}
 const fCountryElShop = document.getElementById('fCountry');
 if (fCountryElShop) fCountryElShop.addEventListener('change', syncCheckoutPlaceholders);
 syncCheckoutPlaceholders();

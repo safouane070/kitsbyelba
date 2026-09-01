@@ -140,8 +140,8 @@ a{text-decoration:none;color:inherit}
 .nav-mega a[href*="league=seriea"]::before{background-image:url("images/leagues/seriea.png")}
 .nav-mega a[href*="league=ligue1"]::before{background-image:url("images/leagues/ligue1.png")}
 .nav-mega a[href*="league=eredivisie"]::before{background-image:url("images/leagues/eredivisie.png")}
-.nav-mega a[href*="league=national"]::before{background-image:none;content:"🌍";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
-.nav-mega a[href*="league=overig"]::before{background-image:none;content:"⚽";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-mega a[href*="league=national"]::before{background-image:url("images/leagues/national.svg")}
+.nav-mega a[href*="league=overig"]::before{background-image:url("images/leagues/overig.svg")}
 .nav-links .has-mega:hover .nav-mega,.nav-links .has-mega:focus-within .nav-mega{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
 .nav-links .has-mega:hover>.top-link::after,.nav-links .has-mega:focus-within>.top-link::after{transform:rotate(180deg)}
 @media(max-width:960px){.nav-mega{display:none !important}.nav-links .has-mega>.top-link::after{display:none}}
@@ -249,7 +249,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .orders-table .hide-mobile{display:none}
 }
 </style>
-<link rel="stylesheet" href="css/app.css?v=2">
+<link rel="stylesheet" href="css/app.css?v=7">
 <link rel="stylesheet" href="css/responsive-global.css?v=15">
 <script defer src="js/kbe-ios-helpers.js?v=2"></script>
 </head>

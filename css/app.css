@@ -157,8 +157,8 @@ nav{
 .nav-mega a[href*="league=seriea"]::before{background-image:url("../images/leagues/seriea.png")}
 .nav-mega a[href*="league=ligue1"]::before{background-image:url("../images/leagues/ligue1.png")}
 .nav-mega a[href*="league=eredivisie"]::before{background-image:url("../images/leagues/eredivisie.png")}
-.nav-mega a[href*="league=national"]::before{background-image:none;content:"🌍";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
-.nav-mega a[href*="league=overig"]::before{background-image:none;content:"⚽";display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-mega a[href*="league=national"]::before{content:"\1F30D";background-image:none;display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1}
+.nav-mega a[href*="league=overig"]::before{background-image:url("../images/leagues/overig.svg?v=4")}
 .nav-links .has-mega:hover .nav-mega,
 .nav-links .has-mega:focus-within .nav-mega{
   opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0);

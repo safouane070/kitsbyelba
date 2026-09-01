@@ -74,6 +74,8 @@ $__leagues = [
     </div>
   </div>
 </nav>
+<!-- Verbergt league-links zonder producten uit de mega-menu (voorkomt lege pagina's). -->
+<script defer src="js/nav-mega.js?v=2"></script>
 <?php
 unset(
   $navActive, $navHomePrefix, $navSearch, $navCartOnclick, $navCartNumId, $navClass,

@@ -507,7 +507,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .cta{width:100%;padding:14px}
 }
 </style>
-<link rel="stylesheet" href="css/app.css?v=2">
+<link rel="stylesheet" href="css/app.css?v=7">
 <link rel="stylesheet" href="css/responsive-global.css?v=15">
 <script defer src="js/kbe-ios-helpers.js?v=2"></script>
 </head>
@@ -786,7 +786,7 @@ function getPdpStockState(p){
   if (units <= 0) return { key:'out', label:'Niet op voorraad' };
   // Op voorraad → snelle levering 1–2 werkdagen; anders nabestelling 7–12 werkdagen.
   if (parseInt(p.in_voorraad, 10) === 1) return getStockState(units);
-  return { key:'slow', label:'Nabestelling — levering 7 tot 12 werkdagen' };
+  return { key:'slow', label:'Nabestelling — levering 7–12 werkdagen' };
 }
 /** Zelfde logica als shop / index: kids-tenues tonen de KIDS Jersey Size Chart bij maat. */
 function isKidsProduct(p){
