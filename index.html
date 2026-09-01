@@ -3,6 +3,7 @@
    application/x-httpd-php) zodat de gedeelde includes nav/footer/announce werken.
    Zonder die .htaccess-regel (andere host / mod_php uit) verdwijnen nav+footer STIL.
    Zie NOTES.md. */
+require_once __DIR__ . '/includes/asset.php';
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -23,8 +24,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<script defer src="js/kbe-ios-helpers.js?v=2"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script defer src="<?= kits_asset('js/kbe-ios-helpers.js') ?>"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js" integrity="sha384-SALc35EccAf6RzGw4iNsyj7kTPr33K7RoGzYu+7heZhT8s0GZouafRiCg1qy44AS" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -47,7 +48,7 @@
   }
 }
 </script>
-<link rel="stylesheet" href="css/pages-shared.css?v=2">
+<link rel="stylesheet" href="<?= kits_asset('css/pages-shared.css') ?>">
 <style>
 
 .banner-slide{
@@ -651,8 +652,8 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 
 
 </style>
-<link rel="stylesheet" href="css/app.css?v=8">
-<link rel="stylesheet" href="css/responsive-global.css?v=16">
+<link rel="stylesheet" href="<?= kits_asset('css/app.css') ?>">
+<link rel="stylesheet" href="<?= kits_asset('css/responsive-global.css') ?>">
 </head>
 <body>
 
@@ -1267,7 +1268,7 @@ include __DIR__ . '/includes/footer.php';
     <!-- LEFT: success + steps -->
     <div class="cscreen-left">
       <div class="ccheck" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-      <h1 class="ctitle">Bestelling<br><em>ontvangen!</em></h1>
+      <h2 class="ctitle">Bestelling<br><em>ontvangen!</em></h2>
       <p class="csub" id="csub">Je bestelling is naar onze WhatsApp gestuurd. We bevestigen en sturen je een Tikkie (meestal binnen 24 uur).</p>
 
       <a class="wa-confirm-btn" id="waConfirmBtn" href="#" target="_blank" rel="noopener">
@@ -1331,9 +1332,8 @@ include __DIR__ . '/includes/footer.php';
 
 <div class="toast" id="toast"></div>
 
-<script src="js/shop-core.js?v=2"></script>
+<script src="<?= kits_asset('js/shop-core.js') ?>"></script>
 <script>
-
 /* dedup-compat: globals + shims voor gedeelde core-functies (homepage = fan-versie, geen seizoen/versie-UI) */
 let currentVersion = 'fan';
 let currentSeason = null;
@@ -1358,7 +1358,6 @@ let CONFIG = {
   publicSiteUrl:    '',
 };
 
-
 let PRODUCTS = [];
 /** Geen ingebouwde productgrid op de homepage — #shop wijst naar categoriekaarten. */
 const HOME_SKIP_EMBEDDED_SHOP = true;
@@ -1380,32 +1379,8 @@ let navSearchSuggestions = [];
 let navSearchActiveIndex = -1;
 const NAV_SEARCH_POPULAR = ['Real Madrid', 'Barcelona', 'PSG', 'Retro', 'Kids', 'Manchester'];
 
-
-
-
-
-
-
-
-
-
-
-/** Meerprijs bedrukking: naam én/of nummer samen = één toeslag (default €5, zie config.php / API). */
-/** Meerprijs badge/patch per shirt (default €3). */
-
-/** Herbereken regelprijzen na laden producten/API (bedrukking + badge). */
-
-// HTML escape helper — always use when inserting user/db data into innerHTML
-
-/** Public site base for absolute image URLs (email clients require full https URL in production). */
-
-/** First image filename on a cart line (cart may omit images; fall back to live product from PRODUCTS). */
-
-/** Absolute URL for email clients — uses config public_site_url, or current page origin + app folder. */
-
 // Vaste site-promo (banner/FAQ): 10% met KITSBYELBA. Extra acties in admin → tabel coupons + api/coupon_validate.php
 let appliedCoupon = null;
-
 
 function applyPromoTextsFromConfig() {
   if (CONFIG.promoBanner) {
@@ -1424,9 +1399,6 @@ const CART_STORAGE_KEY = 'kbe_cart_main';
 const COUPON_STORAGE_KEY = 'kbe_coupon_main';
 const PROMO_POPUP_KEY = 'kbe_seen_promo_10';
 const WISHLIST_STORAGE_KEY = 'kbe_wishlist_main';
-
-/** EmailJS `defer` in <head> — init pas als `emailjs` bestaat (voorkomt race). */
-
 
 // ── INIT ──
 Promise.all([
@@ -1501,7 +1473,6 @@ initRevealAnimations();
   window.addEventListener('scroll', () => btn.classList.toggle('on', window.scrollY > 400), {passive:true});
 })();
 
-
 // Toned down: no longer covers the hero on load. Shows once on exit-intent
 // (desktop) or after the visitor has genuinely browsed (long dwell / deep scroll).
 function armPromoPopup() {
@@ -1518,9 +1489,6 @@ function armPromoPopup() {
   window.addEventListener('scroll', () => { if (window.scrollY > 1800) fire(); }, { passive: true });
   setTimeout(fire, 35000);
 }
-
-
-
 
 // ── HOME PRODUCT ALLOCATION ──
 // One shared set so the same kit never shows twice on the homepage
@@ -1611,12 +1579,6 @@ let currentVersionFilter = 'all';
 let currentKitVariantFilter = 'all';
 let currentVoorraadFilter = 'all'; // 'all', 'in_stock', 'out_of_stock'
 
-
-
-
-
-
-
 function renderGrid(cat = currentFilterCat) {
   if (HOME_SKIP_EMBEDDED_SHOP) return;
   currentFilterCat = cat;
@@ -1644,7 +1606,6 @@ function syncShopCategoryTabsFromState() {
   if (pv) pv.classList.toggle('on', currentVersionFilter === 'player');
 }
 
-
 function buildShopNoResultsTips(cat) {
   const tips = [];
   if (currentSearchTerm) tips.push(`Zoekterm <strong>“${esc(currentSearchTerm)}”</strong> wissen of aanpassen.`);
@@ -1656,10 +1617,6 @@ function buildShopNoResultsTips(cat) {
   if (!tips.length) tips.push('Gebruik <strong>Filters resetten</strong> om alles terug te zetten.');
   return '<ul class="no-results-tips">' + tips.map(t => `<li>${t}</li>`).join('') + '</ul>';
 }
-
-
-
-
 
 function updateLeaguePillCounts() {
   const leagueKeywords = {
@@ -1850,9 +1807,6 @@ function updateShopRefineUI() {
   }
 }
 
-
-
-
 function setVoorraadFilter(v) {
   currentVoorraadFilter = v || 'all';
   renderGrid();
@@ -1905,7 +1859,6 @@ function goToShopPlayer() {
   _doRenderGrid('all');
   kbeScrollIntoView(document.getElementById('shop'));
 }
-
 
 function setTypeFilter(type, btn) {
   currentTypeFilter = type || 'all';
@@ -2053,10 +2006,6 @@ function clearSearch() {
   _doRenderGrid(currentFilterCat);
 }
 
-
-
-
-
 function applyDynamicStoreTexts() {
   const free = Number(CONFIG.freeShippingFrom || 40).toFixed(0);
   const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
@@ -2066,8 +2015,6 @@ function applyDynamicStoreTexts() {
   set('heroFreeShipText', `Gratis verzending vanaf €${free}`);
   set('trustBarFreeShipText', `Gratis verzending vanaf €${free}`);
 }
-
-
 
 function applyBannerImagesFromProducts() {
   const slides = [
@@ -2143,7 +2090,6 @@ function applyBannerImagesFromProducts() {
   });
 }
 
-
 /** Align canonical + Open Graph URLs with config publicSiteUrl (set in config.php / .env). */
 function applySeoFromConfig(pageFile) {
   const base = (CONFIG.publicSiteUrl || '').trim().replace(/\/$/, '');
@@ -2155,19 +2101,7 @@ function applySeoFromConfig(pageFile) {
   if (ogUrl) ogUrl.setAttribute('content', url);
 }
 
-/** Max units allowed for this product + size (uses stock_sizes when set, else total stock). */
-
-
-
-
 // ── DETAIL DRAWER ──
-
-
-
-
-
-
-
 
 document.getElementById('printName').addEventListener('input', function() {
   this.value = this.value.slice(0, 15);
@@ -2182,13 +2116,7 @@ document.getElementById('printBadges').addEventListener('input', function() {
   if (currentPrinting === 'custom') refreshDetailDrawerPrice();
 });
 
-
-
 // ── CART ──
-
-
-
-
 
 window.addEventListener('popstate', function () {
   const cp = document.getElementById('cpanel');
@@ -2200,44 +2128,13 @@ window.addEventListener('popstate', function () {
   }
 });
 
-
-
-
-
-
-
-// ── COUPON ──
-
-
-
-
-// ── ORDER MODAL ──
-
-
-
-
-
-
-// ── PLACE ORDER ──
-
-// ── CONFIRM SCREEN ──
-
-
-// ── UTILITIES ──
-
-
 /** Hamburger = checkbox #kbeNavToggle + label (werkt op iOS zonder click/touch-bugs). */
-
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initKbeMobileTapFixes);
 } else {
   initKbeMobileTapFixes();
 }
-
-// ── MATENGIDS TABS ──
-
-// ── FAQ ACCORDION ──
 
 // Gallery keyboard navigation while drawer is open.
 document.addEventListener('keydown', (e) => {
