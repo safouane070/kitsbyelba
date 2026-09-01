@@ -32,6 +32,11 @@ $__seoMap = [
 ];
 $__seo   = $__seoMap[$__type] ?? ['shop.html', 'Shop — voetbaltenues | KitsByElbaa', 'Alle voetbalshirts, sets, kids en retro tenues bij KitsByElbaa.'];
 $__canon = $__base . '/' . $__seo[0];
+// Zichtbare <h1>-kop per categorie. Spiegelt de JS-begintoestand (renderGrid:
+// typeLabels + voorraad/wishlist) zodat non-JS crawlers dezelfde kop zien als
+// de eerste client-render — geen flash, server en client komen overeen.
+$__h1Map = ['shirts'=>'Shirts','sets'=>'Sets','hemdsetjes'=>'Hemdsetjes','retro'=>'Retro','kids'=>'Kids','voorraad'=>'Op voorraad','wishlist'=>'Wishlist'];
+$__h1 = $__h1Map[$__type] ?? 'Alle tenues';
 $__e = static fn(string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
@@ -577,7 +582,7 @@ $__e = static fn(string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
   <div class="shop-header">
     <div class="sh-left">
       <div class="sh-eyebrow">Onze collectie</div>
-      <div class="sh-title" id="shopTitle">Alle tenues</div>
+      <h1 class="sh-title" id="shopTitle"><?= $__e($__h1) ?></h1>
       <p class="sh-lede" id="shopHeroLede">Shop per categorie en gebruik filters om snel de juiste club, competitie en maat te vinden.</p>
     </div>
     <span class="sh-count" id="shopCount">Laden…</span>
