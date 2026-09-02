@@ -1743,7 +1743,7 @@ const ADMIN_NOTIFY_EMAIL  = <?= json_encode(ADMIN_NOTIFY_EMAIL, JSON_HEX_TAG | J
 const EMAIL_PUBLIC_BASE   = <?= json_encode(rtrim($cfg['public_site_url'] ?? '', '/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 const EMAILJS_RESTOCK_TPL = <?= json_encode((string)EMAILJS_RESTOCK, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 </script>
-<script defer src="<?= kits_asset('js/admin.js') ?>"></script>
+<script defer src="<?= kits_asset('js/product-classify.js') ?>"></script><script defer src="<?= kits_asset('js/admin.js') ?>"></script>
 
 <?php endif; ?>
 </body>

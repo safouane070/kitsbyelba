@@ -28,22 +28,8 @@
     national:   ['national', 'wk', 'landen']
   };
 
-  // 1-op-1 met shop.html/index.html
-  function detectProductType(p) {
-    var catDb = String(p.cat || '').toLowerCase();
-    if (catDb === 'hemsetjes' || catDb === 'hemdsetjes') return 'hemdsetjes';
-    if (catDb === 'training') return 'shirts';
-    if (catDb === 'retro') return 'retro';
-    if (catDb === 'kids') return 'kids';
-    var name = String(p.name || '').toLowerCase();
-    var desc = String(p.description || '').toLowerCase();
-    if (name.indexOf('retro kids') !== -1) return 'kids';
-    if (name.indexOf('kids kit') !== -1 || name.indexOf(' kids ') !== -1 || /\bkids\b/.test(name)) return 'kids';
-    if (/\bretro\b|\bvintage\b/.test(name) || /\bretro\b|\bvintage\b/.test(desc)) return 'retro';
-    if (/\bhem\b|\bhemdje\b|\bhemset|\bhemdsetjes\b/.test(name)) return 'hemdsetjes';
-    if (name.indexOf('full kit set') !== -1 || name.indexOf(' kit set') !== -1 || /\bset\b/.test(name)) return 'sets';
-    return 'shirts';
-  }
+  // detectProductType() komt uit js/product-classify.js (globaal, geladen vóór dit
+  // script via includes/nav.php). Was hier een lokale 1-op-1-kopie.
 
   function leagueHit(cat, lg, key) {
     if (cat === key) return true;
