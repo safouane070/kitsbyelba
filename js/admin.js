@@ -1161,48 +1161,9 @@ function loadProducts(forceRefresh = false) {
     });
 }
 
-// Same logic as detectProductType in shop.html
-function detectProductType(p) {
-  const name = String(p.name || '').toLowerCase();
-  const cat  = String(p.cat  || '').toLowerCase();
-  if (cat === 'retro') return 'retro';
-  if (cat === 'hemsetjes' || cat === 'hemdsetjes') return 'hemdsetjes';
-  if (cat === 'training') return 'shirts';
-  if (name.includes('retro kids')) return 'kids';
-  if (name.includes('kids kit') || name.includes(' kids ') || /\bkids\b/.test(name)) return 'kids';
-  if (name.includes('full kit set') || name.includes(' kit set') || /\bset\b/.test(name)) return 'sets';
-  if (/\bretro\b|\bvintage\b/.test(name)) return 'retro';
-  if (/\bhem\b|\bhemdje\b|\bhemset|\bhemdsetjes\b/.test(name)) return 'hemdsetjes';
-  return 'shirts';
-}
-function detectProductVersion(p) {
-  if (!p) return 'fan';
-  const v = String(p.version || '').trim().toLowerCase();
-  if (v === 'player' || v === 'fan') return v;
-  const hay = `${p.name || ''} ${p.description || ''} ${p.fit_info || ''} ${p.size_advice || ''}`.toLowerCase();
-  if (
-    hay.includes('player version') ||
-    hay.includes('player fit') ||
-    hay.includes('players version') ||
-    /\bplayer\b/.test(hay)
-  ) {
-    return 'player';
-  }
-  if (
-    hay.includes('spelersversie') ||
-    hay.includes('spelerversie') ||
-    hay.includes('spelers versie') ||
-    hay.includes('speler versie') ||
-    hay.includes('spelers kit') ||
-    hay.includes('spelerseditie') ||
-    hay.includes('spelers editie')
-  ) {
-    return 'player';
-  }
-  if (hay.includes('fan version') || hay.includes('fan fit') || /\bfan\b/.test(hay)) return 'fan';
-  if (hay.includes('fanversie') || hay.includes('fan versie') || hay.includes('fansversie')) return 'fan';
-  return 'fan';
-}
+// detectProductType() en detectProductVersion() staan nu in js/product-classify.js
+// (geladen vóór dit script in admin.php). Admin classificeert nu identiek aan de winkel;
+// de oude admin-kopie miste de kids-categorie en woog 'set' vóór retro/hemdsetjes.
 
 const catCoverProducts = {};
 let _coverPickerCat = null;
