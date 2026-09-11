@@ -22,17 +22,71 @@ if ($__type === '') {
     $__seg = (string)preg_replace('/\.(php|html)$/', '', $__seg);
     if (in_array($__seg, ['shirts','sets','hemdsetjes','retro','kids','voorraad','wishlist'], true)) $__type = $__seg;
 }
+// Per-categorie SEO: [0]=slug, [1]=<title>, [2]=meta description, [3]=zichtbare
+// lede (#shopHeroLede), [4]=keyword-rijk tekstblok onder het grid (server-side,
+// dus crawlers zonder JS zien echte content). Titels/descriptions zijn afgestemd
+// op wat mensen zoeken; JS-pageMap (applySeoFromConfig) spiegelt [1]+[2].
 $__seoMap = [
-    'shirts'     => ['shirts',     'Shirts — voetbaltenues | KitsByElbaa',   'Shop alle voetbalshirts bij KitsByElbaa. Topclubs en landen, met bedrukking en snelle levering.'],
-    'sets'       => ['sets',       'Sets — voetbaltenues | KitsByElbaa',     'Shop complete voetbalsets bij KitsByElbaa. Snelle levering en bedrukking mogelijk.'],
-    'hemdsetjes' => ['hemdsetjes', 'Hemdsetjes — voetbaltenues | KitsByElbaa','Shop hemdsetjes bij KitsByElbaa. Comfortabele sets met snelle levering.'],
-    'retro'      => ['retro',      'Retro tenues | KitsByElbaa',             'Shop retro voetbaltenues bij KitsByElbaa. Klassieke shirts en sets van legendarische seizoenen.'],
-    'kids'       => ['kids',       'Kids tenues | KitsByElbaa',              'Shop kids voetbaltenues bij KitsByElbaa. Kinder maten met bedrukking en snelle levering.'],
-    'voorraad'   => ['voorraad',   'Direct op voorraad | KitsByElbaa',       'Shop direct op voorraad bij KitsByElbaa. Snelle levering voor direct beschikbare tenues.'],
-    'wishlist'   => ['wishlist',   'Wishlist | KitsByElbaa',                 'Bekijk en beheer je favoriete tenues in je persoonlijke wishlist.'],
+    'shirts' => [
+        'shirts',
+        'Voetbalshirts met naam & nummer kopen | KitsByElbaa',
+        'Voetbalshirts van topclubs en landen, met eigen naam en nummer. Thuis- en uitshirts in alle maten. Snelle levering en veilig betalen bij KitsByElbaa.',
+        'Voetbalshirts van je favoriete club of land — laat je eigen naam en nummer bedrukken en draag hetzelfde tenue als de sterren.',
+        "<h2>Voetbalshirts kopen met naam en nummer</h2>\n<p>Bij KitsByElbaa vind je <strong>voetbalshirts</strong> van de grootste clubs en nationale teams ter wereld. Van thuisshirt tot uitshirt en special editions: je bestelt je favoriete tenue in alle maten, van S tot XXL. Wil je er echt bij horen? Laat je <strong>eigen naam en nummer bedrukken</strong>, of kies voor de player-versie met de officiële naam en het nummer van je favoriete speler.</p>\n<p>Een voetbalshirt met bedrukking is ook een perfect cadeau voor iedere voetbalfan — voor een verjaardag, als verrassing of gewoon omdat het kan. Alle voetbalshirts worden met zorg verstuurd en je betaalt veilig met Tikkie. Twijfel je over je maat? Bekijk de handige maattabel op de homepage. Zoek je een specifiek shirt — bijvoorbeeld een WK 2026-tenue of een echte klassieker — gebruik dan de filters op club, competitie en land om snel te vinden wat je zoekt.</p>",
+    ],
+    'sets' => [
+        'sets',
+        'Voetbalsets & complete tenues kopen | KitsByElbaa',
+        'Complete voetbalsets: shirt én broekje in één, van topclubs en landen. Met bedrukking mogelijk en snelle levering. Bestel je voetbaltenue bij KitsByElbaa.',
+        'Complete voetbalsets in één keer: shirt én broekje, klaar om in te spelen. Van topclubs en nationale teams.',
+        "<h2>Complete voetbalsets en tenues kopen</h2>\n<p>Een <strong>voetbalset</strong> is de makkelijkste manier om in één keer een compleet tenue in huis te hebben: shirt en broekje samen, in de kleuren van je favoriete club of land. Ideaal voor op het veld, voor het echte matchgevoel, als cadeau of gewoon om te dragen als trotse supporter.</p>\n<p>Je kiest je voetbalset in alle gangbare maten en kunt hem laten <strong>bedrukken met je eigen naam en nummer</strong>, of met de naam van je favoriete speler. Zo maak je van een standaard tenue iets persoonlijks dat helemaal van jou is. Alle voetbalsets worden met zorg en snel geleverd, en je betaalt veilig met Tikkie.</p>\n<p>Op zoek naar een specifieke club, competitie of nationaal team? Gebruik de handige filters om snel de juiste voetbalset te vinden en stel zo jouw perfecte complete tenue samen. Van topclubs uit de Premier League en La Liga tot de nationale teams op het WK 2026 — je vindt het bij KitsByElbaa.</p>",
+    ],
+    'hemdsetjes' => [
+        'hemdsetjes',
+        'Voetbal hemdsetjes voor baby & peuter | KitsByElbaa',
+        'Voetbal hemdsetjes voor de allerkleinsten — comfortabele mini-tenues van je favoriete club of land. Leuk als kraamcadeau. Snelle levering bij KitsByElbaa.',
+        'Schattige voetbal hemdsetjes voor de allerkleinste supporters — mini-tenues van je favoriete club.',
+        "<h2>Voetbal hemdsetjes voor baby en peuter</h2>\n<p><strong>Hemdsetjes</strong> zijn de allerschattigste manier om de kleinste supporter in het team te verwelkomen. Deze mini voetbaltenues zijn zacht, comfortabel en gemaakt in de kleuren van topclubs en nationale teams — perfect voor baby's en peuters die er al vroeg bij willen horen.</p>\n<p>Een voetbal hemdsetje is ook een origineel en gegarandeerd geslaagd <strong>kraamcadeau</strong> voor echte voetballiefhebbers. Kies het shirt van de favoriete club van de ouders en maak het helemaal compleet met bedrukking van naam en nummer. Zo krijgt de kleine zijn of haar eerste echte voetbaltenue.</p>\n<p>Al onze hemdsetjes worden met zorg gemaakt en snel geleverd, en je betaalt veilig met Tikkie. Bekijk de beschikbare clubs en landen en vind het perfecte mini-tenue voor de allerkleinste fan in de familie. Van thuisshirt tot uitshirt — ook voor de kleinsten is er volop keuze bij KitsByElbaa.</p>",
+    ],
+    'retro' => [
+        'retro',
+        'Retro voetbalshirts & klassieke tenues | KitsByElbaa',
+        'Retro voetbalshirts en klassieke tenues van legendarische seizoenen. Vintage shirts van iconische clubs en landen. Snelle levering bij KitsByElbaa.',
+        'Retro voetbalshirts en klassieke tenues — herbeleef de legendarische seizoenen van iconische clubs en landen.',
+        "<h2>Retro voetbalshirts en klassieke tenues</h2>\n<p>Niets roept zoveel nostalgie op als een <strong>retro voetbalshirt</strong>. In deze collectie vind je de klassieke tenues van legendarische seizoenen — de shirts die geschiedenis schreven, van iconische clubs tot onvergetelijke WK- en EK-campagnes. Voor iedereen die terugverlangt naar het voetbal van vroeger.</p>\n<p>Onze <strong>vintage voetbalshirts</strong> zijn perfect voor de echte liefhebber: als eyecatcher in je collectie, om te dragen met trots, of als uniek en persoonlijk cadeau voor een voetbalfan. Elk retro shirt ademt de sfeer van toen, met de kleuren en details die dat seizoen zo speciaal maakten.</p>\n<p>Zoek je een specifieke club of een bepaald tenue uit een gouden periode? Bekijk rustig de hele collectie retro voetbalshirts en herbeleef jouw favoriete voetbalmoment. Alles wordt met zorg verstuurd en veilig betaald met Tikkie — net als bij al onze voetbaltenues bij KitsByElbaa.</p>",
+    ],
+    'kids' => [
+        'kids',
+        'Kids voetbalshirts & tenues kopen | KitsByElbaa',
+        'Kids voetbalshirts en tenues in alle kindermaten, met naam en nummer. Van topclubs en landen. Snelle levering en veilig betalen bij KitsByElbaa.',
+        'Voetbalshirts en tenues in alle kindermaten, met eigen naam en nummer. Zo speelt jouw kind er echt bij.',
+        "<h2>Kids voetbalshirts en tenues kopen</h2>\n<p>Laat je kind stralen in een <strong>kids voetbalshirt</strong> van zijn of haar favoriete club of land. Onze kindertenues zijn er in alle jeugdmaten en worden met precies dezelfde zorg gemaakt als de volwassen versies — comfortabel om in te spelen op het veld en mooi genoeg om elke dag met trots te dragen.</p>\n<p>Maak het shirt extra persoonlijk met een <strong>eigen naam en nummer</strong>, of kies de naam en het nummer van de favoriete speler van je kind. Zo voelt je zoon of dochter zich een echte prof. Ook complete kids voetbalsets met shirt en broekje zijn mogelijk.</p>\n<p>Een kids voetbaltenue is bovendien een gegarandeerd geslaagd cadeau voor een verjaardag, Sinterklaas of kerst. Van de grootste clubs tot de nationale teams op het WK 2026 — je vindt het bij KitsByElbaa. Snelle levering en veilig betalen met Tikkie, zodat het cadeau op tijd binnen is.</p>",
+    ],
+    'voorraad' => [
+        'voorraad',
+        'Voetbalshirts direct op voorraad | KitsByElbaa',
+        'Voetbalshirts en tenues die direct op voorraad zijn — snelle levering in 1–2 werkdagen. Bekijk wat je nu meteen kunt bestellen bij KitsByElbaa.',
+        'Deze tenues liggen klaar en zijn direct leverbaar — vandaag besteld, snel in huis.',
+        "<h2>Voetbalshirts direct op voorraad</h2>\n<p>Haast? Deze <strong>voetbalshirts en tenues zijn direct op voorraad</strong> en worden verstuurd in 1–2 werkdagen. Geen lange wachttijd: alles wat je op deze pagina ziet, ligt klaar om meteen verzonden te worden naar jouw adres.</p>\n<p>Direct leverbare tenues zijn perfect als je een voetbalshirt snel nodig hebt — voor een wedstrijd dit weekend, een verjaardag om de hoek of een last-minute cadeau voor een voetbalfan. Bekijk per shirt welke maten nog beschikbaar zijn en bestel vandaag nog, dan is het snel in huis.</p>\n<p>Zoek je een specifiek shirt dat hier niet tussen staat? Geen probleem: de rest van de collectie van KitsByElbaa is via nabestelling ook gewoon te bestellen, met een levertijd van 7–12 werkdagen. Zo vind je altijd het voetbaltenue dat je zoekt, of het nu snel moet of niet.</p>",
+    ],
+    'wishlist' => [
+        'wishlist',
+        'Wishlist | KitsByElbaa',
+        'Bekijk en beheer je favoriete voetbalshirts en tenues in je persoonlijke wishlist bij KitsByElbaa.',
+        'Je favoriete tenues op één plek. Klik op ♥ bij een product om het hier te bewaren.',
+        '',
+    ],
 ];
-$__seo   = $__seoMap[$__type] ?? ['shop.html', 'Shop — voetbaltenues | KitsByElbaa', 'Alle voetbalshirts, sets, kids en retro tenues bij KitsByElbaa.'];
+$__seo   = $__seoMap[$__type] ?? [
+    'shop.html',
+    'Voetbalshirts & tenues kopen | KitsByElbaa',
+    'Alle voetbalshirts, sets, retro en kids-tenues op één plek. Van topclubs en landen, met naam en nummer. Snelle levering en veilig betalen bij KitsByElbaa.',
+    'Alle voetbalshirts, sets, retro en kids-tenues op één plek. Filter op club, competitie, land en maat.',
+    "<h2>Voetbalshirts en tenues kopen bij KitsByElbaa</h2>\n<p>KitsByElbaa is dé plek voor <strong>voetbalshirts en complete tenues</strong> van topclubs en nationale teams. Van thuis- en uitshirts tot retro klassiekers, kids-maten en hemdsetjes voor de allerkleinsten — alles met de mogelijkheid tot bedrukking met je <strong>eigen naam en nummer</strong>.</p>\n<p>Filter eenvoudig op club, competitie, land en maat om snel het juiste voetbaltenue te vinden. Alles wordt met zorg verstuurd, met snelle levering en veilig betalen via Tikkie. Draag hetzelfde shirt als je helden — of verras een echte voetballiefhebber met een cadeau dat altijd raak is.</p>",
+];
 $__canon = $__base . '/' . $__seo[0];
+$__lede  = $__seo[3] ?? '';
+$__seoContent = $__seo[4] ?? '';
 // Zichtbare <h1>-kop per categorie. Spiegelt de JS-begintoestand (renderGrid:
 // typeLabels + voorraad/wishlist) zodat non-JS crawlers dezelfde kop zien als
 // de eerste client-render — geen flash, server en client komen overeen.
@@ -66,7 +120,7 @@ $__e = static fn(string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "KitsByElbaa",
-  "url": "https://kitsbyelba.com",
+  "url": "<?= $__base ?>",
   "sameAs": ["https://wa.me/31684446255"]
 }
 </script>
@@ -75,10 +129,10 @@ $__e = static fn(string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "KitsByElbaa",
-  "url": "https://kitsbyelba.com",
+  "url": "<?= $__base ?>",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://kitsbyelba.com/index.html?search={search_term_string}",
+    "target": "<?= $__base ?>/index.html?search={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 }
@@ -584,7 +638,7 @@ $__e = static fn(string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
     <div class="sh-left">
       <div class="sh-eyebrow">Onze collectie</div>
       <h1 class="sh-title" id="shopTitle"><?= $__e($__h1) ?></h1>
-      <p class="sh-lede" id="shopHeroLede">Shop per categorie en gebruik filters om snel de juiste club, competitie en maat te vinden.</p>
+      <p class="sh-lede" id="shopHeroLede"><?= $__e($__lede !== '' ? $__lede : 'Shop per categorie en gebruik filters om snel de juiste club, competitie en maat te vinden.') ?></p>
     </div>
     <span class="sh-count" id="shopCount">Laden…</span>
   </div>
@@ -688,6 +742,16 @@ $__e = static fn(string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
   </div>
   </div>
 </section>
+
+<?php if ($__seoContent !== ''): ?>
+<!-- Server-side SEO-tekst per categorie: crawlers (zonder JS) zien echte,
+     keyword-rijke inhoud i.p.v. alleen een JS-gevuld productgrid. -->
+<section class="seo-content" aria-label="Over deze collectie">
+  <div class="seo-content-inner">
+    <?= $__seoContent /* vaste, vertrouwde HTML uit $__seoMap — geen user-input */ ?>
+  </div>
+</section>
+<?php endif; ?>
 
 <?php /* Shared footer — single source of truth: includes/footer.php. Shop pages: hide "Alle tenues", anchors point to index.html (default prefix). */
 $footerHideAlleTenues = true;
@@ -805,7 +869,6 @@ include __DIR__ . '/includes/footer.php';
 <div class="cbg" id="cbg" onclick="closeCart()"></div>
 <div class="cpanel" id="cpanel">
   <div class="chead">
-    <button type="button" class="chead-back" onclick="closeCart()" aria-label="Terug naar winkel">← Terug</button>
     <span class="chead-title" id="cartTitle">Winkelwagen</span>
     <div class="chead-right">
       <button type="button" class="xbtn" onclick="closeCart()" title="Sluiten" aria-label="Sluiten">✕</button>
@@ -1085,7 +1148,11 @@ Promise.all([
   updateCount();
   openProductFromUrl();
   maybeShowPromoPopup();
-  if (new URLSearchParams(window.location.search).get('openCart') === '1' && cart.length) {
+  const __qs = new URLSearchParams(window.location.search);
+  if (__qs.get('checkout') === '1' && cart.length) {
+    openModal();
+    try { history.replaceState({}, '', location.pathname); } catch (_) {}
+  } else if (__qs.get('openCart') === '1' && cart.length) {
     openCart();
   }
 });
@@ -1725,15 +1792,17 @@ function applySeoFromConfig(pageFile) {
   if (['shirts','sets','hemdsetjes','retro','kids','voorraad','wishlist'].includes(seg)) t = seg;
   if (t === 'hemsetjes') t = 'hemdsetjes';
   if (t === 'training') t = 'shirts';
+  // Spiegelt server-side $__seoMap in shop.html ([1]=title, [2]=desc). Bij wijziging:
+  // pas BEIDE aan zodat crawler (server) en client (JS-rewrite) identiek blijven.
   const pageMap = {
-    shirts: { slug: 'shirts', title: 'Shirts — voetbaltenues | KitsByElbaa', desc: 'Shop alle voetbalshirts bij KitsByElbaa. Topclubs en landen, met bedrukking en snelle levering.' },
-    sets: { slug: 'sets', title: 'Sets — voetbaltenues | KitsByElbaa', desc: 'Shop complete voetbalsets bij KitsByElbaa. Snelle levering en bedrukking mogelijk.' },
-    hemdsetjes: { slug: 'hemdsetjes', title: 'Hemdsetjes — voetbaltenues | KitsByElbaa', desc: 'Shop hemdsetjes bij KitsByElbaa. Comfortabele sets met snelle levering.' },
-    retro: { slug: 'retro', title: 'Retro tenues | KitsByElbaa', desc: 'Shop retro voetbaltenues bij KitsByElbaa. Klassieke shirts en sets van legendarische seizoenen.' },
-    kids: { slug: 'kids', title: 'Kids tenues | KitsByElbaa', desc: 'Shop kids voetbaltenues bij KitsByElbaa. Kinder maten met bedrukking en snelle levering.' },
-    voorraad: { slug: 'voorraad', title: 'Direct op voorraad | KitsByElbaa', desc: 'Shop direct op voorraad bij KitsByElbaa. Snelle levering voor direct beschikbare tenues.' },
-    wishlist: { slug: 'wishlist', title: 'Wishlist | KitsByElbaa', desc: 'Bekijk en beheer je favoriete tenues in je persoonlijke wishlist.' },
-    all: { slug: pageFile, title: 'Shop — voetbaltenues | KitsByElbaa', desc: 'Alle voetbalshirts, sets, kids en retro tenues bij KitsByElbaa.' }
+    shirts: { slug: 'shirts', title: 'Voetbalshirts met naam & nummer kopen | KitsByElbaa', desc: 'Voetbalshirts van topclubs en landen, met eigen naam en nummer. Thuis- en uitshirts in alle maten. Snelle levering en veilig betalen bij KitsByElbaa.' },
+    sets: { slug: 'sets', title: 'Voetbalsets & complete tenues kopen | KitsByElbaa', desc: 'Complete voetbalsets: shirt én broekje in één, van topclubs en landen. Met bedrukking mogelijk en snelle levering. Bestel je voetbaltenue bij KitsByElbaa.' },
+    hemdsetjes: { slug: 'hemdsetjes', title: 'Voetbal hemdsetjes voor baby & peuter | KitsByElbaa', desc: 'Voetbal hemdsetjes voor de allerkleinsten — comfortabele mini-tenues van je favoriete club of land. Leuk als kraamcadeau. Snelle levering bij KitsByElbaa.' },
+    retro: { slug: 'retro', title: 'Retro voetbalshirts & klassieke tenues | KitsByElbaa', desc: 'Retro voetbalshirts en klassieke tenues van legendarische seizoenen. Vintage shirts van iconische clubs en landen. Snelle levering bij KitsByElbaa.' },
+    kids: { slug: 'kids', title: 'Kids voetbalshirts & tenues kopen | KitsByElbaa', desc: 'Kids voetbalshirts en tenues in alle kindermaten, met naam en nummer. Van topclubs en landen. Snelle levering en veilig betalen bij KitsByElbaa.' },
+    voorraad: { slug: 'voorraad', title: 'Voetbalshirts direct op voorraad | KitsByElbaa', desc: 'Voetbalshirts en tenues die direct op voorraad zijn — snelle levering in 1–2 werkdagen. Bekijk wat je nu meteen kunt bestellen bij KitsByElbaa.' },
+    wishlist: { slug: 'wishlist', title: 'Wishlist | KitsByElbaa', desc: 'Bekijk en beheer je favoriete voetbalshirts en tenues in je persoonlijke wishlist bij KitsByElbaa.' },
+    all: { slug: pageFile, title: 'Voetbalshirts & tenues kopen | KitsByElbaa', desc: 'Alle voetbalshirts, sets, retro en kids-tenues op één plek. Van topclubs en landen, met naam en nummer. Snelle levering en veilig betalen bij KitsByElbaa.' }
   };
   const seo = pageMap[t] || pageMap.all;
   const url = base + '/' + seo.slug;
