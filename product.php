@@ -74,6 +74,7 @@ $ldProduct = [
     '@type' => 'Product',
     'name' => $seoName,
     'description' => $seoDesc,
+    'brand' => ['@type' => 'Brand', 'name' => 'KitsByElbaa'],
     'offers' => [
         '@type' => 'Offer',
         'priceCurrency' => 'EUR',
@@ -516,7 +517,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
     <div class="gallery">
       <div class="main-img-box" id="mainBox">
         <button type="button" class="garr prev" onclick="shiftImg(-1)" aria-label="Vorige productafbeelding">‹</button>
-        <img class="main-img" id="mainImg" alt="Product image">
+        <img class="main-img" id="mainImg" alt="<?= htmlspecialchars($seoName !== '' ? $seoName . ' — voetbalshirt' : 'Voetbalshirt', ENT_QUOTES, 'UTF-8') ?>">
         <button type="button" class="garr next" onclick="shiftImg(1)" aria-label="Volgende productafbeelding">›</button>
         <button type="button" class="pdp-wish-btn" id="pdpWishBtn" onclick="togglePdpWishlist()" aria-pressed="false" aria-label="Toevoegen aan wishlist" title="Wishlist">♥</button>
       </div>
@@ -624,7 +625,6 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 <div class="pdp-cart-bg" id="pcbg" onclick="closePdpCart()"></div>
 <aside class="pdp-cart" id="pcart">
   <div class="pdp-cart-head">
-    <button type="button" class="pdp-cart-back" onclick="closePdpCart()" aria-label="Terug naar product">← Terug</button>
     <span class="pdp-cart-title" id="pcartTitle">Mijn artikelen • 0</span>
     <button type="button" class="pdp-cart-close" onclick="closePdpCart()" aria-label="Sluiten">✕</button>
   </div>
@@ -1430,7 +1430,14 @@ document.getElementById('printNumber').addEventListener('input', function(){
 });
 
 function goToCart(){
-  window.location.href = 'index.html?openCart=1';
+  // Cart lives in shared storage (kbe_cart_main); the full checkout modal only
+  // exists on index/shop. Land the shopper straight in that checkout instead of
+  // dropping them on the homepage behind a tiny cart drawer.
+  if (!Array.isArray(pdpCart) || !pdpCart.length) {
+    pdpToast('Je winkelwagen is leeg — voeg eerst een tenue toe.', 'error');
+    return;
+  }
+  window.location.href = 'index.html?checkout=1';
 }
 
 function openPdpCart(){
@@ -1514,7 +1521,7 @@ function renderPdpCart(){
     const img = i.image || i.image2 || i.image3;
     const slug = i.id != null ? shareSlug(i) : '';
     const href = slug ? `product.php?slug=${encodeURIComponent(slug)}` : '';
-    const mediaInner = img ? `<img src="${productImgSrc(img)}" alt="">` : `<span class="pdp-line-noimg" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>`;
+    const mediaInner = img ? `<img src="${productImgSrc(img)}" alt="${String(i.name||'').replace(/"/g,'&quot;')}">` : `<span class="pdp-line-noimg" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>`;
     const mediaBlock = href
       ? `<a class="pdp-line-media" href="${href}" title="Product bekijken">${mediaInner}</a>`
       : `<div class="pdp-line-media">${mediaInner}</div>`;

@@ -244,8 +244,24 @@ function maybeShowPromoPopup() {
   try {
     if (localStorage.getItem(PROMO_POPUP_KEY) === '1') return;
   } catch (_) {}
+  // Never let the promo cover the cart or checkout — it hides the totals at the
+  // decisive moment. Skip when either is (about to be) open.
+  const cp = document.getElementById('cpanel');
+  const mbg = document.getElementById('mbg');
+  if ((cp && cp.classList.contains('on')) || (mbg && mbg.classList.contains('on'))) return;
+  try {
+    const qs = new URLSearchParams(window.location.search);
+    if (qs.get('openCart') === '1' || qs.get('checkout') === '1') return;
+  } catch (_) {}
   const el = document.getElementById('promoPopup');
   if (el) el.classList.add('on');
+}
+
+// Tuck the promo away (without marking it "seen") so it can never sit on top of
+// the cart or checkout if it fired just before the shopper opened them.
+function hidePromoOverlay() {
+  const el = document.getElementById('promoPopup');
+  if (el) el.classList.remove('on');
 }
 
 function closePromoPopup() {
@@ -348,13 +364,15 @@ function buildNoResultsActions() {
 function updateShopHeroLede() {
   const el = document.getElementById('shopHeroLede');
   if (!el) return;
+  // Spiegelt de server-side ledes uit shop.html ($__seoMap[..][3]) zodat server en
+  // client dezelfde keyword-tekst tonen; JS voegt alleen de dynamische filter-suffix toe.
   const typeMap = {
-    shirts: 'Shirts van topclubs en nationale teams, met fan- en player-opties.',
-    sets: 'Complete sets voor een volledige look, direct gefilterd op competitie.',
-    hemdsetjes: 'Lichte hemdsetjes voor training en warm weer, snel te filteren op league.',
-    retro: 'Retro klassiekers van legendarische seizoenen.',
-    kids: 'Kids tenues met passende maten en snelle selectie op club of competitie.',
-    all: 'Shop per categorie en gebruik filters om snel de juiste club, competitie en maat te vinden.'
+    shirts: 'Voetbalshirts van je favoriete club of land — laat je eigen naam en nummer bedrukken en draag hetzelfde tenue als de sterren.',
+    sets: 'Complete voetbalsets in één keer: shirt én broekje, klaar om in te spelen. Van topclubs en nationale teams.',
+    hemdsetjes: 'Schattige voetbal hemdsetjes voor de allerkleinste supporters — mini-tenues van je favoriete club.',
+    retro: 'Retro voetbalshirts en klassieke tenues — herbeleef de legendarische seizoenen van iconische clubs en landen.',
+    kids: 'Voetbalshirts en tenues in alle kindermaten, met eigen naam en nummer. Zo speelt jouw kind er echt bij.',
+    all: 'Alle voetbalshirts, sets, retro en kids-tenues op één plek. Filter op club, competitie, land en maat.'
   };
   const typeKey = typeMap[currentTypeFilter] ? currentTypeFilter : 'all';
   const leagueMap = { premier:'Premier League', laliga:'La Liga', bundesliga:'Bundesliga', seriea:'Serie A', ligue1:'Ligue 1', eredivisie:'Eredivisie', national:'Nationale teams' };
@@ -563,6 +581,7 @@ function updateCount() {
 }
 
 function openCart() {
+  hidePromoOverlay();
   const cp = document.getElementById('cpanel');
   const alreadyOpen = cp.classList.contains('on');
   document.getElementById('cbg').classList.add('on');
@@ -650,6 +669,7 @@ function prefillCheckoutFromProfile() {
 }
 
 function openModal() {
+  hidePromoOverlay();
   closeCart();
   const cIn = document.getElementById('couponInput');
   if (cIn) {
@@ -938,6 +958,15 @@ function renderCart() {
     const viewLink = cslug
       ? `<a class="citem-view-link" href="${phref}">Product bekijken</a>`
       : '';
+    // Maat-dropdown mag ALLEEN maten tonen die echt op voorraad zijn voor dit product/versie
+    // (voorheen stonden alle 8 maten hardcoded → je kon een uitverkochte maat kiezen en dan
+    //  werd de regel gewist). De huidige maat blijft altijd in de lijst.
+    const cp = PRODUCTS.find(x => x.id === item.id);
+    const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL'];
+    const cartSizeOpts = (cp
+      ? sizeOrder.filter(s => s === item.size || maxQtyForProductSize(cp, s, item.version) > 0)
+      : sizeOrder
+    ).map(s => `<option value="${s}" ${item.size === s ? 'selected' : ''}>${s}</option>`).join('');
     return `
     <div class="citem">
       ${thumbBlock}
@@ -946,7 +975,7 @@ function renderCart() {
         ${viewLink}
         <p class="citem-meta">Maat:</p>
         <select class="citem-size-select" data-cart-index="${i}" onchange="setCartItemSize(${i}, this.value)">
-          ${['XS','S','M','L','XL','XXL','2XL','3XL'].map(s => `<option value="${s}" ${item.size===s?'selected':''}>${s}</option>`).join('')}
+          ${cartSizeOpts}
         </select>
         <p class="citem-meta" style="margin-top:8px">${item.version==='player' ? 'Player · ' : ''}${esc(item.league)}${item.season ? ' · ' + esc(item.season) : ''}${item.printing_option==='custom' ? ' · ' + esc(item.print_name||'') + (item.print_number ? ' #' + esc(item.print_number) : '') : ''}</p>
         <div class="citem-row">
@@ -1069,24 +1098,26 @@ function couponAppliedLabel(c) {
 
 function setCartItemSize(i, size) {
   if (!cart[i]) return;
-  cart[i].size = size;
   const p = PRODUCTS.find(x => x.id === cart[i].id);
   if (p) {
     const max = maxQtyForProductSize(p, size, cart[i].version);
+    if (max <= 0) {
+      // Zou niet mogen (dropdown toont alleen voorraad-maten), maar NOOIT stil de regel wissen:
+      // laat de keuze terugspringen naar de huidige maat.
+      showToast('⚠️ Maat ' + size + ' is niet op voorraad');
+      renderCart();
+      return;
+    }
+    cart[i].size = size;
     if (cart[i].qty > max) {
       cart[i].qty = max;
-      if (max <= 0) {
-        cart.splice(i, 1);
-        showToast('⚠️ Die maat is uitverkocht — regel verwijderd');
-        persistCartState();
-        updateCount();
-        renderCart();
-        return;
-      }
       showToast('⚠️ Aantal aangepast aan de voorraad voor deze maat');
     }
+  } else {
+    cart[i].size = size;
   }
   persistCartState();
+  updateCount();
   renderCart();
 }
 
@@ -1487,12 +1518,15 @@ async function placeOrder() {
   const email  = document.getElementById('fEmail').value.trim();
   const notes  = document.getElementById('fNotes').value.trim();
 
+  const focusField = (id) => { const f = document.getElementById(id); if (f) { try { f.focus(); f.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (_) {} } };
   if (!name || !phone || !street) {
     showToast('⚠️ Vul alle verplichte velden in');
+    focusField(!name ? 'fName' : (!phone ? 'fPhone' : 'fStreet'));
     return;
   }
   if (!email || !email.includes('@')) {
     showToast('⚠️ Voer een geldig e-mailadres in');
+    focusField('fEmail');
     return;
   }
 
