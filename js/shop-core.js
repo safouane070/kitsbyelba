@@ -686,7 +686,8 @@ function updateModalRecap() {
   const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const discount = calcDiscount(sub);
   const discountedSub = sub - discount;
-  const ship = discountedSub >= CONFIG.freeShippingFrom ? 0 : CONFIG.shippingCost;
+  // Free shipping is based on the pre-discount product subtotal (see kits_shipping_for).
+  const ship = sub >= CONFIG.freeShippingFrom ? 0 : CONFIG.shippingCost;
   const total = discountedSub + ship;
 
   let html = `<p class="mrecap-lbl">Overzicht bestelling</p>`;
@@ -912,10 +913,11 @@ function renderCart() {
   const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const discount = calcDiscount(sub);
   const discountedSub = sub - discount;
-  const ship = discountedSub >= CONFIG.freeShippingFrom ? 0 : CONFIG.shippingCost;
+  // Free shipping is based on the pre-discount product subtotal (see kits_shipping_for).
+  const ship = sub >= CONFIG.freeShippingFrom ? 0 : CONFIG.shippingCost;
   const total = discountedSub + ship;
-  const remaining = Math.max(0, CONFIG.freeShippingFrom - discountedSub);
-  const progress = Math.min(100, (discountedSub / CONFIG.freeShippingFrom) * 100);
+  const remaining = Math.max(0, CONFIG.freeShippingFrom - sub);
+  const progress = Math.min(100, (sub / CONFIG.freeShippingFrom) * 100);
   const cartCouponInput = document.getElementById('cartCouponInput');
   const cartCouponFeedback = document.getElementById('cartCouponFeedback');
   if (cartCouponInput) {
@@ -935,7 +937,7 @@ function renderCart() {
   }
 
   // Shipping progress bar
-  document.getElementById('ship-progress-wrap').innerHTML = discountedSub < CONFIG.freeShippingFrom
+  document.getElementById('ship-progress-wrap').innerHTML = sub < CONFIG.freeShippingFrom
     ? `<div class="ship-progress">
         <div class="sp-text">Nog <strong>€${remaining.toFixed(2)}</strong> voor gratis verzending</div>
         <div class="sp-bar"><div class="sp-fill" style="width:${progress}%"></div></div>
@@ -1136,23 +1138,52 @@ function chQ(i, d) {
   renderCart();
 }
 
+let kbeLastOrderId = null;
+
+// Customer confirms they actually sent the WhatsApp order → promote pending → confirmed
+// server-side, so admin can tell real orders from abandoned clicks and the order
+// stops auto-expiring. Best-effort: a failure never blocks the customer.
+async function confirmOrderSent() {
+  const btn = document.getElementById('waSentBtn');
+  const done = document.getElementById('waSentDone');
+  if (btn) btn.disabled = true;
+  try {
+    const csrf = await ensureCheckoutCsrf();
+    await fetch('api/order_confirm.php', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf },
+      body: JSON.stringify({ order_id: kbeLastOrderId, csrf_token: csrf }),
+    });
+  } catch (_) { /* best-effort; ignore */ }
+  if (btn) btn.hidden = true;
+  if (done) done.hidden = false;
+}
+
 function showConfirm(orderId, email, total, ship, items, discount, waUrl, emailOk) {
   document.getElementById('waConfirmBtn').href = waUrl;
 
   // Order reference in card header
   document.getElementById('cord-id-val').textContent = '#' + orderId;
 
-  // Subtitle (emailOk: true = sent, false = failed, undefined = still sending in background)
+  // Remember for the "Ik heb 't verstuurd" confirm button, and reset its state
+  // (the confirm screen is reused across orders).
+  kbeLastOrderId = orderId;
+  const sentBtn = document.getElementById('waSentBtn');
+  const sentDone = document.getElementById('waSentDone');
+  if (sentBtn) { sentBtn.disabled = false; sentBtn.hidden = false; }
+  if (sentDone) sentDone.hidden = true;
+
+  // Subtitle — honest: the order is not final until the WhatsApp is sent AND paid.
+  // (emailOk: true = mail sent, false = failed, undefined = still sending in background)
   const csub = document.getElementById('csub');
   csub.className = 'csub' + (emailOk === false && email ? ' err' : '');
   if (email && emailOk === true) {
-    csub.textContent = 'Bevestigingsmail verstuurd naar ' + email + '. Je ontvangt straks een Tikkie.';
+    csub.innerHTML = 'Bevestigingsmail naar <strong>' + esc(email) + '</strong> verstuurd. <strong>Verstuur je bestelling in WhatsApp</strong> — daarna krijg je een Tikkie om te betalen.';
   } else if (email && emailOk === false) {
-    csub.textContent = 'Bestelling geplaatst! E-mail niet verstuurd — neem zonodig contact op via WhatsApp.';
-  } else if (email && emailOk === undefined) {
-    csub.textContent = 'WhatsApp geopend. Bevestigingsmail naar ' + email + ' wordt verstuurd…';
+    csub.innerHTML = 'Bestelling geregistreerd. <strong>Verstuur \'m in WhatsApp</strong> en betaal daarna de Tikkie. Mail niet gelukt? App ons gerust.';
   } else {
-    csub.textContent = 'Je bestelling is verstuurd. We bevestigen via WhatsApp en sturen een Tikkie.';
+    csub.innerHTML = 'We hebben WhatsApp geopend met je bestelling. <strong>Verstuur het bericht</strong> — daarna krijg je een Tikkie om te betalen. Je bestelling is pas definitief na betaling.';
   }
 
   // Order items in card body
@@ -1542,7 +1573,8 @@ async function placeOrder() {
   const sub      = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const discount = calcDiscount(sub);
   const discSub  = sub - discount;
-  const ship     = discSub >= CONFIG.freeShippingFrom ? 0 : CONFIG.shippingCost;
+  // Free shipping is based on the pre-discount product subtotal (see kits_shipping_for).
+  const ship     = sub >= CONFIG.freeShippingFrom ? 0 : CONFIG.shippingCost;
   const total    = discSub + ship;
 
   const btn = document.getElementById('msub');
@@ -1698,7 +1730,7 @@ async function placeOrder() {
     const el = document.getElementById('csub');
     if (el && email) {
       el.className = 'csub';
-      el.textContent = 'Bevestigingsmail verstuurd naar ' + email + '. Je ontvangt een Tikkie (meestal binnen 24 uur).';
+      el.innerHTML = 'Bevestigingsmail naar <strong>' + esc(email) + '</strong> verstuurd. <strong>Verstuur je bestelling in WhatsApp</strong> — daarna krijg je een Tikkie om te betalen.';
     }
   } else if (typeof emailjs !== 'undefined' && CONFIG.emailjsPk && CONFIG.emailjsService && CONFIG.emailjsTemplate) {
     emailjs.send(CONFIG.emailjsService, CONFIG.emailjsTemplate, emailPayload, kbeEmailJsSendOpts())
