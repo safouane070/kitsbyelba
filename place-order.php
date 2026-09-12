@@ -404,6 +404,10 @@ try {
 
     $pdo->commit();
 
+    // Onthoud welk order deze sessie zojuist plaatste, zodat alleen deze klant
+    // 'm later via api/order_confirm.php op 'confirmed' kan zetten (geen IDOR).
+    $_SESSION['last_order_id'] = $orderId;
+
     $orderEmailSent = false;
     $orderEmailHint = null;
     $pk = trim((string)($cfg['emailjs_pk'] ?? ''));

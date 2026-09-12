@@ -72,6 +72,16 @@ if ($orderId === '' || !preg_match('/^KD-[0-9]{4,12}$/', $orderId)) {
     exit;
 }
 
+// Eigendom: alleen de sessie die dit order plaatste (place-order.php) mag 't
+// bevestigen. Zo kan niemand een gegokt/afgekeken order_id van een ander op
+// 'confirmed' zetten. Geen match → stil no-op (geen foutmelding, geen signaal).
+$sessionOrderId = strtoupper((string) ($_SESSION['last_order_id'] ?? ''));
+if ($sessionOrderId === '' || $sessionOrderId !== $orderId) {
+    while (ob_get_level() > 0) { ob_end_clean(); }
+    echo json_encode(['ok' => true, 'confirmed' => false]);
+    exit;
+}
+
 try {
     $pdo  = kits_pdo($cfg);
     $stmt = $pdo->prepare("UPDATE orders SET status='confirmed' WHERE order_id=? AND status='pending'");

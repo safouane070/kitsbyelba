@@ -397,10 +397,11 @@ nav{
 }
 .mhead{
   padding:28px 32px 22px;border-bottom:1px solid var(--line);
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
   position:sticky;top:0;background:var(--cream);z-index:1;
 }
 .mtitle{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--ink)}
+.mhead .xbtn{flex-shrink:0}
 .mbody{padding:26px 30px 34px}
 .mrecap{background:var(--cream2);border:1px solid var(--line);padding:18px 20px;margin-bottom:20px;border-radius:4px}
 /* Slim guest-checkout reassurance line (sits just above the form) */
