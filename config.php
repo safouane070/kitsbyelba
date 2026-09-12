@@ -63,6 +63,13 @@ return [
     /** Meerprijs per shirt bij gekozen patch/badge (dropdown of tekst), naast bedrukking. */
     'badge_extra_price' => (float)kits_env('BADGE_EXTRA_PRICE', '3'),
 
+    /**
+     * Na hoeveel uur een 'pending' bestelling (nooit door de klant bevestigd of
+     * door admin verwerkt) automatisch geannuleerd + teruggeboekt wordt. Voorkomt
+     * dat afgehaakte klikken voorraad blijven vasthouden. 0 = uitschakelen.
+     */
+    'pending_order_ttl_hours' => (int)kits_env('PENDING_ORDER_TTL_HOURS', '96'),
+
     // EmailJS (public keys — still restrict CORS; rotate in dashboard if leaked). Trim: .env line endings/spaces break v4.
     'emailjs_pk' => trim((string)kits_env('EMAILJS_PK', '')),
     'emailjs_service_order' => trim((string)kits_env('EMAILJS_SERVICE_ORDER', (string)kits_env('EMAILJS_SERVICE', 'service_ekpmrrp'))),

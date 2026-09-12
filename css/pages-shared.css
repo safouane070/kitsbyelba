@@ -707,6 +707,18 @@
 
 .wa-confirm-btn svg{width:18px;height:18px;fill:#fff}
 
+/* Secondary: customer confirms they actually sent the WhatsApp message. */
+.wa-sent-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--ink);border:1.5px solid var(--line);
+  padding:13px 24px;border-radius:100px;font-family:var(--font-body);
+  font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;transition:all .18s;margin-top:12px;
+}
+.wa-sent-btn:hover{border-color:var(--ink);background:var(--ink);color:#fff}
+.wa-sent-btn:disabled{opacity:.55;cursor:default;background:transparent;color:var(--ink3);border-color:var(--line)}
+.wa-sent-done{margin-top:12px;font-size:13px;font-weight:600;color:var(--accent);line-height:1.6;max-width:400px}
+
 
 
 /* right column — order card */

@@ -173,6 +173,12 @@ main,
     text-align: center;
     line-height: 1.35;
     padding: 12px 20px;
+    /* op mobiel omhoog zodat de toast niet vóór de sticky knoppenbalk / afreken-knop valt.
+       Verborgen-stand ver genoeg (translateY 220px) zodat 'ie ondanks bottom:88px ná ~2,8s
+       écht van het scherm schuift i.p.v. te blijven staan. .toast.on (translateY 0) wint qua
+       specificity, dus de zichtbare stand blijft correct. */
+    bottom: 88px;
+    transform: translateX(-50%) translateY(220px);
   }
 }
 
@@ -541,6 +547,9 @@ main,
     background: var(--cream, #faf8f4);
     border-bottom: 1px solid var(--line, #d9d3c6);
     flex-direction: column;
+    /* Reset the desktop row's align-items:center — otherwise every item
+       shrink-wraps and floats centered instead of filling the column. */
+    align-items: stretch;
     padding: 8px 20px 14px;
     gap: 0;
     box-shadow: 0 8px 24px rgba(28, 26, 23, 0.08);
@@ -566,10 +575,20 @@ main,
 
   .site-nav .nav-links a {
     font-size: 13px;
-    padding: 10px 0;
+    padding: 13px 2px;
     display: block;
+    width: 100%;
+    text-align: left;
     border-bottom: 1px solid var(--line, #d9d3c6);
     letter-spacing: 0.1em;
+  }
+
+  /* Mega items (Shirts/Sets/…) are inline-flex on desktop for the caret;
+     force them into the same full-width row as the plain links on mobile. */
+  .site-nav .nav-links .has-mega > .top-link {
+    display: block;
+    width: 100%;
+    gap: 0;
   }
 
   .site-nav .nav-links a::after {

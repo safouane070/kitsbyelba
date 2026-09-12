@@ -13,6 +13,7 @@ require_once __DIR__ . '/includes/emailjs_send.php';
 require_once __DIR__ . '/includes/cors.php';
 require_once __DIR__ . '/includes/rate_limit.php';
 require_once __DIR__ . '/includes/app_log.php';
+require_once __DIR__ . '/includes/pricing.php';
 kits_emit_cors_headers($cfg, true);
 header('Access-Control-Allow-Headers: Content-Type, Cookie, X-CSRF-Token');
 
@@ -232,24 +233,18 @@ if ($couponCode !== '') {
     $cpStmt->execute([$couponCode]);
     $cp = $cpStmt->fetch(PDO::FETCH_ASSOC);
     if ($cp) {
-        if ($cp['type'] === 'percent') {
-            // Clamp percentage to 0–100 so a misconfigured code can't exceed 100%.
-            $pct = max(0.0, min(100.0, (float)$cp['value']));
-            $discount = round($subtotal * $pct / 100, 2);
-        } else {
-            $discount = round((float)$cp['value'], 2);
-        }
-        // Hard cap: one coupon per order, and the discount can NEVER exceed the
-        // order value or make it negative/free (guards stacking + bad config).
-        $discount = max(0.0, min($discount, $subtotal));
+        // Korting- en klemlogica zit in includes/pricing.php (unit-getest):
+        // percent → 0–100 geklemd, en de korting nooit groter dan het subtotaal.
+        $discount = kits_coupon_discount((float)$subtotal, (string)$cp['type'], (float)$cp['value']);
         $couponApplied = $couponCode;
         // Increment usage count
         $pdo->prepare("UPDATE coupons SET uses_count = uses_count + 1 WHERE code=?")->execute([$couponCode]);
     }
 }
-$discountedSub = max(0, $subtotal - $discount);
-$shipping      = $discountedSub >= $cfg['free_shipping_from'] ? 0.0 : (float)$cfg['shipping_cost'];
-$total         = $discountedSub + $shipping;
+// Free shipping is decided on the product subtotal BEFORE any coupon, so a
+// discount code never strips away free shipping a shopper already qualified for.
+$shipping      = kits_shipping_for((float)$subtotal, (float)$cfg['free_shipping_from'], (float)$cfg['shipping_cost']);
+$total         = kits_order_total((float)$subtotal, $discount, $shipping);
 
 // ===== ORDER ID =====
 $orderId = "KD-" . random_int(100000, 999999);

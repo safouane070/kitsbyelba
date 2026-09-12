@@ -16,6 +16,7 @@ $cfg = require __DIR__ . '/config.php';
 require_once __DIR__ . '/includes/emailjs_send.php';
 require_once __DIR__ . '/includes/kits_admin_guard.php';
 require_once __DIR__ . '/includes/asset.php';
+require_once __DIR__ . '/includes/order_stock.php';
 if (!kits_admin_ip_allowed($cfg)) {
     kits_destroy_session();
     http_response_code(403);
@@ -112,6 +113,9 @@ if ($auth && $__adminAction !== '') {
     switch ($act) {
 
         case 'stats':
+            // Self-healing: cancel + restock orders that were never confirmed/paid.
+            // Runs here (dashboard load) so no cron is needed.
+            kits_expire_stale_pending_orders($pdo, (int)($cfg['pending_order_ttl_hours'] ?? 96));
             echo json_encode([
                 'orders'  => (int)$pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn(),
                 'revenue' => (float)$pdo->query("SELECT COALESCE(SUM(total),0) FROM orders WHERE status NOT IN ('cancelled')")->fetchColumn(),
@@ -160,26 +164,7 @@ if ($auth && $__adminAction !== '') {
                 $prev->execute([$id]);
                 $prevStatus = $prev->fetchColumn();
                 if ($prevStatus && $prevStatus !== 'cancelled') {
-                    $items = $pdo->prepare("SELECT product_id, size, quantity FROM order_items WHERE order_id=?");
-                    $items->execute([$id]);
-                    foreach ($items->fetchAll(PDO::FETCH_ASSOC) as $item) {
-                        $pid  = (int)$item['product_id'];
-                        $qty  = (int)$item['quantity'];
-                        $size = strtoupper(trim((string)($item['size'] ?? '')));
-                        // Restore per-size stock if available
-                        $prod = $pdo->prepare("SELECT stock_sizes FROM products WHERE id=?");
-                        $prod->execute([$pid]);
-                        $row = $prod->fetch(PDO::FETCH_ASSOC);
-                        $ss  = ($row && $row['stock_sizes']) ? json_decode($row['stock_sizes'], true) : null;
-                        if ($ss && $size && array_key_exists($size, $ss)) {
-                            $ss[$size] = (int)$ss[$size] + $qty;
-                            $pdo->prepare("UPDATE products SET stock_sizes=?, stock=stock+? WHERE id=?")
-                                ->execute([json_encode($ss), $qty, $pid]);
-                        } else {
-                            $pdo->prepare("UPDATE products SET stock=stock+? WHERE id=?")
-                                ->execute([$qty, $pid]);
-                        }
-                    }
+                    kits_restock_order_items($pdo, $id);
                 }
             }
 
