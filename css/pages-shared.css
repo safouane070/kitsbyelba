@@ -1248,3 +1248,30 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .how-title{font-size:24px}
   .maten-table th,.maten-table td{padding:10px 12px;font-size:11px}
 }
+
+/* ── SEO-tekstsectie (server-side per-categorie tekst + homepage) ────────────
+   Donkere "over ons"-band die naadloos in de footer overloopt (footer + FAQ zijn
+   ook var(--ink)). Full-bleed donker met lichte tekst + gouden accenten. Gedeeld
+   door shop.html + index.html. */
+.seo-content{
+  background:var(--ink);
+  border-top:1px solid rgba(255,255,255,.08);
+  padding:46px 24px 52px;
+}
+.seo-content-inner{max-width:60rem;margin:0 auto}
+.seo-content-inner h2{
+  font-family:var(--font-display);font-size:23px;font-weight:700;
+  color:#fff;margin:0 0 16px;line-height:1.25;
+}
+.seo-content-inner h2 + p{margin-top:0}
+.seo-content-inner p{
+  font-size:15px;line-height:1.75;color:rgba(255,255,255,.78);
+  margin:0 0 14px;
+}
+.seo-content-inner p:last-child{margin-bottom:0}
+.seo-content-inner strong{color:var(--gold);font-weight:700}
+@media (max-width:600px){
+  .seo-content{padding:34px 16px 40px}
+  .seo-content-inner h2{font-size:19px}
+  .seo-content-inner p{font-size:14px}
+}
