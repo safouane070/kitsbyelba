@@ -298,7 +298,7 @@ main,
 /* ═══════════════════════════════════════════════════════════════════════════
    Desktop navbar: veel categorieën — meer ruimte tussen links, geen afgebroken tekst
    ═══════════════════════════════════════════════════════════════════════════ */
-@media (min-width: 1025px) {
+@media (min-width: 1241px) {
   .nav-top {
     justify-content: space-between !important;
     align-items: center !important;
@@ -368,7 +368,7 @@ main,
    Mobiele header (mand + logo): deze regels staan bewust ONDERAAN en gebruiken
    waar nodig !important zodat ze altijd winnen (ook na oudere inline CSS of cache).
    ═══════════════════════════════════════════════════════════════════════════ */
-@media (max-width: 1024px) {
+@media (max-width: 1240px) {
   html {
     width: 100%;
     max-width: 100%;
@@ -523,8 +523,9 @@ main,
   }
 }
 
-/* account.php — zelfde header als index: hamburger + uitklapmenu vanaf 960px */
-@media (max-width: 960px) {
+/* Homepage/shop/account: hamburger + uitklapmenu tot 1240px (de horizontale
+   nav met alle categorieën past pas comfortabel vanaf ~1210px). */
+@media (max-width: 1240px) {
   .site-nav .nav-top {
     position: relative;
     isolation: isolate;
@@ -711,14 +712,14 @@ main,
   pointer-events: none;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1240px) {
   nav .nav-top #kbeNavToggle:checked ~ #navLinks {
     display: flex !important;
   }
 }
 
 /* Mega menu: eerste tap opent submenu op touch + breed scherm (iPad); tweede tap volgt de link (js/kbe-ios-helpers.js) */
-@media (hover: none) and (min-width: 961px) {
+@media (hover: none) and (min-width: 1241px) {
   .nav-links .has-mega.mega-touch-open .nav-mega {
     opacity: 1;
     visibility: visible;
@@ -741,7 +742,7 @@ main,
 }
 
 /* Mobiel uitklapmenu: max-hoogte wanneer open (checkbox) */
-@media (max-width: 960px) {
+@media (max-width: 1240px) {
   nav:not(.dash-nav) #kbeNavToggle:checked ~ #navLinks {
     max-height: min(82dvh, 82vh) !important;
   }
