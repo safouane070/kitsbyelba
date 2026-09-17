@@ -19,9 +19,20 @@ function kits_sitemap_slugify(string $name): string
 
 $urls = [];
 if ($base !== '') {
-    $static = ['index.html', 'shop.html', 'account.php'];
-    foreach ($static as $path) {
-        $urls[] = ['loc' => $base . '/' . $path, 'changefreq' => 'weekly'];
+    // Homepage + shop + de per-categorie landingspagina's (schone URLs uit .htaccess).
+    // account.php bewust NIET: login-pagina, geen SEO-waarde (staat op noindex-niveau).
+    $static = [
+        ['index.html',  '1.0', 'daily'],
+        ['shop.html',   '0.9', 'daily'],
+        ['shirts',      '0.9', 'daily'],
+        ['sets',        '0.8', 'daily'],
+        ['hemdsetjes',  '0.7', 'weekly'],
+        ['retro',       '0.8', 'weekly'],
+        ['kids',        '0.7', 'weekly'],
+        ['voorraad',    '0.8', 'daily'],
+    ];
+    foreach ($static as [$path, $prio, $freq]) {
+        $urls[] = ['loc' => $base . '/' . $path, 'changefreq' => $freq, 'priority' => $prio];
     }
 }
 
@@ -36,6 +47,7 @@ try {
         $urls[] = [
             'loc' => $base . '/product.php?' . http_build_query(['slug' => $slug]),
             'changefreq' => 'weekly',
+            'priority' => '0.6',
         ];
     }
 } catch (Throwable $e) {
@@ -48,6 +60,9 @@ foreach ($urls as $u) {
     echo '  <url><loc>' . htmlspecialchars($u['loc'], ENT_XML1 | ENT_QUOTES, 'UTF-8') . '</loc>';
     if (!empty($u['changefreq'])) {
         echo '<changefreq>' . htmlspecialchars($u['changefreq'], ENT_XML1, 'UTF-8') . '</changefreq>';
+    }
+    if (!empty($u['priority'])) {
+        echo '<priority>' . htmlspecialchars($u['priority'], ENT_XML1, 'UTF-8') . '</priority>';
     }
     echo "</url>\n";
 }

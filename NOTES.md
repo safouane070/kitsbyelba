@@ -189,6 +189,87 @@ browserconsole. Admin-only (achter login) dus geen datalek, maar rommelig + PII 
 console → verwijderd. De `console.error`-regels in de catch-blokken blijven: dat is
 echte foutdiagnostiek voor de admin als een mail faalt.
 
+## Canonical-domein: nooit hardcoden (finding #16)
+
+`index.html` + `shop.html` hadden het domein 8× hardcoded als
+`https://kitsbyelba.com` (één a, .com) in `<link canonical>`, `og:url` en de
+JSON-LD `url`/`target`-velden — terwijl de live site en de per-categorie
+canonicals van shop.html uit `config.php` (`public_site_url` ← `.env`) komen:
+`https://kitsbyelbaa.nl` (twee a's, .nl). Crawlers zonder JS kregen dus een
+canonical naar een verkeerd domein. Nu haalt óók index.html z'n base uit
+`$__base = rtrim($cfg['public_site_url'], '/')` (zelfde patroon als shop.html) en
+staat het domein nergens meer hardcoded. De client-side `applySeoFromConfig()`
+gebruikte al `CONFIG.publicSiteUrl` (uit `api/config.php`, r.38) → server en
+client komen nu overeen (was voorheen server=.com, client=.nl = mismatch/flash).
+Geverifieerd: `curl` op index/shop/shirts geeft overal `kitsbyelbaa.nl`, `php -l`
+schoon, `audit-seo.mjs` = SEO_DISTINCT.
+
+Aanpalend opgeruimd: root `hero-1.jpg`/`hero-2.jpg` waren byte-identieke,
+nergens gerefereerde duplicaten van `images/hero-*.jpg` (de code laadt alleen de
+`images/`-versies) → verwijderd met `git rm`.
+
+## SEO: sitemap + robots + Product-brand (finding #17)
+
+- **`sitemap.xml` verwijderd**: stale, hardcoded oude `.com`-domein, maar 3 URLs.
+  Botste met de dynamische `sitemap.php` (config-driven, incl. producten uit DB).
+- **`sitemap.php`**: categorie-landingspagina's toegevoegd (shirts/sets/hemdsetjes/
+  retro/kids/voorraad) — dé SEO-landingspagina's, stonden er niet in. `account.php`
+  eruit (login, geen SEO-waarde). `<priority>` + realistische `changefreq` per URL.
+- **`robots.txt`**: `Sitemap:` nu absolute URL (Google-eis) i.p.v. relatief pad.
+- **`product.php`**: Product-JSON-LD heeft nu ook `brand` (KitsByElbaa) naast
+  price/availability/image → sterker signaal voor rich results.
+
+Nog OPEN (grotere klussen, bewust niet nu): categorie-grids renderen producten
+pas via JS (`fetch api/products.php` → leeg `#grid` in kale HTML) = crawler ziet
+lege categorie; `product.php` H1 = "Laden…" tot JS draait; categorie-pagina's
+hebben geen beschrijvende introtekst (dunne content). Zie chat-actieplan.
+
+## Pre-deploy: security-review + keyword-content (finding #18)
+
+Vóór de eerste echte deploy naar Hostinger (kitsbyelbaa.nl) een gestructureerde
+pass gedaan met een gates-ledger (`GATES.md`, 12 gates, allemaal MET met bewijs).
+
+**Security (G1 handmatig + G2 scanner).** Gevoelige endpoints herbeoordeeld —
+`place-order.php` (prijzen server-side, prepared statements, CSRF, rate-limit,
+honeypot, idempotency, coupon geclamped, voorraad FOR UPDATE), `api/auth.php`
+(CSRF, lockout, timing-safe, bcrypt 12, session_regenerate_id, GDPR-erasure),
+`api/upload.php` (admin+CSRF, finfo-MIME, random naam, GD re-encode),
+`api/coupon_validate.php`. Geen exploiteerbare issue. `tools/audit-security-scan.mjs`
+scant op eval/shell/SQL-concat/echo-superglobal mét positieve controle → 0.
+Niet-blokkerend: coupons zonder max_uses/expiry (korting is gecapt).
+
+**Content/SEO (G3–G9).** Server-side keyword-tekst toegevoegd zodat crawlers
+(zonder JS) echte inhoud zien i.p.v. een leeg JS-grid:
+- `shop.html`: `$__seoMap` uitgebreid met per-categorie lede (#shopHeroLede) +
+  tekstblok onder het grid (>=120 woorden/categorie), plus keyword-titels/-descriptions.
+  JS-`pageMap` gespiegeld (finding #6: server==client, anders overschrijft JS).
+- `index.html`: keyword-tekstsectie + titel/desc/og/twitter aangescherpt op
+  "voetbalshirts met naam & nummer".
+- `.seo-content` styling in `css/pages-shared.css` (gedeeld, on-brand).
+- Alt-teksten: product-hoofdfoto (`product.php`) + cart-thumb; card-template
+  gebruikte al productnaam. League-logo's houden bewust leeg alt (zichtbaar label
+  ernaast → WCAG: anders dubbel voorgelezen).
+
+**Verificatie.** `tools/audit-seo-content.mjs <check>` (sitemap/robots/categories/
+meta/contentblock/home/alt/phplint/http/nodotcom) draait tegen de lokale render.
+Alle bestaande audits (syntax/responsive/seo/zindex/dedup/inline) blijven groen.
+
+LET OP: dit staat nu alleen LOKAAL. Live (kitsbyelbaa.nl) draaide bij deze commit
+nog de oude build (titel "Premium voetbaltenues online", canonical .com). Moet
+gedeployed worden naar Hostinger voordat Google er iets van ziet.
+
+## Hero-achtergrond herzien (finding #19)
+
+De homepage-hero had een vage grijzige spookfoto (`images/hero-1.jpg` op
+opacity .18 + `mix-blend-mode:luminosity` + grayscale) → modderig/"slop"-gevoel.
+Vervangen door een **zichtbare shirt-muur**: dezelfde foto scherp (geen blend/
+grayscale) op opacity .55, `background-position:center right`, met een donkere
+`linear-gradient`-sluier links (`.hero::before`, 90deg) zodat kop+CTA leesbaar
+blijven, plus de bestaande gouden gloed (`.hero::after`). Mobiel (`@media
+max-width:960px`) krijgt een sterkere verticale sluier zodat de gestapelde tekst
+boven de foto leesbaar blijft. Alleen inline-CSS in `index.html` (.hero-blok);
+`images/hero-1.jpg` blijft de bron (root-duplicaten waren al weg, finding #16).
+
 ## css/app.css — z-index schaal (finding #4)
 
 Alle globale overlay-`z-index`-waarden lopen nu via semantische tokens in

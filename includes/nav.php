@@ -19,7 +19,10 @@ $__active    = isset($navActive) ? (string)$navActive : '';
 $__logoHref  = $__hp === '' ? '#' : $__hp;              // homepage logo scrolls to top
 $__cartClick = isset($navCartOnclick) ? (string)$navCartOnclick : 'openCart()';
 $__cartNum   = isset($navCartNumId) ? (string)$navCartNumId : 'cartN';
-$__navClass  = isset($navClass) ? trim((string)$navClass) : '';
+// Default naar 'site-nav' zodat de responsive nav-regels (mobiele hamburger in
+// responsive-global.css: .site-nav .ham/.nav-links) OVERAL werken — ook op pagina's die
+// vergeten $navClass te zetten (was de bug op product.php: geen hamburger op mobiel).
+$__navClass  = (isset($navClass) && trim((string)$navClass) !== '') ? trim((string)$navClass) : 'site-nav';
 $__showSearch = !empty($navSearch);
 $__esc = static fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
 

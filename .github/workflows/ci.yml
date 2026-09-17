@@ -37,3 +37,6 @@ jobs:
           test -f "api/healthz.php"
           test -f "voorraad.php"
           test -f "tools/migrate_schema.php"
+
+      - name: Unit tests
+        run: php tests/run.php
