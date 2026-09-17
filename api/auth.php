@@ -15,6 +15,7 @@ header('Content-Type: application/json');
 $cfg = require __DIR__ . '/../config.php';
 require_once __DIR__ . '/../includes/cors.php';
 require_once __DIR__ . '/../includes/app_log.php';
+require_once __DIR__ . '/../includes/auth_rules.php';
 kits_emit_cors_headers($cfg, true);
 header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -90,7 +91,7 @@ switch ($action) {
         }
 
         $name  = trim($input['name'] ?? '');
-        $email = strtolower(trim($input['email'] ?? ''));
+        $email = kits_normalize_email((string)($input['email'] ?? ''));
         $pass  = $input['password'] ?? '';
 
         if (!$name || !$email || !$pass)
@@ -98,8 +99,7 @@ switch ($action) {
         if (mb_strlen($name) > 120)  jsonError('Naam is te lang');
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) jsonError('Ongeldig e-mailadres');
         if (mb_strlen($email) > 254) jsonError('E-mailadres is te lang');
-        if (mb_strlen($pass) < 8)   jsonError('Wachtwoord moet minimaal 8 tekens zijn');
-        if (mb_strlen($pass) > 128) jsonError('Wachtwoord is te lang');
+        if (($pwErr = kits_password_policy_error((string)$pass)) !== null) jsonError($pwErr);
 
         // Duplicate email check
         $ck = $pdo->prepare("SELECT id FROM users WHERE email=? LIMIT 1");
@@ -126,7 +126,7 @@ switch ($action) {
             jsonError('Te veel pogingen. Wacht 15 minuten en probeer opnieuw.', 429);
         }
 
-        $email = strtolower(trim($input['email'] ?? ''));
+        $email = kits_normalize_email((string)($input['email'] ?? ''));
         $pass  = $input['password'] ?? '';
         if (!$email || !$pass) jsonError('E-mail en wachtwoord zijn verplicht');
 
