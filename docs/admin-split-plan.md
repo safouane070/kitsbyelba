@@ -98,8 +98,7 @@ bestandsgrootte; alleen doen als A+B bevallen.
   groen blijven. Voeg eventueel een admin-size-audit toe.
 - **Niks aan gedrag veranderen.** Dit is een verhuizing, geen herontwerp. Als je een bug
   in een case ziet: noteer 'm, fix apart, niet meesmokkelen in de split.
-- **Commit-conventie:** commits op naam `safouane070`, **geen** Co-Authored-By/Claude-trailer
-  (`git commit -F <bestand> --no-verify`). Kleine logische commits per fase.
+- **Commit-conventie:** alle commits op naam `safouane070`. Kleine logische commits per fase.
 - Werk eventueel in een git worktree zodat de winkel-branch ongemoeid blijft.
 
 ## Kickoff-prompt voor de nieuwe chat
