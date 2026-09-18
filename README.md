@@ -10,6 +10,8 @@ security en architectuur zijn met de hand geschreven.
 ![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?logo=javascript&logoColor=black)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
+![Kits by Elba — homepage](docs/hero-home.png)
+
 ---
 
 ## 📸 Screenshots
