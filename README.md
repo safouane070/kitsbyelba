@@ -8,7 +8,7 @@ security en architectuur zijn met de hand geschreven.
 ![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?logo=javascript&logoColor=black)
-![License](https://img.shields.io/badge/status-actief-brightgreen)
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ---
 
@@ -17,6 +17,12 @@ security en architectuur zijn met de hand geschreven.
 | Homepage | Shop |
 |----------|------|
 | ![Homepage](docs/screenshot-home.png) | ![Shop](docs/screenshot-shop.png) |
+
+---
+
+## 🚀 Live demo
+
+> _Binnenkort online — hier komt een link naar de live webshop, zodat je 'm direct kunt uitproberen zonder lokaal te installeren._
 
 ---
 
@@ -108,6 +114,12 @@ wordt bij de eerste API-aanroep automatisch aangevuld.
 - Klant-accounts uitbreiden met bestelgeschiedenis
 - Unit-tests uitbreiden richting end-to-end API-tests
 - Bestellingen-export voor de administratie
+
+---
+
+## 📄 Licentie
+
+Uitgebracht onder de [MIT-licentie](LICENSE).
 
 ---
 
