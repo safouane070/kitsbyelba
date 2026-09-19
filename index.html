@@ -695,12 +695,12 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
   </div>
 </div>
 
-<div class="promo-popup-bg" id="promoPopup">
+<div class="promo-popup-bg" id="promoPopup" role="complementary" aria-label="Kortingsaanbieding">
   <div class="promo-popup">
-    <button type="button" class="promo-close" onclick="closePromoPopup()" aria-label="Close">✕</button>
+    <button type="button" class="promo-close" onclick="closePromoPopup()" aria-label="Sluiten">✕</button>
     <div class="promo-title" id="promoPopupTitle">10% KORTING</div>
     <p class="promo-sub" id="promoPopupSub">Gebruik deze code bij het afrekenen:</p>
-    <div class="promo-code" id="promoPopupCode">kitsbyelba</div>
+    <button type="button" class="promo-code" id="promoPopupCode" onclick="copyPromoCode(this)" title="Klik om te kopiëren">kitsbyelba</button>
   </div>
 </div>
 
