@@ -116,8 +116,9 @@ function renderNavSearchSuggestions(queryRaw) {
   const popular = !q ? `<div class="nav-search-popular">${NAV_SEARCH_POPULAR.map(t => `<button type="button" class="nav-search-chip" data-popular-term="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : '';
   box.innerHTML = popular + items.map((p, idx) => {
     const img = productImgSrc(p.image || p.image2 || p.image3);
+    const thumb = productThumbSrc(p.image || p.image2 || p.image3);
     return `<button type="button" class="nav-search-item" onmouseenter="setNavSearchActiveIndex(${idx})" onclick="openProductFromNavSearch(${Number(p.id)})">
-      ${img ? `<img src="${img}" alt="${esc(p.name || '')}" width="48" height="58" loading="lazy" decoding="async">` : `<div></div>`}
+      ${img ? `<img src="${thumb}" data-full="${img}" alt="${esc(p.name || '')}" width="48" height="58" loading="lazy" decoding="async" onerror="thumbErr(this)">` : `<div></div>`}
       <div>
         <div class="nav-search-item-name">${esc(p.name || '')}</div>
         <div class="nav-search-item-meta">${esc(p.league || '')}</div>
@@ -190,6 +191,23 @@ function productImgSrc(file) {
   if (!s) return '';
   if (s.indexOf('/') !== -1) return prefix + s.split('/').filter(Boolean).map(enc).join('/');
   return prefix + enc(s);
+}
+
+// Kleine kaart-thumbnail (~500px WebP in uploads/products/thumbs/) i.p.v. de volle
+// productfoto (tot 1600px). Scheelt ~86% bytes op grids/kaartjes → LCP/mobiel.
+// Externe URL's krijgen geen thumb. Fallback naar de volle foto via onerror (thumbErr).
+function productThumbSrc(file) {
+  const full = productImgSrc(file);
+  if (!full || /^https?:\/\//i.test(full)) return full;
+  const base = full.split('/').pop().replace(/\.[^.]+$/, '');
+  return 'uploads/products/thumbs/' + base + '.webp';
+}
+
+// onerror voor thumb-<img>: probeer eerst de volle foto (data-full), verberg daarna.
+function thumbErr(el) {
+  const full = el.getAttribute('data-full') || '';
+  if (full && !el.dataset.fb) { el.dataset.fb = '1'; el.src = full; return; }
+  el.style.display = 'none';
 }
 
 function getPublicSiteBase() {
@@ -720,7 +738,7 @@ function renderUpsell() {
   document.getElementById('upsellGrid').innerHTML = suggestions.map(p => `
     <div class="upsell-card" onclick="window.location.href='product.php?slug='+getProductShareParam(p)">
       <div class="upsell-img">
-        ${(p.image || p.image2 || p.image3) ? `<img src="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" onerror="this.style.display='none'">` : `<span class="pcard-noimg" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.2" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>`}
+        ${(p.image || p.image2 || p.image3) ? `<img src="${productThumbSrc(p.image || p.image2 || p.image3)}" data-full="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" loading="lazy" decoding="async" onerror="thumbErr(this)">` : `<span class="pcard-noimg" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.2" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>`}
       </div>
       <div class="upsell-info">
         <p class="upsell-name">${esc(p.name)}</p>
@@ -949,7 +967,7 @@ function renderCart() {
     const cslug = getCartItemSlug(item);
     const phref = cslug ? `product.php?slug=${encodeURIComponent(cslug)}` : '';
     const thumbInner = (item.image || item.image2 || item.image3)
-      ? `<img src="${productImgSrc(item.image || item.image2 || item.image3)}" alt="${esc(item.name)}" onerror="this.style.display='none'">`
+      ? `<img src="${productThumbSrc(item.image || item.image2 || item.image3)}" data-full="${productImgSrc(item.image || item.image2 || item.image3)}" alt="${esc(item.name)}" loading="lazy" decoding="async" onerror="thumbErr(this)">`
       : '<span class="citem-noimg" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9a9d95" stroke-width="1.3" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span>';
     const thumbBlock = cslug
       ? `<a class="citem-img citem-thumb-link" href="${phref}" title="Product bekijken">${thumbInner}</a>`
