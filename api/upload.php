@@ -83,6 +83,21 @@ if (extension_loaded('gd')) {
 
         $optimized = @imagewebp($dst, $targetPath, 82);
         imagedestroy($dst);
+
+        // Kaart-thumbnail (~500px WebP in thumbs/) voor snelle grids/kaartjes (LCP/mobiel).
+        if ($optimized) {
+            $thumbDir = $uploadDir . 'thumbs/';
+            if (!is_dir($thumbDir)) { @mkdir($thumbDir, 0755, true); }
+            $tRatio = min(1, 500 / max(1, $w));
+            $tW = (int)max(1, round($w * $tRatio));
+            $tH = (int)max(1, round($h * $tRatio));
+            $tDst = imagecreatetruecolor($tW, $tH);
+            imagealphablending($tDst, false);
+            imagesavealpha($tDst, true);
+            imagecopyresampled($tDst, $srcImg, 0, 0, 0, 0, $tW, $tH, $w, $h);
+            @imagewebp($tDst, $thumbDir . preg_replace('/\.[^.]+$/', '.webp', $filename), 78);
+            imagedestroy($tDst);
+        }
         imagedestroy($srcImg);
     }
 }
