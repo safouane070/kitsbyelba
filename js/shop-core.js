@@ -288,6 +288,14 @@ function closePromoPopup() {
   try { localStorage.setItem(PROMO_POPUP_KEY, '1'); } catch (_) {}
 }
 
+// Klik-om-te-kopiëren voor de kortingscode in de promo-slide-in.
+function copyPromoCode(el) {
+  const code = (el.textContent || '').trim();
+  try { navigator.clipboard.writeText(code); } catch (_) {}
+  el.classList.add('copied');
+  setTimeout(() => el.classList.remove('copied'), 1500);
+}
+
 function persistCartState() {
   try { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); } catch (_) {}
 }

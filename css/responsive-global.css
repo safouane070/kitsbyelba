@@ -268,6 +268,14 @@ main,
     bottom: max(18px, env(safe-area-inset-bottom));
   }
 
+  /* Promo-slide-in: op mobiel boven de WhatsApp-knop, volle breedte (geen botsing). */
+  .promo-popup-bg {
+    left: max(12px, env(safe-area-inset-left));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(88px, env(safe-area-inset-bottom));
+    max-width: none;
+  }
+
   .back-to-top {
     right: max(20px, env(safe-area-inset-right));
     bottom: max(90px, env(safe-area-inset-bottom));
