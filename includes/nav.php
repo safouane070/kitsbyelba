@@ -44,6 +44,8 @@ $__leagues = [
   'overig'     => 'Overig',
 ];
 ?>
+<!-- Skip-link: eerste tabstop, springt naar de hoofdinhoud (#main hieronder). -->
+<a class="skip-link" href="#main">Direct naar de inhoud</a>
 <!-- NAV (via includes/nav.php) -->
 <nav<?= $__navClass !== '' ? ' class="' . $__esc($__navClass) . '"' : '' ?>>
   <div class="nav-top">
@@ -77,6 +79,8 @@ $__leagues = [
     </div>
   </div>
 </nav>
+<!-- Doel van de skip-link: begin van de hoofdinhoud, direct na de nav. -->
+<div id="main" tabindex="-1"></div>
 <!-- Verbergt league-links zonder producten uit de mega-menu (voorkomt lege pagina's). -->
 <?php require_once __DIR__ . '/asset.php'; ?><script src="<?= kits_asset('js/product-classify.js') ?>"></script><script defer src="<?= kits_asset('js/nav-mega.js') ?>"></script>
 <?php

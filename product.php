@@ -54,6 +54,7 @@ if ($slugQ !== '' && preg_match('/^(\d+)/', $slugQ, $m)) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f9faf7">
 <title><?= htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8') ?></title>
 <meta name="description" content="<?= htmlspecialchars($seoDesc, ENT_QUOTES, 'UTF-8') ?>">
 <?php if ($seoCanonical !== ''): ?>

@@ -66,7 +66,7 @@
   background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.28);
   color:#fff;font-size:24px;font-weight:300;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  z-index:10;transition:all .2s;line-height:1;
+  z-index:10;transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;line-height:1;
 }
 
 
@@ -87,7 +87,7 @@
 
 .banner-dot{
   width:8px;height:8px;border-radius:4px;
-  background:rgba(255,255,255,.35);border:none;cursor:pointer;transition:all .25s;
+  background:rgba(255,255,255,.35);border:none;cursor:pointer;transition:background-color .25s,border-color .25s,color .25s,transform .25s,box-shadow .25s,opacity .25s;
 }
 
 
@@ -100,7 +100,7 @@
 .btn-primary{
   background:var(--ink);color:var(--cream);border:none;padding:16px 40px;
   font-family:var(--font-body);font-size:12px;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:all .22s;
+  letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:background-color .22s,border-color .22s,color .22s,transform .22s,box-shadow .22s,opacity .22s;
 }
 
 
@@ -111,7 +111,7 @@
   background:transparent;color:var(--ink);border:1.5px solid var(--line2);
   padding:15px 30px;font-family:var(--font-body);
   font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  cursor:pointer;transition:all .2s;
+  cursor:pointer;transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;
 }
 
 
@@ -328,7 +328,7 @@
   background:var(--cream2);border:1.5px solid var(--line);
   color:var(--ink);font-size:20px;font-weight:300;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .18s;
+  cursor:pointer;transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s,opacity .18s;
 }
 
 
@@ -402,6 +402,8 @@
   background:var(--white);border:1.5px solid var(--line);color:var(--ink);
   padding:11px 14px;font-family:var(--font-body);font-size:13px;border-radius:4px;outline:none;
 }
+/* Toetsenbord-focus zichtbaar houden ondanks outline:none. */
+.fselect:focus-visible,.finput:focus-visible{outline:2px solid var(--accent,currentColor);outline-offset:2px}
 
 
 
@@ -442,7 +444,7 @@
 .d-thumb{
   width:72px;height:90px;border:1px solid var(--line);border-radius:4px;
   overflow:hidden;cursor:pointer;background:linear-gradient(145deg,var(--cream2),var(--cream3));
-  opacity:.85;transition:all .15s;flex-shrink:0;
+  opacity:.85;transition:background-color .15s,border-color .15s,color .15s,transform .15s,box-shadow .15s,opacity .15s;flex-shrink:0;
 }
 
 
@@ -469,7 +471,7 @@
   width:38px;height:38px;border-radius:50%;
   border:1px solid rgba(255,255,255,.55);background:rgba(28,26,23,.35);color:#fff;
   display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;
-  cursor:pointer;transition:all .16s;backdrop-filter:blur(2px);z-index:2;
+  cursor:pointer;transition:background-color .16s,border-color .16s,color .16s,transform .16s,box-shadow .16s,opacity .16s;backdrop-filter:blur(2px);z-index:2;
 }
 
 
@@ -542,7 +544,7 @@
 .popt{
   border:1.5px solid var(--line);background:var(--white);color:var(--ink3);
   padding:12px 16px;font-family:var(--font-body);font-size:12px;font-weight:700;
-  letter-spacing:.06em;cursor:pointer;transition:all .16s;border-radius:8px;
+  letter-spacing:.06em;cursor:pointer;transition:background-color .16s,border-color .16s,color .16s,transform .16s,box-shadow .16s,opacity .16s;border-radius:8px;
 }
 
 
@@ -592,7 +594,7 @@
 .d-add{
   width:100%;background:var(--ink);color:var(--cream);border:none;padding:18px;
   font-family:var(--font-body);font-size:13px;font-weight:600;
-  letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;
+  letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;
 }
 
 
@@ -631,7 +633,7 @@
 .cscreen-logo{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--ink)}
 
 
-.cscreen-back{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;border:1px solid var(--line);background:#fff;padding:8px 18px;font-family:var(--font-body);transition:all .18s}
+.cscreen-back{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;border:1px solid var(--line);background:#fff;padding:8px 18px;font-family:var(--font-body);transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s,opacity .18s}
 
 
 .cscreen-back:hover{border-color:var(--ink);color:var(--ink)}
@@ -698,7 +700,7 @@
   background:var(--wa);color:#fff;border:none;padding:14px 28px;
   border-radius:100px;font-family:var(--font-body);font-size:12px;font-weight:700;
   letter-spacing:.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;
-  transition:all .2s;margin-right:12px;
+  transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;margin-right:12px;
 }
 
 
@@ -713,7 +715,7 @@
   background:transparent;color:var(--ink);border:1.5px solid var(--line);
   padding:13px 24px;border-radius:100px;font-family:var(--font-body);
   font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-  cursor:pointer;transition:all .18s;margin-top:12px;
+  cursor:pointer;transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s,opacity .18s;margin-top:12px;
 }
 .wa-sent-btn:hover{border-color:var(--ink);background:var(--ink);color:#fff}
 .wa-sent-btn:disabled{opacity:.55;cursor:default;background:transparent;color:var(--ink3);border-color:var(--line)}
@@ -1037,7 +1039,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   padding:16px 24px;text-align:center;
   font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
   color:var(--ink4);cursor:pointer;border:none;background:transparent;
-  font-family:var(--font-body);transition:all .2s;
+  font-family:var(--font-body);transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;
 }
 
 
@@ -1164,7 +1166,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   width:26px;height:26px;border:1px solid rgba(250,248,244,.2);
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;font-size:16px;color:rgba(250,248,244,.5);
-  transition:all .22s;
+  transition:background-color .22s,border-color .22s,color .22s,transform .22s,box-shadow .22s,opacity .22s;
 }
 
 
