@@ -40,14 +40,26 @@ Options -Indexes
     Header always set Expires "0"
 </FilesMatch>
 
-# Cache static assets to reduce repeat load time
-<FilesMatch "\.(css|js|mjs|png|jpe?g|gif|webp|svg|ico)$">
-    Header always set Cache-Control "public, max-age=604800"
+# Versioned CSS/JS (kits_asset zet ?v=mtime) → 1 jaar immutable: ververst vanzelf zodra 't bestand wijzigt
+<FilesMatch "\.(css|js|mjs)$">
+    Header always set Cache-Control "public, max-age=31536000, immutable"
+</FilesMatch>
+# Afbeeldingen → 30 dagen (niet immutable: kan zonder versie-query vervangen worden)
+<FilesMatch "\.(png|jpe?g|gif|webp|svg|ico)$">
+    Header always set Cache-Control "public, max-age=2592000"
 </FilesMatch>
 # Fonts: zelden wisselen — lang cachen (herhaalbezoeken / PageSpeed “cache lifetimes”)
 <FilesMatch "\.(woff2?|ttf|otf)$">
     Header always set Cache-Control "public, max-age=31536000, immutable"
 </FilesMatch>
+
+# Compressie voor tekst-assets (HTML/CSS/JS/JSON/SVG) — woff2 is al gecomprimeerd, dus overgeslagen
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/javascript application/x-javascript application/json application/xml image/svg+xml application/rss+xml
+</IfModule>
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml application/javascript application/x-javascript application/json application/xml image/svg+xml application/rss+xml
+</IfModule>
 
 # Block HTTP access to PHP includes (not used for normal URLs; prevents accidental probing)
 <IfModule mod_rewrite.c>
