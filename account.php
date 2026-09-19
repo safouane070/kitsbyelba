@@ -90,6 +90,7 @@ $displayNameNice = static function (?string $name): string {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f9faf7">
 <title>Mijn account — KitsByElbaa</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">

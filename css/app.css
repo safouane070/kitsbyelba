@@ -58,10 +58,14 @@
   --z-lightbox:500;     /* fullscreen product-lightbox */
   --z-popup:600;        /* promo-popup */
   --z-toast:700;        /* toasts — altijd bovenop */
+  --z-skip:800;         /* skip-to-content — boven alles bij focus */
 }
 
 @media (prefers-reduced-motion: no-preference){html{scroll-behavior:smooth}}
 body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-weight:400;overflow-x:hidden}
+/* Skip-to-content: buiten beeld tot toetsenbordfocus, dan zichtbaar. */
+.skip-link{position:fixed;left:8px;top:-56px;z-index:var(--z-skip);background:var(--ink);color:var(--white);padding:10px 16px;border-radius:4px;font-weight:600;text-decoration:none;transition:top .15s ease}
+.skip-link:focus{top:8px;outline:2px solid var(--accent,currentColor);outline-offset:2px}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:var(--cream2)}
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px}
@@ -242,7 +246,7 @@ nav{
   background:var(--ink);color:var(--cream);
   border:none;padding:0 16px;font-family:var(--font-body);
   font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
-  cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;align-self:center;height:38px;
+  cursor:pointer;transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;white-space:nowrap;flex-shrink:0;align-self:center;height:38px;
 }
 .nav-cart-ico{display:inline-flex;line-height:1}
 .nav-cart-ico svg{width:17px;height:17px;display:block}
@@ -288,7 +292,7 @@ nav{
 .xbtn{
   width:34px;height:34px;background:transparent;border:1.5px solid var(--line);
   color:var(--ink3);font-size:15px;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:all .18s;
+  cursor:pointer;transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s,opacity .18s;
 }
 .xbtn:hover{border-color:var(--ink);color:var(--ink)}
 .cbody{flex:1;overflow-y:auto;padding:20px 28px}
@@ -360,13 +364,13 @@ nav{
 .cart-continue-btn{
   flex:1;background:transparent;border:1.5px solid var(--line);
   color:var(--ink3);padding:10px;font-family:var(--font-body);
-  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .18s;
+  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s,opacity .18s;
 }
 .cart-continue-btn:hover{border-color:var(--ink);color:var(--ink)}
 .cart-clear-btn{
   background:transparent;border:1.5px solid var(--line);
   color:var(--ink4);padding:10px 14px;font-family:var(--font-body);
-  font-size:11px;cursor:pointer;transition:all .18s;white-space:nowrap;
+  font-size:11px;cursor:pointer;transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s,opacity .18s;white-space:nowrap;
 }
 .cart-clear-btn:hover{border-color:var(--red);color:var(--red)}
 .wa-order-btn{
@@ -374,7 +378,7 @@ nav{
   font-family:var(--font-body);font-size:13px;font-weight:600;
   letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:10px;
-  transition:all .2s;margin-top:18px;margin-bottom:12px;border-radius:0;
+  transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;margin-top:18px;margin-bottom:12px;border-radius:0;
 }
 .wa-order-btn:hover{background:#1ebe5a;transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.28)}
 .wa-order-btn svg{width:20px;height:20px;fill:#fff;flex-shrink:0}
@@ -428,7 +432,7 @@ nav{
   background:var(--ink);color:var(--cream);border:none;
   padding:12px 20px;font-family:var(--font-body);
   font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-  cursor:pointer;transition:all .18s;white-space:nowrap;border-radius:4px;
+  cursor:pointer;transition:background-color .18s,border-color .18s,color .18s,transform .18s,box-shadow .18s,opacity .18s;white-space:nowrap;border-radius:4px;
 }
 .coupon-apply-btn:hover{background:var(--accent)}
 .coupon-feedback{font-size:12px;margin-top:6px;font-weight:500}
@@ -455,6 +459,8 @@ nav{
   outline:none;transition:border-color .2s;border-radius:4px;cursor:pointer;
 }
 .fselect:focus{border-color:var(--ink)}
+/* Duidelijke focus-ring voor toetsenbordgebruikers (velden zetten outline:none). */
+.finput:focus-visible,.fselect:focus-visible{outline:2px solid var(--accent,currentColor);outline-offset:2px}
 .hp-trap{position:absolute;left:-9999px;width:1px;height:1px;margin:0;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .msub{
@@ -462,7 +468,7 @@ nav{
   font-family:var(--font-body);font-size:13px;font-weight:600;
   letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:10px;
-  transition:all .2s;margin-top:8px;border-radius:4px;
+  transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;margin-top:8px;border-radius:4px;
 }
 .msub:hover{background:#1ebe5a;transform:translateY(-2px)}
 .msub:disabled{background:var(--ink4);cursor:not-allowed;transform:none}
@@ -479,7 +485,7 @@ nav{
 }
 .upsell-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .upsell-card{
-  border:1px solid var(--line);cursor:pointer;transition:all .2s;overflow:hidden;border-radius:4px;
+  border:1px solid var(--line);cursor:pointer;transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;overflow:hidden;border-radius:4px;
 }
 .upsell-card:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
 .upsell-img{
@@ -527,5 +533,5 @@ nav{
 /* ── HAMBURGER ── */
 .ham{display:none;flex-direction:column;gap:5px;background:transparent;border:1.5px solid var(--line);padding:9px 11px;cursor:pointer;transition:border-color .18s}
 .ham:hover{border-color:var(--ink)}
-.ham span{width:20px;height:2px;background:var(--ink);display:block;transition:all .2s}
+.ham span{width:20px;height:2px;background:var(--ink);display:block;transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s}
 

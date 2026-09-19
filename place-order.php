@@ -237,8 +237,8 @@ if ($couponCode !== '') {
         // percent → 0–100 geklemd, en de korting nooit groter dan het subtotaal.
         $discount = kits_coupon_discount((float)$subtotal, (string)$cp['type'], (float)$cp['value']);
         $couponApplied = $couponCode;
-        // Increment usage count
-        $pdo->prepare("UPDATE coupons SET uses_count = uses_count + 1 WHERE code=?")->execute([$couponCode]);
+        // uses_count wordt pas ná een geslaagde order opgehoogd (binnen de
+        // transactie hieronder), zodat afgebroken/mislukte orders niet meetellen.
     }
 }
 // Free shipping is decided on the product subtotal BEFORE any coupon, so a
@@ -377,6 +377,11 @@ try {
         $subtotal, $shipping, $total
     ]);
     $orderDbId = $pdo->lastInsertId();
+
+    // Coupongebruik pas tellen nu de order echt is aangemaakt (binnen de transactie).
+    if ($couponApplied !== '') {
+        $pdo->prepare("UPDATE coupons SET uses_count = uses_count + 1 WHERE code=?")->execute([$couponApplied]);
+    }
 
     // Insert items
     $itemStmt = $pdo->prepare("
