@@ -16,7 +16,7 @@
  */
 $__hp        = isset($navHomePrefix) ? (string)$navHomePrefix : 'index.html';
 $__active    = isset($navActive) ? (string)$navActive : '';
-$__logoHref  = $__hp === '' ? '#' : $__hp;              // homepage logo scrolls to top
+$__logoHref  = $__hp === '' ? 'index.html' : $__hp;     // logo -> home (nooit een dode '#'-link)
 $__cartClick = isset($navCartOnclick) ? (string)$navCartOnclick : 'openCart()';
 $__cartNum   = isset($navCartNumId) ? (string)$navCartNumId : 'cartN';
 // Default naar 'site-nav' zodat de responsive nav-regels (mobiele hamburger in
@@ -49,9 +49,9 @@ $__leagues = [
 <!-- NAV (via includes/nav.php) -->
 <nav<?= $__navClass !== '' ? ' class="' . $__esc($__navClass) . '"' : '' ?>>
   <div class="nav-top">
-    <input type="checkbox" id="kbeNavToggle" class="kbe-nav-toggle-input" autocomplete="off" tabindex="-1">
+    <input type="checkbox" id="kbeNavToggle" class="kbe-nav-toggle-input" autocomplete="off" tabindex="-1" aria-label="Menu openen">
     <a class="logo" href="<?= $__esc($__logoHref) ?>">
-      <img class="logo-img" src="images/logo.jpeg" alt="KitsByElbaa logo" width="200" height="64" loading="eager" decoding="async">
+      <picture><source srcset="images/logo-nav.webp" type="image/webp"><img class="logo-img" src="images/logo-nav.png" alt="KitsByElbaa logo" width="183" height="160" loading="eager" decoding="async" fetchpriority="high"></picture>
       <span class="logo-text">KitsByElbaa</span>
     </a>
     <ul class="nav-links" id="navLinks">
@@ -64,9 +64,10 @@ $__leagues = [
 <?php endforeach; ?>
       <li><a href="voorraad" id="navType-voorraad"<?= $__active === 'voorraad' ? ' class="active"' : '' ?>>Voorraad</a></li>
       <li><a href="wishlist.php"<?= $__active === 'wishlist' ? ' class="active"' : '' ?>>Wishlist</a></li>
-      <li><a href="<?= $__hp ?>#sizeguide">Maattabel</a></li>
-      <li><a href="<?= $__hp ?>#faq">FAQ</a></li>
-      <li><a href="account.php" id="nav-account-link"<?= $__active === 'account' ? ' class="active"' : '' ?>>Inloggen / registreren</a></li>
+      <?php /* Uit de nav gehaald op verzoek (balk te vol): Maattabel (#sizeguide) en FAQ (#faq)
+             staan al als sectie op de pagina EN in de footer; Inloggen/registreren voorlopig
+             verborgen (account.php blijft gewoon bestaan, alleen geen nav-ingang). Terugzetten =
+             hier weer 3 <li>-links plaatsen: index.html#sizeguide, index.html#faq, account.php. */ ?>
     </ul>
     <div class="nav-right">
       <label for="kbeNavToggle" class="ham" id="ham" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></label>

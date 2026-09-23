@@ -165,7 +165,7 @@ function kits_emailjs_order_confirmation_params(
             $extra = ' · ' . $pn . ($num !== '' ? ' #' . $num : '') . ($bad !== '' ? ' (' . $bad . ')' : '');
         }
         $ver = (strtolower(trim((string)($i['version'] ?? 'fan'))) === 'player') ? 'Player' : 'Fan';
-        $line = $qty . 'x ' . $nm . ' (' . $ver . ' · Maat: ' . $sz . $extra . ') — €' . number_format($pr * $qty, 2, '.', '');
+        $line = $qty . 'x ' . $nm . ' (' . $ver . ' · Maat: ' . $sz . $extra . ') — €' . number_format($pr * $qty, 2, ',', '.');
         $itemsText .= ($itemsText === '' ? '' : "\n") . $line;
 
         $imgFile = (string)($i['image'] ?? '');
@@ -183,7 +183,7 @@ function kits_emailjs_order_confirmation_params(
         $orders[] = [
             'name'      => $nm . ' (' . $ver . ' · ' . $sz . $extra . ')',
             'units'     => $qty,
-            'price'     => number_format($pr * $qty, 2, '.', ''),
+            'price'     => number_format($pr * $qty, 2, ',', '.'),
             'image_url' => $imageUrl,
             'league'    => (string)($i['league'] ?? ''),
             'size'      => $sz,
@@ -192,9 +192,9 @@ function kits_emailjs_order_confirmation_params(
     }
 
     $base = rtrim((string)($cfg['public_site_url'] ?? ''), '/');
-    $shipStr = $verShip === 0.0 ? 'GRATIS' : ('€' . number_format($verShip, 2, '.', ''));
-    $totalStr = '€' . number_format($verTotal, 2, '.', '');
-    $discStr = $verDiscount > 0 ? ('€' . number_format($verDiscount, 2, '.', '')) : '';
+    $shipStr = $verShip === 0.0 ? 'GRATIS' : ('€' . number_format($verShip, 2, ',', '.'));
+    $totalStr = '€' . number_format($verTotal, 2, ',', '.');
+    $discStr = $verDiscount > 0 ? ('€' . number_format($verDiscount, 2, ',', '.')) : '';
 
     $params = [
         'new_order'       => 1,

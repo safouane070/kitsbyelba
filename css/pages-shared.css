@@ -12,7 +12,7 @@
 .banner-slide-1{background-color:var(--ink)}
 
 
-.banner-slide-2{background:linear-gradient(135deg,#1a3d17 0%,var(--accent) 100%)}
+.banner-slide-2{background:linear-gradient(135deg,#2a2c28 0%,var(--accent) 100%)}
 
 
 .banner-slide.has-photo{
@@ -104,7 +104,7 @@
 }
 
 
-.btn-primary:hover{background:var(--accent);transform:translateY(-2px);box-shadow:0 8px 28px rgba(45,90,39,.25)}
+.btn-primary:hover{background:var(--ink2);transform:translateY(-2px);box-shadow:0 8px 28px rgba(24,26,23,.22)}
 
 
 .btn-sec{
@@ -150,13 +150,13 @@
 .shop-voorraad-lede{margin:0 0 22px;padding:0;max-width:56rem;border:1px solid var(--line);border-radius:10px;background:var(--white);box-shadow:0 2px 14px rgba(28,26,23,.06);overflow:hidden}
 
 
-.shop-voorraad-inner{display:flex;gap:14px;align-items:flex-start;padding:16px 18px 16px 14px;border-left:4px solid #2d5a27}
+.shop-voorraad-inner{display:flex;gap:14px;align-items:flex-start;padding:16px 18px 16px 14px;border-left:4px solid var(--accent)}
 
 
 .shop-voorraad-lede--out .shop-voorraad-inner{border-left-color:#b45309}
 
 
-.shop-voorraad-ico{flex-shrink:0;width:40px;height:40px;border-radius:10px;background:linear-gradient(145deg,rgba(45,90,39,.14),rgba(45,90,39,.06));display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1}
+.shop-voorraad-ico{flex-shrink:0;width:40px;height:40px;border-radius:10px;background:linear-gradient(145deg,rgba(24,26,23,.10),rgba(24,26,23,.05));display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1}
 
 
 .shop-voorraad-lede--out .shop-voorraad-ico{background:linear-gradient(145deg,rgba(180,83,9,.12),rgba(180,83,9,.05))}
@@ -284,7 +284,7 @@
 .pbadge.hot{background:var(--ink);color:var(--cream)}
 
 
-.pbadge.bestseller{background:#2d5a27;color:#fff}
+.pbadge.bestseller{background:var(--ink);color:#fff}
 
 
 .fpill .fpill-count{opacity:.7;font-weight:600}
@@ -598,7 +598,7 @@
 }
 
 
-.d-add:hover:not(:disabled){background:var(--accent);transform:translateY(-2px)}
+.d-add:hover:not(:disabled){background:var(--ink2);transform:translateY(-2px)}
 
 
 .d-add:disabled{background:var(--ink4);cursor:not-allowed;transform:none;opacity:.7}
@@ -1241,7 +1241,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 @media(max-width:375px){
   .size-chips{grid-template-columns:1fr}
   .nav-top .logo{font-size:19px}
-  .logo-img{height:50px}
+  .logo-img{height:68px}
   .logo-mark{width:28px;height:28px;font-size:12px}
   .nav-cart{padding:7px 9px}
   .sh-title{font-size:28px}
@@ -1277,3 +1277,13 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .seo-content-inner h2{font-size:19px}
   .seo-content-inner p{font-size:14px}
 }
+
+/* Productkaarten zijn echte links: lang drukken / nieuw tabblad werkt en Google volgt ze. */
+a.hcard,a.hero-shot{display:block;color:inherit;text-decoration:none}
+.pcard{position:relative}
+.pcard-link{color:inherit;text-decoration:none}
+/* .pcard bevat knoppen (wishlist, +), dus de link op de naam wordt over de hele kaart uitgerekt. */
+.pcard-link::after{content:"";position:absolute;inset:0;z-index:1}
+.pcard .padd-btn{position:relative;z-index:2}
+.pcard-link:focus-visible{outline:none}
+.pcard:has(.pcard-link:focus-visible){outline:2px solid var(--ink);outline-offset:3px}

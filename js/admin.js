@@ -506,9 +506,6 @@ function loadPromoSettings() {
   if (errEl) errEl.style.display = 'none';
   api('site_settings').then(s => {
     document.getElementById('sf-banner').value = s.promo_banner || '';
-    document.getElementById('sf-popup-title').value = s.promo_popup_title || '';
-    document.getElementById('sf-popup-sub').value = s.promo_popup_sub || '';
-    document.getElementById('sf-popup-code').value = s.promo_popup_code || '';
     document.getElementById('sf-faq').value = s.promo_faq_answer || '';
   }).catch(() => {
     if (errEl) { errEl.textContent = 'Kon instellingen niet laden.'; errEl.style.display = 'block'; }
@@ -520,9 +517,6 @@ async function savePromoSettings() {
   errEl.style.display = 'none';
   const payload = {
     promo_banner: document.getElementById('sf-banner').value,
-    promo_popup_title: document.getElementById('sf-popup-title').value,
-    promo_popup_sub: document.getElementById('sf-popup-sub').value,
-    promo_popup_code: document.getElementById('sf-popup-code').value,
     promo_faq_answer: document.getElementById('sf-faq').value,
   };
   const r = await api('save_site_settings', payload);

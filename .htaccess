@@ -17,7 +17,7 @@
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
 
     # CSP: tighten further by moving inline JS to files and dropping 'unsafe-inline'
-    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self' https://wa.me; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; connect-src 'self' https://api.emailjs.com; upgrade-insecure-requests"
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; form-action 'self' https://wa.me; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https: blob:; connect-src 'self' https://api.emailjs.com; upgrade-insecure-requests"
 
     # Enforce HTTPS after first secure visit (enable preload only when fully ready)
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"

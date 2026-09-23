@@ -13,6 +13,9 @@ $__base = rtrim((string)($cfg['public_site_url'] ?? 'http://localhost/kitsbyelba
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="images/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f9faf7">
 <title>Voetbalshirts met naam &amp; nummer kopen | KitsByElbaa</title>
@@ -23,16 +26,22 @@ $__base = rtrim((string)($cfg['public_site_url'] ?? 'http://localhost/kitsbyelba
 <meta property="og:description" content="Voetbalshirts en complete tenues van topclubs en landen, met eigen naam en nummer. Retro, kids en sets. Snelle levering, veilig betalen met Tikkie.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="<?= htmlspecialchars($__base, ENT_QUOTES, 'UTF-8') ?>/index.html">
+<meta property="og:image" content="<?= htmlspecialchars($__base, ENT_QUOTES, 'UTF-8') ?>/images/og-share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="KitsByElbaa — voetbalshirts met jouw naam en nummer">
+<meta property="og:site_name" content="KitsByElbaa">
+<meta property="og:locale" content="nl_NL">
+<meta name="twitter:image" content="<?= htmlspecialchars($__base, ENT_QUOTES, 'UTF-8') ?>/images/og-share.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Voetbalshirts met naam &amp; nummer kopen | KitsByElbaa">
 <meta name="twitter:description" content="Voetbalshirts en complete tenues van topclubs en landen, met eigen naam en nummer. Retro, kids en sets. Snelle levering, veilig betalen met Tikkie.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<?php require_once __DIR__ . '/includes/asset.php'; ?><link rel="stylesheet" href="<?= kits_asset('css/fonts.css') ?>">
 <!-- Hero = LCP-element: vroeg ontdekken zodat de browser 'm meteen laadt (was 9,2s LCP). -->
 <link rel="preload" as="image" href="images/hero-shirts.webp?v=21" type="image/webp" fetchpriority="high">
 <!-- Fonts niet-blokkerend: laadt als 'print' (telt niet mee voor render) en switcht onload naar 'all'. -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript>
 <script defer src="<?= kits_asset('js/kbe-ios-helpers.js') ?>"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js" integrity="sha384-SALc35EccAf6RzGw4iNsyj7kTPr33K7RoGzYu+7heZhT8s0GZouafRiCg1qy44AS" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="application/ld+json">
@@ -58,620 +67,7 @@ $__base = rtrim((string)($cfg['public_site_url'] ?? 'http://localhost/kitsbyelba
 }
 </script>
 <link rel="stylesheet" href="<?= kits_asset('css/pages-shared.css') ?>">
-<style>
-
-.banner-slide{
-  min-width:100%;min-height:clamp(340px,55vh,540px);padding:32px 0;
-  display:flex;align-items:center;justify-content:flex-start;
-  position:relative;background-size:cover;background-position:center;
-}
-
-.banner-content{
-  position:relative;z-index:4;text-align:left;
-  max-width:640px;padding:0 clamp(24px,7vw,96px);
-}
-
-.banner-title{
-  font-family:var(--font-display);
-  font-size:clamp(34px,5vw,60px);font-weight:700;
-  color:#fff;line-height:1.02;letter-spacing:-.02em;margin-bottom:16px;
-  text-wrap:balance;
-}
-.banner-title em{font-style:normal;color:var(--gold2)}
-
-.banner-btn{
-  background:#fff;color:var(--ink);border:none;
-  padding:14px 36px;font-family:var(--font-body);
-  font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
-  cursor:pointer;transition:all .22s;
-  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
-}
-
-/* ── HERO (single, product-forward) ── */
-.hero{
-  position:relative;overflow:hidden;isolation:isolate;
-  background:#0e120d;
-  background-image:radial-gradient(125% 120% at 14% 8%, #1d3d18 0%, #12160f 52%, #0a0c08 100%);
-}
-/* Shirt-collage als RUSTIGE achtergrond: zacht wazig + gedimd, zodat het sfeer geeft maar
-   niet concurreert met de 4 kaartjes (die zijn de ster). */
-.hero-bg{
-  position:absolute;inset:0;z-index:0;
-  background-size:cover;background-position:center;
-  opacity:.58;filter:blur(2px) saturate(.94);transform:scale(1.04);pointer-events:none;
-}
-/* Gelijkmatige, diepe donkere sluier → één rustig "podium" waarop kop/CTA + kaartjes poppen.
-   Twee lagen: een egale basislaag + een lichte extra dip links voor de tekst. */
-.hero::before{
-  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:
-    linear-gradient(90deg, rgba(8,10,6,.40) 0%, rgba(8,10,6,.16) 55%, rgba(8,10,6,.26) 100%),
-    linear-gradient(0deg,  rgba(6,8,5,.62),  rgba(6,8,5,.62));
-}
-.hero::after{
-  content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:radial-gradient(60% 55% at 85% 30%, rgba(212,171,56,.15), transparent 60%);
-}
-.hero-inner{
-  position:relative;z-index:3;max-width:1360px;margin:0 auto;
-  padding:clamp(44px,6vw,84px) clamp(24px,5vw,64px);
-  display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(32px,5vw,56px);align-items:center;
-  min-height:clamp(440px,60vh,600px);
-}
-.hero-copy{max-width:620px}
-.hero-pill{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(212,171,56,.13);border:1px solid rgba(212,171,56,.42);color:var(--gold2);
-  padding:7px 16px;border-radius:100px;
-  font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:22px;
-}
-.hero-pill strong{color:#fff}
-.hero-h1{
-  font-family:var(--font-display);
-  font-size:clamp(40px,6.2vw,76px);font-weight:700;line-height:.97;letter-spacing:-.03em;
-  color:#fff;margin-bottom:18px;text-wrap:balance;text-shadow:0 2px 22px rgba(0,0,0,.6),0 1px 3px rgba(0,0,0,.5);
-}
-.hero-h1 em{font-style:normal;color:var(--gold2)}
-.hero-sub{
-  font-size:clamp(15px,1.35vw,17px);color:rgba(255,255,255,.82);
-  line-height:1.65;margin-bottom:30px;max-width:47ch;text-shadow:0 1px 12px rgba(0,0,0,.7);
-}
-.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:30px}
-.hero-btn{
-  padding:16px 34px;font-family:var(--font-body);
-  font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  cursor:pointer;transition:transform .2s var(--ease-out),background .2s,box-shadow .2s;
-  border-radius:10px;border:1.5px solid transparent;line-height:1;
-}
-.hero-btn.primary{background:var(--gold2);color:var(--ink)}
-.hero-btn.primary:hover{background:#e6c14a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(212,171,56,.32)}
-.hero-btn.ghost{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.3);color:#fff}
-.hero-btn.ghost:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
-.hero-trust{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:12.5px;color:rgba(255,255,255,.6);font-weight:500}
-.hero-trust span{display:inline-flex;align-items:center;gap:6px}
-.hero-trust svg{width:14px;height:14px;color:var(--gold2);flex-shrink:0}
-.hero-shots{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:16px;align-content:center;
-}
-.hero-shot{
-  position:relative;border-radius:14px;overflow:hidden;aspect-ratio:3/3.7;
-  background:linear-gradient(160deg,#22261e,#12140f);
-  border:1px solid rgba(255,255,255,.09);box-shadow:0 20px 42px rgba(0,0,0,.42);
-  cursor:pointer;transition:transform .3s var(--ease-out),box-shadow .3s;
-}
-.hero-shot:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 30px 58px rgba(0,0,0,.5)}
-.hero-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.hero-shot-tag{
-  position:absolute;left:0;right:0;bottom:0;z-index:2;
-  padding:22px 12px 11px;font-size:11.5px;font-weight:700;letter-spacing:.02em;color:#fff;line-height:1.25;
-  background:linear-gradient(to top,rgba(0,0,0,.82),transparent);
-}
-.hero-shot-badge{
-  position:absolute;top:9px;left:9px;z-index:2;font-size:9px;font-weight:800;letter-spacing:.1em;
-  text-transform:uppercase;padding:3px 8px;border-radius:5px;
-}
-.hero-shot-badge.new{background:var(--accent);color:#fff}
-.hero-shot-badge.hot{background:var(--gold2);color:var(--ink)}
-@media(max-width:900px){
-  .hero-inner{grid-template-columns:1fr;gap:26px;min-height:0}
-  .hero-shots{grid-template-columns:repeat(4,1fr);gap:10px}
-  /* Gestapelde hero: verticale sluier zodat kop+CTA leesbaar blijven boven de collage. */
-  .hero::before{background:linear-gradient(180deg, rgba(8,10,6,.90) 0%, rgba(10,14,9,.72) 50%, rgba(8,10,6,.86) 100%)}
-}
-@media(max-width:560px){
-  .hero-shots{grid-template-columns:repeat(2,1fr);gap:12px}
-  .hero-shot:nth-child(n+3){display:none}
-}
-@media (prefers-reduced-motion: reduce){
-  .hero-shot,.hero-btn{transition:none}
-  .hero-shot:hover{transform:none}
-}
-
-/* ── FEATURED PRODUCTS ── */
-.featured{max-width:1360px;margin:0 auto;padding:72px 48px 8px}
-.featured-inner{position:relative}
-.featured-head{
-  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
-  margin-bottom:32px;
-}
-.featured-link{
-  display:inline-flex;align-items:center;gap:8px;flex-shrink:0;
-  font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--ink3);text-decoration:none;padding-bottom:6px;
-  border-bottom:1.5px solid transparent;transition:color .2s,border-color .2s;
-}
-.featured-link:hover{color:var(--accent);border-color:var(--accent)}
-.featured-link svg{transition:transform .22s var(--ease-out)}
-.featured-link:hover svg{transform:translateX(4px)}
-
-/* Featured product cards */
-.featured-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:22px}
-.hcard{
-  background:var(--white);border:1px solid var(--line);border-radius:var(--r);
-  overflow:hidden;cursor:pointer;transition:transform .28s var(--ease-out),box-shadow .28s var(--ease-out),border-color .28s;box-shadow:var(--shadow-sm);
-}
-.hcard:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--line2)}
-.hcard-img{
-  aspect-ratio:3/3.6;
-  background:linear-gradient(145deg,var(--cream2),var(--cream3));
-  display:flex;align-items:center;justify-content:center;
-  font-size:64px;position:relative;
-}
-
-.hero-grid-empty{
-  grid-column:1 / -1;align-self:center;padding:28px 24px;border:1px dashed var(--line);border-radius:10px;
-  background:var(--cream2);text-align:center;max-width:420px;margin:0 auto;
-}
-.hero-grid-empty p{margin:0 0 16px;font-size:14px;color:var(--ink3);line-height:1.65}
-
-/* ── TRUST BAR ── */
-.trust-bar{background:var(--cream2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
-.trust-bar-inner{
-  max-width:1360px;margin:0 auto;padding:18px 48px;
-  display:flex;justify-content:center;gap:56px;flex-wrap:wrap;
-}
-.tb-item{
-  display:flex;align-items:center;gap:11px;
-  font-size:12.5px;font-weight:500;color:var(--ink2);letter-spacing:.01em;
-}
-.tb-icon{display:inline-flex;color:var(--accent)}
-.tb-icon svg{width:19px;height:19px}
-
-.fpill{
-  background:var(--white);border:1.5px solid var(--line);color:var(--ink3);
-  padding:8px 20px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-  cursor:pointer;border-radius:100px;transition:all .18s;
-}
-
-/* Product grid */
-.pgrid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(min(100%,276px),1fr));
-  gap:24px;
-  transition:opacity .15s ease;
-}
-@media (min-width:1280px){
-  .pgrid{
-    grid-template-columns:repeat(auto-fill,minmax(min(100%,288px),1fr));
-    gap:26px;
-  }
-}
-.pgrid.fading{opacity:0;pointer-events:none}
-
-/* ── SKELETON LOADER ── */
-.skel-card{background:var(--white);border:1px solid var(--line);overflow:hidden;box-shadow:var(--shadow-sm)}
-.skel-img{aspect-ratio:4/5;background:linear-gradient(90deg,var(--cream2) 25%,var(--cream3) 50%,var(--cream2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-.skel-body{padding:14px 16px}
-.skel-line{height:11px;border-radius:4px;margin-bottom:8px;background:linear-gradient(90deg,var(--cream2) 25%,var(--cream3) 50%,var(--cream2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-.skel-line.short{width:55%}
-@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* ── SCROLL REVEAL ── */
-.scroll-anim{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
-.scroll-anim.on{opacity:1;transform:translateY(0)}
-
-.search-wrap{position:relative;flex:1;max-width:420px}
-.search-wrap .finput{padding-right:38px;width:100%}
-.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink4);font-size:18px;line-height:1;padding:2px 4px;display:none;transition:color .15s}
-.search-clear:hover{color:var(--ink)}
-.search-clear.visible{display:block}
-
-.sz{
-  border:1.5px solid var(--line);background:var(--white);color:var(--ink3);
-  padding:12px 18px;font-family:var(--font-body);
-  font-size:12px;font-weight:600;letter-spacing:.06em;
-  cursor:pointer;transition:all .16s;min-width:48px;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-}
-.sz:hover:not(:disabled){border-color:var(--ink);color:var(--ink)}
-
-.sz:disabled,.sz.out{opacity:.4;cursor:not-allowed;text-decoration:line-through;background:var(--cream2)}
-.sz.low .sz-stock{font-size:9px;font-weight:700;letter-spacing:.04em;color:#92400e}
-.sz.on .sz-stock{color:rgba(255,255,255,.65)}
-.sz-stock{font-size:9px;color:var(--ink4);font-weight:500;text-decoration:none}
-
-.step-i{width:36px;height:36px;background:var(--accent-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:var(--accent)}
-.step-i svg{width:17px;height:17px}
-
-.how-head{text-align:left;margin-bottom:56px}
-.how-title{font-family:var(--font-display);font-size:clamp(30px,4vw,44px);font-weight:700;letter-spacing:-.02em;color:var(--ink);line-height:1.02;text-wrap:balance}
-
-.how-step{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:30px 26px;position:relative;transition:transform .22s var(--ease-out),box-shadow .22s var(--ease-out)}
-
-.hs-icon{color:var(--accent);line-height:0;margin-bottom:18px;display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:12px;background:var(--accent-light);border:1px solid rgba(45,90,39,.12)}
-.hs-icon svg{width:22px;height:22px}
-.how-step h3{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--ink);letter-spacing:-.01em;margin-bottom:10px}
-
-/* ── CATEGORY CARDS ── */
-.cats{
-  padding:72px 48px;
-  background:var(--cream);
-  border-top:1px solid var(--line);
-  scroll-margin-top:130px;
-}
-
-.cats-head{text-align:left;margin-bottom:40px}
-.cats-grid{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:16px;
-}
-.catcard{
-  /* 3 per rij; een niet-volle laatste rij (bv. 5 kaarten → 3 + 2) centreert
-     netjes i.p.v. een gat rechts te laten vallen. */
-  flex:0 1 calc((100% - 32px) / 3);
-  position:relative;overflow:hidden;cursor:pointer;
-  background:var(--ink2);aspect-ratio:4/3;
-  border:1px solid var(--line);
-  box-shadow:var(--shadow-sm);
-  transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s ease, border-color .25s ease;
-}
-a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;display:block}
-.catcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--line2)}
-
-.ftab-player{color:var(--accent)!important;font-weight:700;border-color:rgba(45,90,39,.35)}
-.ftab-player.on{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
-
-.filter-league-wrap{margin-bottom:20px}
-.filter-league-label{
-  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink4);margin-bottom:10px;
-}
-
-.shop-refine-wrap{margin-bottom:20px}
-.shop-refine-toggle{
-  width:100%;display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;
-  padding:12px 14px;font-family:inherit;font-size:11px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);
-  background:var(--white);border:1px solid var(--line);border-radius:8px;cursor:pointer;
-  transition:border-color .15s,color .15s;
-}
-.shop-refine-toggle:hover{border-color:var(--ink);color:var(--ink)}
-
-.shop-refine-panel{display:none;padding-top:2px}
-
-.shop-refine{
-  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
-  padding:12px 14px;
-  background:var(--white);border:1px solid var(--line);border-radius:0 0 8px 8px;
-  border-top:none;
-}
-.shop-refine-select{
-  flex:1;min-width:140px;max-width:220px;margin:0;
-  font-size:12px;padding:9px 12px;border-radius:6px;
-}
-
-/* ── BACK TO TOP ── */
-.back-to-top{position:fixed;bottom:96px;right:28px;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--cream);border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(10px);transition:opacity .25s,transform .25s;z-index:var(--z-back-to-top);box-shadow:0 2px 12px rgba(28,26,23,.18)}
-.back-to-top.on{opacity:1;transform:translateY(0)}
-.back-to-top:hover{background:var(--ink2)}
-
-/* ── RESPONSIVE ── */
-@media(max-width:960px){
-  .hero-inner{grid-template-columns:1fr;padding:40px 24px;min-height:auto;gap:32px}
-  .hero-left{padding:48px 0 0}
-  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--line);flex-direction:column;padding:8px 20px 14px;gap:0;box-shadow:0 8px 24px rgba(28,26,23,.08);z-index:var(--z-nav-menu);max-height:min(82dvh,82vh);overflow:auto}
-  .nav-links li{padding:0}
-  .nav-links a{font-size:13px;padding:10px 0;display:block;border-bottom:1px solid var(--line);letter-spacing:.1em}
-  .nav-links li:last-child a{border-bottom:none}
-  .nav-links .has-mega>.top-link::after{display:none}
-  .nav-mega{display:none !important}
-  .ham{display:flex}
-  .nav-top{
-    gap:10px;height:auto;min-height:64px;padding-top:6px;padding-bottom:6px;
-    align-items:center;
-  }
-  .nav-top .logo{
-    font-size:clamp(17px,4.2vw,24px);
-    flex:1;min-width:0;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  }
-  .logo-img{height:50px}
-  .ham{align-self:center;flex-shrink:0;min-width:44px;min-height:44px;justify-content:center;box-sizing:border-box}
-  .nav-cart{
-    padding:8px 11px;
-    gap:6px;
-    letter-spacing:.05em;
-    text-transform:none;
-    font-size:11px;
-    font-weight:600;
-  }
-  .nav-cart-label{display:none}
-  .nav-cart-ico{font-size:1.28rem;line-height:1}
-  .nav-search{width:42px;height:42px}
-  .nav-top,.shop,.trust-bar-inner,.foot-inner,.foot-bottom{padding-left:24px;padding-right:24px}
-  .shop{padding-top:56px;padding-bottom:56px}
-  .drawer-body{grid-template-columns:1fr;padding:24px 20px;gap:24px}
-  .d-gallery{display:flex}
-  .d-thumb{width:60px;height:76px}
-  .cpanel{width:100%}
-  .foot-inner{grid-template-columns:1fr 1fr;padding-top:40px;padding-bottom:24px;gap:28px}
-  .foot-bottom{flex-direction:column;gap:6px;text-align:center;padding-top:16px;padding-bottom:16px}
-  .steps{flex-wrap:wrap}
-  .frow{grid-template-columns:1fr;gap:0}
-  .mhead,.mbody{padding-left:20px;padding-right:20px}
-  .how{padding:56px 24px}
-  .how-steps{grid-template-columns:1fr 1fr}
-  .how-title{font-size:36px}
-  .hero{grid-template-columns:1fr;padding:40px 24px;min-height:auto;gap:32px}
-  .hero-left{padding:48px 0 0}
-  .hero-right{padding:0 0 24px;gap:10px}
-  .hcard:nth-child(1),.hcard:nth-child(2),.hcard:nth-child(3),.hcard:nth-child(4){margin-top:0!important}
-  .banner-slide{min-height:auto;padding:28px 0}
-  .banner-content{padding:0 24px}
-  .banner-arrow{display:none}
-  .upsell-grid{grid-template-columns:1fr 1fr}
-}
-
-.section-title{
-  font-family:var(--font-display);
-  font-size:clamp(30px,4vw,44px);font-weight:700;letter-spacing:-.02em;
-  color:var(--ink);margin-bottom:14px;text-wrap:balance;
-}
-
-.maten-howto{max-width:1100px;margin:0 auto 36px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:left}
-.maten-howto li{display:flex;gap:14px;align-items:flex-start;background:var(--cream);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
-.maten-howto-n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:var(--font-display)}
-.maten-howto strong{display:block;font-size:14px;color:var(--ink);margin-bottom:4px;font-weight:700}
-.maten-howto p{font-size:12.5px;color:var(--ink3);line-height:1.6;margin:0}
-@media(max-width:760px){.maten-howto{grid-template-columns:1fr}}
-
-/* display:grid wint anders van het native [hidden] — dan staan fan- én player-chips tegelijk */
-.size-chips[hidden]{
-  display:none !important;
-}
-
-.size-chip-lbl{font-size:15px;font-weight:700;letter-spacing:.08em;color:var(--ink);margin-bottom:5px;line-height:1.2}
-.size-chip-info{font-size:12px;color:var(--ink3);line-height:1.6}
-.size-chip-tag{font-size:9px;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 5px;margin-top:4px;display:inline-block;letter-spacing:.4px;text-transform:uppercase}
-
-.vtab.on{background:var(--cream2);color:var(--ink);box-shadow:inset 0 -3px 0 var(--accent)}
-
-.maten-fan-player-wrap .maten-table-scroll{position:relative;overflow:visible}
-.maten-tab-hint{
-  font-size:13px;color:var(--ink3);line-height:1.65;text-align:center;
-  padding:14px 18px 12px;margin:0;
-  border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg, var(--cream3) 0%, var(--cream) 100%);
-}
-.maten-tab-hint strong{color:var(--ink);font-weight:600}
-
-.maten-table th{
-  padding:14px 24px;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
-  color:var(--ink2);text-align:left;border-bottom:1px solid var(--line);
-}
-.maten-table td{
-  padding:14px 24px;font-size:14px;color:var(--ink2);
-  border-bottom:1px solid var(--line);transition:background .15s;
-}
-
-.maten-table tbody tr:nth-child(even) td{background:var(--cream2)}
-.maten-table tbody tr:hover td{background:var(--cream3)}
-
-/* KIDS Jersey — zelfde visuele taal als Fan/Player maattabel (maten-table-wrap + .maten-table) */
-.maten-kids-jersey{max-width:1100px;margin:48px auto 0;padding-top:40px;border-top:1px solid var(--line)}
-
-@media(max-width:960px){
-  .maten{padding:64px 24px}
-  .maten-grid{grid-template-columns:1fr}
-  .faq-sec{padding:64px 24px}
-  .faq-cols{grid-template-columns:1fr}
-  .faq-bottom{flex-direction:column;align-items:flex-start}
-  .size-chips{grid-template-columns:repeat(2,1fr)}
-  .cats{padding:48px 24px}
-  .cats-grid{
-    display:flex;
-    flex-wrap:nowrap;
-    /* Carousel begint links; 'center' (van de desktop-regel) duwt bij overflow
-       de eerste kaarten buiten beeld → onbereikbaar / voelt "vast". */
-    justify-content:flex-start;
-    gap:12px;
-    overflow-x:auto;
-    overflow-y:hidden;
-    scroll-snap-type:x mandatory;
-    scroll-padding-left:24px;
-    -webkit-overflow-scrolling:touch;
-    padding-bottom:6px;
-  }
-  .cats-grid::-webkit-scrollbar{display:none}
-  .catcard{
-    flex:0 0 min(72vw, 320px);
-    max-width:min(72vw, 320px);
-    scroll-snap-align:start;
-  }
-}
-@media(max-width:480px){
-  .maten-table th,.maten-table td{padding:11px 14px;font-size:12px}
-  .faq-ans-inner{padding-left:24px}
-  .catcard{
-    flex-basis:min(82vw, 300px);
-    max-width:min(82vw, 300px);
-  }
-}
-
-/* ── Mobile UX polish ── */
-@media (max-width:960px){
-  .shop-header{justify-content:center;text-align:center;margin-bottom:14px}
-  .sh-eyebrow,.sh-count{display:none}
-  .shop-toolbar{display:grid;grid-template-columns:auto auto;gap:10px;align-items:center;justify-content:space-between}
-  .shop-mobile-filter-btn{display:inline-flex;align-items:center;justify-content:center}
-  .shop-view-toggle{display:flex}
-  .shop-view-toggle{justify-self:end}
-  .shop-toolbar .search-wrap{display:none}
-  .shop-toolbar .fselect{width:100%;max-width:none}
-  .shop-toolbar .btn-sec{display:none}
-  .shop-toolbar .finput,.shop-toolbar .search-wrap .finput{width:100%;max-width:none}
-  .filter-type-tabs{gap:8px}
-  .ftab{padding:8px 12px;font-size:10px;letter-spacing:.1em;border-radius:8px}
-  .filter-pills{display:flex;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;padding-bottom:6px;gap:8px}
-  .fpill{white-space:nowrap}
-  .shop-refine{flex-direction:column;align-items:stretch;padding:12px}
-  .shop-refine-select{max-width:none;width:100%}
-  .shop-filter-drawer-bg{
-    display:block;position:fixed;inset:0;background:rgba(15,18,20,.45);
-    opacity:0;pointer-events:none;transition:opacity .2s;z-index:var(--z-drawer-bg);
-  }
-  .shop-filter-drawer-bg.on{opacity:1;pointer-events:auto}
-  .shop-refine-wrap{
-    position:fixed;left:0;top:0;bottom:0;width:min(86vw,360px);max-width:100%;
-    background:var(--cream);z-index:var(--z-drawer);transform:translateX(-102%);
-    transition:transform .24s ease;box-shadow:0 10px 30px rgba(0,0,0,.22);
-    overflow:auto;padding:0 0 24px;
-  }
-  .shop-refine-wrap.on{transform:translateX(0)}
-  .shop-filter-drawer-head{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:16px 16px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--cream);z-index:2;
-  }
-  .shop-filter-drawer-head h3{
-    margin:0;font-family:var(--font-display);font-size:28px;line-height:1;color:#90b9a7;font-weight:700;
-  }
-  .shop-filter-close{
-    border:none;background:transparent;color:var(--ink);font-size:34px;line-height:1;cursor:pointer;padding:0 4px;
-  }
-  .shop-refine-toggle{display:none}
-  .shop-refine-panel{display:block;padding:8px 12px 0}
-  .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .pcard{min-width:0}
-  .wa-float{width:52px;height:52px;right:14px;bottom:18px}
-}
-
-/* ── ADDITIONAL RESPONSIVE IMPROVEMENTS ── */
-
-/* Maattabel: tabs blijven vast; alleen de tabel scrollt horizontaal op smal scherm */
-@media(max-width:720px){
-  .maten-fan-player-wrap{overflow:hidden}
-  .maten-tab-hint{font-size:12px;padding:12px 14px}
-  .maten-fan-player-wrap .maten-table-scroll{
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
-    overflow-y:hidden;
-    overscroll-behavior-x:contain;
-    border:1px solid var(--line);border-radius:12px;background:var(--cream);
-    padding-right:0;padding-bottom:2px;
-    scroll-padding-right:0;
-    touch-action:pan-x;
-    scrollbar-width:none;
-    scroll-snap-type:x proximity;
-  }
-  .maten-fan-player-wrap .maten-table-scroll::-webkit-scrollbar{display:none}
-  .maten-fan-player-wrap .maten-table-scroll .maten-table{
-    min-width:640px;
-    width:max-content;
-    table-layout:auto;
-  }
-  .maten-table th,
-  .maten-table td{
-    padding:10px 12px;
-    font-size:11px;
-    white-space:nowrap;
-    word-break:normal;
-    line-height:1.25;
-  }
-  .maten-table td:first-child,
-  .maten-table th:first-child{
-    position:sticky;
-    left:0;
-    background:var(--cream2);
-    box-shadow:1px 0 0 var(--line);
-  }
-  .maten-scroll-hint{display:block}
-  .vtab{
-    min-height:48px;padding:14px 12px;font-size:10px;letter-spacing:.12em;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .vtab.on{font-weight:800;color:var(--ink)}
-  .kids-maten-scroll{
-    border:1px solid var(--line);border-radius:12px;background:var(--cream);
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
-    padding-right:0;padding-bottom:2px;
-    scroll-padding-right:0;
-    touch-action:pan-x;
-    scrollbar-width:none;
-    scroll-snap-type:x proximity;
-  }
-  .kids-maten-scroll::-webkit-scrollbar{display:none}
-  .kids-maten-scroll .maten-table{
-    min-width:640px;
-    width:max-content;
-    table-layout:auto;
-  }
-}
-
-/* Tablet: trust bar gap */
-@media(max-width:960px){
-  .trust-bar-inner{gap:24px}
-}
-
-/* Small screens: stack everything cleanly */
-@media(max-width:480px){
-  /* Footer: 1 column */
-  .foot-inner{grid-template-columns:1fr;gap:28px}
-
-  /* How-It-Works: 1 column */
-  .how-steps{grid-template-columns:1fr}
-  .how{padding:48px 16px}
-
-  /* Trust bar */
-  .trust-bar-inner{gap:16px;justify-content:flex-start;padding-left:16px;padding-right:16px}
-
-  /* Hero buttons: stack */
-  .hero-btns{flex-direction:column;align-items:flex-start;gap:10px}
-  .btn-primary,.btn-sec{width:100%;text-align:center}
-
-  /* Size guide cards */
-  .maten-card{padding:20px}
-  .size-chips{grid-template-columns:repeat(2,1fr)}
-
-  /* Drawer font sizes */
-  .d-name{font-size:26px}
-  .d-price{font-size:32px}
-
-  /* Nav padding */
-  .nav-top{padding:0 16px}
-
-  /* Banner */
-  .banner-content{padding:0 16px}
-  .banner-sub{font-size:13px}
-
-  /* Section padding */
-  .maten{padding:48px 16px}
-  .faq-sec{padding:48px 16px}
-  .cats{padding:40px 16px}
-  .shop{padding:40px 16px}
-  .how-title{font-size:28px}
-
-  /* Modal */
-  .mhead,.mbody{padding-left:16px;padding-right:16px}
-  .mhead{padding-top:20px;padding-bottom:16px}
-  .mbody{padding-bottom:28px}
-
-  /* Confirmation screen */
-  .cscreen-body{padding:20px 16px}
-}
-
-
-</style>
+<link rel="stylesheet" href="<?= kits_asset('css/home.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/app.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/responsive-global.css') ?>">
 </head>
@@ -681,26 +77,18 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 <?php include __DIR__ . '/includes/announce.php'; ?>
 
 <?php $navHomePrefix = ''; $navSearch = true; $navClass = 'site-nav'; include __DIR__ . '/includes/nav.php'; ?>
+<main id="main">
 <div class="nav-search-modal-bg" id="navSearchBg" onclick="closeNavSearch()"></div>
 <div class="nav-search-modal" id="navSearchModal" role="dialog" aria-modal="true" aria-label="Zoek producten">
   <div class="nav-search-modal-head">
     <strong>Zoeken</strong>
     <button type="button" class="nav-search-close" onclick="closeNavSearch()" aria-label="Zoekvenster sluiten">×</button>
   </div>
-  <input id="navSearchInput" class="nav-search-field" placeholder="Zoek op club, land of competitie" oninput="renderNavSearchSuggestions(this.value)" onkeydown="handleNavSearchKeydown(event)">
+  <input id="navSearchInput" class="nav-search-field" aria-label="Zoek producten" autocomplete="off" placeholder="Zoek op club, land of competitie" oninput="renderNavSearchSuggestions(this.value)" onkeydown="handleNavSearchKeydown(event)">
   <div class="nav-search-results" id="navSearchResults"></div>
   <div class="nav-search-actions">
     <button type="button" class="btn-sec" onclick="closeNavSearch()">Sluiten</button>
     <button type="button" class="btn-primary" onclick="applyNavSearch()">Zoeken</button>
-  </div>
-</div>
-
-<div class="promo-popup-bg" id="promoPopup" role="complementary" aria-label="Kortingsaanbieding">
-  <div class="promo-popup">
-    <button type="button" class="promo-close" onclick="closePromoPopup()" aria-label="Sluiten">✕</button>
-    <div class="promo-title" id="promoPopupTitle">10% KORTING</div>
-    <p class="promo-sub" id="promoPopupSub">Gebruik deze code bij het afrekenen:</p>
-    <button type="button" class="promo-code" id="promoPopupCode" onclick="copyPromoCode(this)" title="Klik om te kopiëren">kitsbyelba</button>
   </div>
 </div>
 
@@ -720,6 +108,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><span id="heroFreeShipText">Gratis verzending vanaf €40</span></span>
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Op voorraad: 1–2 werkdagen · nabestelling 7–12</span>
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Naam &amp; nummer erop</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Echte foto&#39;s &mdash; wat je ziet, krijg je</span>
       </div>
     </div>
     <div class="hero-shots" id="heroShots" aria-label="Uitgelichte tenues"></div>
@@ -731,7 +120,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
   <div class="featured-inner">
     <div class="featured-head">
       <h2 class="section-title">Populaire tenues</h2>
-      <a class="featured-link" href="shirts">Bekijk alle tenues
+      <a class="featured-link" href="shop.html">Bekijk alle tenues
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
     </div>
@@ -780,6 +169,81 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
   </div>
 </section>
 
+<!-- SOCIAL PROOF — echte foto's/video's uit uploads/social/ (zelf-vullend; sectie
+     verschijnt alleen als er bestanden staan). GEEN verzonnen quotes/reviews. -->
+<?php
+$__socialDir = __DIR__ . '/uploads/social';
+$__social = [];
+if (is_dir($__socialDir)) {
+  foreach (scandir($__socialDir) ?: [] as $__sf) {
+    $__sext = strtolower((string)pathinfo($__sf, PATHINFO_EXTENSION));
+    if (in_array($__sext, ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'webm'], true)) {
+      $__isVid = in_array($__sext, ['mp4', 'webm'], true);
+      $__dim = $__isVid ? false : @getimagesize($__socialDir . '/' . $__sf);
+      // Poster (posters/<naam>.jpg) en tegel-thumbnail (thumbs/<naam>.webp, 432px) worden door
+      // admin-social.php gemaakt en heten naar de naam zónder volgnummer, zodat ze het
+      // hernummeren overleven. Zonder poster: zwarte tegel op iPhone; zonder thumb: volle foto.
+      $__name = pathinfo((string)preg_replace('/^(?:\d+|zzz)_/', '', $__sf), PATHINFO_FILENAME);
+      $__poster = $__isVid && is_file($__socialDir . '/posters/' . $__name . '.jpg') ? 'uploads/social/posters/' . rawurlencode($__name . '.jpg') : '';
+      $__thumb = is_file($__socialDir . '/thumbs/' . $__name . '.webp') ? 'uploads/social/thumbs/' . rawurlencode($__name . '.webp') : '';
+      // Liggende foto's niet in een staande tegel persen (dan zie je maar een stukje).
+      $__social[$__sf] = ['src' => 'uploads/social/' . rawurlencode($__sf), 'video' => $__isVid,
+        'land' => $__dim && $__dim[0] > $__dim[1],
+        'poster' => $__poster,
+        'tile' => $__thumb ?: ($__isVid ? $__poster : 'uploads/social/' . rawurlencode($__sf))];
+    }
+  }
+  ksort($__social); // bestandsnaam bepaalt volgorde — prefix 01_, 02_ … om te ordenen
+}
+$__social = array_values($__social);
+?>
+<?php if ($__social): ?>
+<section class="social reveal" aria-label="Echte foto's en video's van KitsByElbaa">
+  <div class="social-inner">
+    <div class="social-head">
+      <span class="social-eyebrow">Van onze socials</span>
+      <h2 class="section-title">Echt gedragen</h2>
+      <p class="social-sub">Echte foto&#39;s en video&#39;s van onze shirts &mdash; geen stockbeeld. Wat je ziet, is wat je krijgt.</p>
+    </div>
+    <div class="social-reel">
+      <?php foreach ($__social as $__i => $__it): $__src = htmlspecialchars($__it['src'], ENT_QUOTES, 'UTF-8'); $__tile = htmlspecialchars($__it['tile'], ENT_QUOTES, 'UTF-8'); ?>
+        <?php if ($__it['video']): ?>
+        <button type="button" class="social-card vid" style="--i:<?= (int)$__i ?>" data-i="<?= (int)$__i ?>" aria-label="Video <?= (int)$__i + 1 ?> bekijken">
+          <video src="<?= $__src ?><?= $__tile ? '' : '#t=0.1' ?>"<?= $__tile ? ' poster="' . $__tile . '"' : '' ?> width="216" height="384" muted loop playsinline preload="none" aria-hidden="true"></video>
+          <span class="social-tag">Video</span>
+          <span class="play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+        </button>
+        <?php elseif ($__it['land']): ?>
+        <button type="button" class="social-card land" style="--i:<?= (int)$__i ?>" data-i="<?= (int)$__i ?>" aria-label="Foto <?= (int)$__i + 1 ?> vergroten">
+          <img class="social-bg" src="<?= $__tile ?>" alt="" loading="lazy" decoding="async">
+          <img class="social-fg" src="<?= $__tile ?>" width="216" height="384" alt="Voetbalshirts van KitsByElbaa in het echt" loading="lazy" decoding="async">
+        </button>
+        <?php else: ?>
+        <button type="button" class="social-card" style="--i:<?= (int)$__i ?>" data-i="<?= (int)$__i ?>" aria-label="Foto <?= (int)$__i + 1 ?> vergroten">
+          <img src="<?= $__tile ?>" width="216" height="384" alt="Voetbalshirt van KitsByElbaa in het echt" loading="lazy" decoding="async">
+        </button>
+        <?php endif; ?>
+      <?php endforeach; ?>
+    </div>
+    <dialog class="social-lb" id="socialLb" aria-label="Foto's en video's">
+      <div class="social-lb-count" id="socialLbCount"></div>
+      <div class="social-lb-stage" id="socialLbStage"></div>
+      <button type="button" class="social-lb-prev" aria-label="Vorige">&#8249;</button>
+      <button type="button" class="social-lb-next" aria-label="Volgende">&#8250;</button>
+      <button type="button" class="social-lb-close" aria-label="Sluiten">&#10005;</button>
+    </dialog>
+    <div class="social-foot">
+      <a class="social-follow" href="https://www.snapchat.com/@kitsbyelbaa" target="_blank" rel="noopener nofollow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c2.5 0 4 1.8 4 4.2 0 1-.1 1.8-.1 2.2.4.3 1 .3 1.6.1.6-.2 1 .6.5 1-.5.4-1.3.6-1.8.9-.3.2 0 .8.3 1.4.5 1 1.4 1.7 2.5 2 .5.1.5.7 0 .9-.7.2-1.5.2-1.8.6-.1.2 0 .5-.1.7-.2.3-.8.1-1.4.1-.8 0-1.5.6-2.4.9-.6.2-1.2 0-1.8 0s-1.2.2-1.8 0c-.9-.3-1.6-.9-2.4-.9-.6 0-1.2.2-1.4-.1-.1-.2 0-.5-.1-.7-.3-.4-1.1-.4-1.8-.6-.5-.2-.5-.8 0-.9 1.1-.3 2-1 2.5-2 .3-.6.6-1.2.3-1.4-.5-.3-1.3-.5-1.8-.9-.5-.4-.1-1.2.5-1 .6.2 1.2.2 1.6-.1 0-.4-.1-1.2-.1-2.2C8 4.8 9.5 3 12 3z"/></svg>
+        Volg ons op Snapchat
+      </a>
+    </div>
+  </div>
+</section>
+<script type="application/json" id="kbeSocialData"><?= json_encode(array_map(fn($it) => ['src' => $it['src'], 'video' => $it['video'], 'poster' => $it['poster'] ?? ''], $__social), JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES) ?></script>
+<script src="<?= kits_asset('js/home-social.js') ?>"></script>
+<?php endif; ?>
+
 <!-- CATEGORY CARDS (id=shop: scroll-doel nav / zoek wanneer embedded shop uit staat) -->
 <section class="cats reveal" id="shop">
   <div class="cats-inner">
@@ -796,7 +260,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
         </div>
       </a>
       <a class="catcard" href="sets" title="Sets">
-        <div class="catcard-img" id="catimg-sets" style="background-color:#1e3a1e"></div>
+        <div class="catcard-img" id="catimg-sets" style="background-color:#242320"></div>
         <div class="catcard-overlay"></div>
         <div class="catcard-label">
           <span class="catcard-name">Sets</span>
@@ -804,7 +268,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
         </div>
       </a>
       <a class="catcard" href="hemdsetjes" title="Hemdsetjes">
-        <div class="catcard-img" id="catimg-hemdsetjes" style="background-color:#1a2e2e"></div>
+        <div class="catcard-img" id="catimg-hemdsetjes" style="background-color:#20211f"></div>
         <div class="catcard-overlay"></div>
         <div class="catcard-label">
           <span class="catcard-name">Hemdsetjes</span>
@@ -828,7 +292,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
         </div>
       </a>
       <a class="catcard" href="voorraad" title="Alles in deze lijst: 1–2 werkdagen. Zonder voorraad elders: 7–12 werkdagen.">
-        <div class="catcard-img" id="catimg-voorraad" style="background-color:#1a2d1a"></div>
+        <div class="catcard-img" id="catimg-voorraad" style="background-color:#262320"></div>
         <div class="catcard-overlay"></div>
         <div class="catcard-label">
           <span class="catcard-name">Voorraad</span>
@@ -857,7 +321,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
       <div class="maten-card-title">Snelle Gids</div>
       <div class="size-chips" id="sizeChipsFan" aria-label="Fan version — snelle gids">
         <div class="size-chip"><div class="size-chip-lbl">XS</div><div class="size-chip-info">150–160 cm<br>45–54 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">S</div><div class="size-chip-info">160–170 cm<br>60–65 kg</div></div>
+        <div class="size-chip"><div class="size-chip-lbl">S</div><div class="size-chip-info">160–170 cm<br>55–65 kg</div></div>
         <div class="size-chip"><div class="size-chip-lbl">M</div><div class="size-chip-info">170–175 cm<br>66–70 kg</div></div>
         <div class="size-chip"><div class="size-chip-lbl">L</div><div class="size-chip-info">175–180 cm<br>71–75 kg</div></div>
         <div class="size-chip"><div class="size-chip-lbl">XL</div><div class="size-chip-info">180–185 cm<br>76–80 kg</div></div>
@@ -866,7 +330,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
         <div class="size-chip"><div class="size-chip-lbl">4XL</div><div class="size-chip-info">190–199 cm<br>96–105 kg</div><div class="size-chip-tag">Alleen fan</div></div>
       </div>
       <div class="size-chips" id="sizeChipsPlayer" aria-label="Player version — snelle gids" hidden>
-        <div class="size-chip"><div class="size-chip-lbl">S</div><div class="size-chip-info">160–170 cm<br>60–65 kg</div></div>
+        <div class="size-chip"><div class="size-chip-lbl">S</div><div class="size-chip-info">160–170 cm<br>55–65 kg</div></div>
         <div class="size-chip"><div class="size-chip-lbl">M</div><div class="size-chip-info">170–175 cm<br>66–70 kg</div></div>
         <div class="size-chip"><div class="size-chip-lbl">L</div><div class="size-chip-info">175–180 cm<br>71–75 kg</div></div>
         <div class="size-chip"><div class="size-chip-lbl">XL</div><div class="size-chip-info">180–185 cm<br>76–80 kg</div></div>
@@ -894,7 +358,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
     </div>
     <div class="vtpanel on" id="mp-fan" role="tabpanel" aria-labelledby="mt-fan">
       <div class="maten-table-scroll">
-        <table class="maten-table">
+        <table class="maten-table" aria-label="Maattabel fan-versie">
           <thead><tr><th>Maat</th><th>Lengte</th><th>Borst</th><th>Mouw Kort</th><th>Manchet</th><th>Mouw Lang</th></tr></thead>
           <tbody>
             <tr><td>XS</td><td>69 cm</td><td>48 cm</td><td>35 cm</td><td>16 cm</td><td>74 cm</td></tr>
@@ -912,7 +376,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
     </div>
     <div class="vtpanel" id="mp-player" role="tabpanel" aria-labelledby="mt-player">
       <div class="maten-table-scroll">
-        <table class="maten-table">
+        <table class="maten-table" aria-label="Maattabel player-versie">
           <thead><tr><th>Maat</th><th>Lengte</th><th>Borst</th><th>Schouder</th><th>Mouw</th><th>Hoogte</th><th>Gewicht</th></tr></thead>
           <tbody>
             <tr><td>S</td><td>70 cm</td><td>46 cm</td><td>40.5 cm</td><td>24 cm</td><td>160–165</td><td>55–60 kg</td></tr>
@@ -934,7 +398,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
         <p class="kids-maten-remark">Let op: door rek in de stof kan de afwijking ongeveer 1–2 cm zijn.</p>
       </div>
       <div class="kids-maten-scroll">
-        <table class="maten-table">
+        <table class="maten-table" aria-label="Maattabel kids">
           <thead>
             <tr>
               <th>Maat</th>
@@ -970,42 +434,42 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
   <div class="faq-cols">
     <div>
       <div class="faqitem" id="fi1">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi1')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi1')">
           <div class="faq-q-wrap"><span class="faq-n">01</span><span class="faq-q-lbl">Hoe plaats ik een bestelling?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner">Kies je tenue en maat en klik op <strong>Bestellen via WhatsApp</strong>. Vul je gegevens in; je hoort snel van ons.</div></div>
       </div>
       <div class="faqitem" id="fi2">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi2')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi2')">
           <div class="faq-q-wrap"><span class="faq-n">02</span><span class="faq-q-lbl">Hoe betaal ik?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner">Betaling verloopt via <strong>Tikkie</strong>. Na je bestelling via WhatsApp sturen we je een betaallink die je gewoon in je browser opent en betaalt.</div></div>
       </div>
       <div class="faqitem" id="fi3">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi3')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi3')">
           <div class="faq-q-wrap"><span class="faq-n">03</span><span class="faq-q-lbl">Wat is de levertijd?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner"><strong>Op voorraad:</strong> meestal <strong>1–2 werkdagen</strong>. <strong>Nabestelling:</strong> <strong>7–12 werkdagen</strong>. Voor de actuele status kun je altijd WhatsAppen.</div></div>
       </div>
       <div class="faqitem" id="fi4">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi4')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi4')">
           <div class="faq-q-wrap"><span class="faq-n">04</span><span class="faq-q-lbl">Wat zijn de verzendkosten?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner">Verzenden kost <strong>€4,99</strong> via PostNL. Vanaf <strong>€40</strong> is verzending gratis, automatisch bij afrekenen.</div></div>
       </div>
       <div class="faqitem" id="fi5">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi5')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi5')">
           <div class="faq-q-wrap"><span class="faq-n">05</span><span class="faq-q-lbl">Is er een kortingscode?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner" id="faqPromoAnswer">Ja! Gebruik code <strong>KITSBYELBA</strong> bij het afrekenen voor <strong>10% korting</strong> op je bestelling.</div></div>
       </div>
       <div class="faqitem" id="fi6">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi6')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi6')">
           <div class="faq-q-wrap"><span class="faq-n">06</span><span class="faq-q-lbl">Hoe volg ik mijn pakket?</span></div>
           <div class="faq-ico">+</div>
         </button>
@@ -1014,46 +478,46 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
     </div>
     <div>
       <div class="faqitem" id="fi7">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi7')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi7')">
           <div class="faq-q-wrap"><span class="faq-n">07</span><span class="faq-q-lbl">Zijn dit originele shirts?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner">Het zijn <strong>replica’s</strong> met dezelfde uitstraling als de officiële tenues, tegen een scherpere prijs.</div></div>
       </div>
       <div class="faqitem" id="fi8">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi8')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi8')">
           <div class="faq-q-wrap"><span class="faq-n">08</span><span class="faq-q-lbl">Kloppen alle logo’s op het shirt?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner">Ja, logo’s, clubbadges en sponsors worden <strong>correct en nauwkeurig</strong> aangebracht, zoals op de officiële tenues.</div></div>
       </div>
       <div class="faqitem" id="fi9">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi9')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi9')">
           <div class="faq-q-wrap"><span class="faq-n">09</span><span class="faq-q-lbl">Verschil fan- en player version?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner">De <strong>fan version</strong> heeft een ruimere pasvorm voor dagelijks dragen. De <strong>player version</strong> valt slanker. Vaak één maat groter bij player. Zie de <a href="#sizeguide">maattabel</a>.</div></div>
       </div>
       <div class="faqitem" id="fi10">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi10')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi10')">
           <div class="faq-q-wrap"><span class="faq-n">10</span><span class="faq-q-lbl">Kan ik naam en nummer laten bedrukken?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner">Ja! Kies <strong>bedrukking</strong> bij je bestelling. <strong>Naam én/of nummer samen</strong> is één vaste meerprijs van <strong>+€<span id="faqPrintPrice">5,00</span> per shirt</strong> (niet apart per regel). Een <strong>badge/patch</strong> (Champions League, eigen competitie, enz.) kost <strong>+€<span id="faqBadgePrice">3,00</span> extra per shirt</strong> (los van de bedrukking).</div></div>
       </div>
       <div class="faqitem" id="fi11">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi11')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi11')">
           <div class="faq-q-wrap"><span class="faq-n">11</span><span class="faq-q-lbl">Kan ik retourneren?</span></div>
           <div class="faq-ico">+</div>
         </button>
         <div class="faq-ans"><div class="faq-ans-inner">Wij accepteren geen retouren. Uitzondering: als er een fout aan onze kant is (bijv. verkeerd product gestuurd), lossen we dat gratis op.</div></div>
       </div>
       <div class="faqitem" id="fi12">
-        <button type="button" class="faqbtn" onclick="toggleFi('fi12')">
+        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi12')">
           <div class="faq-q-wrap"><span class="faq-n">12</span><span class="faq-q-lbl">Hoe neem ik contact op?</span></div>
           <div class="faq-ico">+</div>
         </button>
-        <div class="faq-ans"><div class="faq-ans-inner">We zijn <strong>bereikbaar via WhatsApp</strong>. Stuur een bericht, we reageren meestal binnen een uur.</div></div>
+        <div class="faq-ans"><div class="faq-ans-inner">We zijn <strong>bereikbaar via WhatsApp</strong>. Stuur een bericht, we reageren zo snel mogelijk.</div></div>
       </div>
     </div>
   </div>
@@ -1061,7 +525,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
   <div class="faq-bottom">
     <div class="faq-bottom-text">
       <h3>Staat je vraag er niet bij?</h3>
-      <p>App ons — meestal binnen een uur antwoord.</p>
+      <p>App ons — we reageren zo snel mogelijk.</p>
     </div>
     <a class="faq-wa-btn" href="https://wa.me/31684446255" target="_blank" rel="noopener noreferrer">
       <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -1075,12 +539,13 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 <section class="seo-content" aria-label="Over KitsByElbaa">
   <div class="seo-content-inner">
     <h2>Voetbalshirts en tenues kopen met naam en nummer</h2>
-    <p>Welkom bij <strong>KitsByElbaa</strong>, jouw online shop voor <strong>voetbalshirts en complete tenues</strong> van topclubs en nationale teams. Of je nu op zoek bent naar het nieuwste thuisshirt, een uitshirt, een special edition of een klassieker uit vervlogen tijden — bij ons vind je het voetbalshirt dat bij jou past. En het mooiste: je kunt elk shirt laten <strong>bedrukken met je eigen naam en nummer</strong>, of kiezen voor de player-versie met de naam van je favoriete speler.</p>
-    <p>Ons assortiment loopt van <strong>voetbalshirts</strong> en <strong>voetbalsets</strong> tot <strong>retro shirts</strong>, <strong>kids-tenues</strong> en zelfs hemdsetjes voor de allerkleinste supporters. Alles in alle gangbare maten, van kindermaat tot XXL. Zoek eenvoudig op club, competitie of land en stel jouw perfecte tenue samen.</p>
-    <p>Bij KitsByElbaa staat gemak voorop: <strong>snelle levering</strong>, veilig betalen met Tikkie en persoonlijke service via WhatsApp. Draag hetzelfde tenue als je helden op het veld, verras een echte voetballiefhebber met een origineel cadeau, of vier je club in stijl. Bekijk de collectie en bestel vandaag nog jouw voetbalshirt.</p>
+    <p>Bij <strong>KitsByElbaa</strong> koop je voetbalshirts en complete tenues van clubs en landen — thuisshirts, uitshirts, special editions, retro-klassiekers, sets, kids-tenues en hemdsetjes. Elk shirt kun je laten <strong>bedrukken met je eigen naam en nummer</strong>, of je kiest de player-versie met de naam van je favoriete speler.</p>
+    <p>De <strong>foto bij elk shirt is het échte exemplaar</strong> dat je krijgt — geen stockbeeld. Het zijn replica&#39;s met dezelfde uitstraling als de officiële tenues, voor een scherpere prijs. Betalen gaat veilig via <strong>Tikkie</strong>, en je bereikt ons altijd persoonlijk via <strong>WhatsApp</strong>.</p>
+    <p>Staat je shirt <strong>op voorraad</strong>, dan heb je het binnen 1–2 werkdagen in huis. Een nabestelling duurt 7–12 werkdagen. Vanaf €40 is de <strong>verzending gratis</strong>. De maten lopen van kindermaat tot 4XL, en per shirt kies je zelf of er een naam, een nummer of een badge op komt.</p>
   </div>
 </section>
 
+</main>
 <?php /* Shared footer — single source of truth: includes/footer.php. Homepage: local #anchors. */
 $footerAnchorPrefix = '';
 include __DIR__ . '/includes/footer.php';
@@ -1112,7 +577,7 @@ include __DIR__ . '/includes/footer.php';
             <p class="kids-maten-remark">Let op: door rek in de stof kan de afwijking ongeveer 1–2 cm zijn.</p>
           </div>
           <div class="kids-maten-scroll">
-            <table class="maten-table">
+            <table class="maten-table" aria-label="Maattabel kids (productinfo)">
               <thead>
                 <tr>
                   <th>Maat</th>
@@ -1154,16 +619,16 @@ include __DIR__ . '/includes/footer.php';
       <div class="print-fields" id="printFields" style="display:none">
         <div class="print-grid">
           <div>
-            <label class="flabel">Naam (max. 15)</label>
+            <label class="flabel" for="printName">Naam (max. 15)</label>
             <input class="finput" id="printName" placeholder="bijv. Sanabria" maxlength="15">
           </div>
           <div>
-            <label class="flabel">Nummer (max. 4)</label>
+            <label class="flabel" for="printNumber">Nummer (max. 4)</label>
             <input class="finput" id="printNumber" placeholder="bijv. 18" inputmode="numeric" maxlength="4" pattern="[0-9]*">
           </div>
           <div style="grid-column:1/-1">
-            <label class="flabel">Badges (optioneel)</label>
-            <input class="finput" id="printBadges" placeholder="bijv. CL, PL, Serie A" maxlength="80">
+            <label class="flabel" for="printBadges">Badges (optioneel)</label>
+            <select class="finput" id="printBadges"><option value="">Geen badge</option></select>
           </div>
         </div>
       </div>
@@ -1191,7 +656,7 @@ include __DIR__ . '/includes/footer.php';
     <div id="ship-progress-wrap"></div>
     <div class="cart-coupon">
       <div class="cart-coupon-row">
-        <input class="finput" id="cartCouponInput" placeholder="Kortingscode">
+        <input class="finput" id="cartCouponInput" placeholder="Kortingscode" aria-label="Kortingscode">
         <button type="button" onclick="applyCouponFromCart()">Toepassen</button>
       </div>
       <p class="cart-coupon-feedback" id="cartCouponFeedback"></p>
@@ -1230,10 +695,10 @@ include __DIR__ . '/includes/footer.php';
         <span aria-hidden="true" style="display:inline-flex"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
         <span>Geen account nodig — je bestelt als gast en krijgt je track &amp; trace via WhatsApp.</span>
       </div>
-      <div class="fg"><label class="flabel">Volledige naam *</label><input class="finput" id="fName" placeholder="Je naam" autocomplete="name"/></div>
-      <div class="fg"><label class="flabel">WhatsApp-nummer *</label><input class="finput" id="fPhone" placeholder="+31 6 12 34 56 78" type="tel" autocomplete="tel"/></div>
-      <div class="fg"><label class="flabel">Straat + huisnummer *</label><input class="finput" id="fStreet" placeholder="bijv. Keizersgracht 123" autocomplete="street-address"/></div>
-      <div class="fg"><label class="flabel">Land *</label>
+      <div class="fg"><label class="flabel" for="fName">Volledige naam *</label><input class="finput" id="fName" placeholder="Je naam" autocomplete="name"/></div>
+      <div class="fg"><label class="flabel" for="fPhone">WhatsApp-nummer *</label><input class="finput" id="fPhone" placeholder="+31 6 12 34 56 78" type="tel" autocomplete="tel"/></div>
+      <div class="fg"><label class="flabel" for="fStreet">Straat + huisnummer *</label><input class="finput" id="fStreet" placeholder="bijv. Keizersgracht 123" autocomplete="street-address"/></div>
+      <div class="fg"><label class="flabel" for="fCountry">Land *</label>
         <select class="fselect" id="fCountry" autocomplete="country">
           <option value="nl" selected>Nederland</option>
           <option value="be">België</option>
@@ -1242,12 +707,12 @@ include __DIR__ . '/includes/footer.php';
         </select>
       </div>
       <div class="frow">
-        <div class="fg"><label class="flabel">Postcode *</label><input class="finput" id="fZip" placeholder="1234 AB" autocomplete="postal-code" inputmode="text"/></div>
-        <div class="fg"><label class="flabel">Plaats *</label><input class="finput" id="fCity" placeholder="Amsterdam" autocomplete="address-level2"/></div>
+        <div class="fg"><label class="flabel" for="fZip">Postcode *</label><input class="finput" id="fZip" placeholder="1234 AB" autocomplete="postal-code" inputmode="text"/></div>
+        <div class="fg"><label class="flabel" for="fCity">Plaats *</label><input class="finput" id="fCity" placeholder="Amsterdam" autocomplete="address-level2"/></div>
       </div>
       <p class="fzip-hint" id="fZipHint">Controleer postcode en plaats goed — we verifiëren ze niet automatisch.</p>
-      <div class="fg"><label class="flabel">E-mail *</label><input class="finput" id="fEmail" placeholder="jij@voorbeeld.nl" type="email" autocomplete="email"/></div>
-      <div class="fg fg-notes"><label class="flabel">Opmerkingen <span class="opt">(optioneel)</span></label><input class="finput" id="fNotes" placeholder="bijv. naam op shirt"/></div>
+      <div class="fg"><label class="flabel" for="fEmail">E-mail *</label><input class="finput" id="fEmail" placeholder="jij@voorbeeld.nl" type="email" autocomplete="email"/></div>
+      <div class="fg fg-notes"><label class="flabel" for="fNotes">Opmerkingen <span class="opt">(optioneel)</span></label><input class="finput" id="fNotes" placeholder="bijv. naam op shirt"/></div>
       <div class="hp-trap" aria-hidden="true">
         <label for="checkoutHpWebsite">Website</label>
         <input type="text" id="checkoutHpWebsite" name="website" tabindex="-1" autocomplete="off" value="">
@@ -1257,7 +722,7 @@ include __DIR__ . '/includes/footer.php';
       <div class="coupon-row">
         <label class="flabel">Kortingscode <span class="opt">(optioneel)</span></label>
         <div class="coupon-input-row">
-          <input class="finput" id="couponInput" placeholder="Je kortingscode" autocomplete="off">
+          <input class="finput" id="couponInput" placeholder="Je kortingscode" autocomplete="off" aria-label="Kortingscode">
           <button type="button" class="coupon-apply-btn" onclick="applyCoupon()">Toepassen</button>
         </div>
         <p class="coupon-feedback" id="couponFeedback"></p>
@@ -1265,7 +730,7 @@ include __DIR__ . '/includes/footer.php';
 
       <!-- Tikkie payment note -->
       <div class="tikkie-note">
-        <span class="tikkie-note-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2d5a27" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
+        <span class="tikkie-note-icon" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3a3d38" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
         <p>Na je bestelling ontvang je via WhatsApp een <strong>Tikkie-betaallink</strong> (meestal binnen 24 uur).</p>
       </div>
 
@@ -1365,826 +830,7 @@ include __DIR__ . '/includes/footer.php';
 <div class="toast" id="toast"></div>
 
 <script src="<?= kits_asset('js/shop-core.js') ?>"></script>
-<script>
-/* dedup-compat: globals + shims voor gedeelde core-functies (homepage = fan-versie, geen seizoen/versie-UI) */
-let currentVersion = 'fan';
-let currentSeason = null;
-let bannerIdx = 0, bannerTimer = null;
-function renderDrawerVersion(){}          /* geen versie-rij in homepage quick-view */
-function applyLeagueFromUrl(){}           /* geen league-pills op homepage */
-function applyCollectionPageMode(){}      /* homepage is geen collectie-pagina */
-function updateShopPageHeaderByType(){}   /* homepage heeft eigen header */
-
-// ── CONFIG filled from api/config.php (no EmailJS keys in page source) ──
-let CONFIG = {
-  whatsapp:         '31684446255',
-  season:           '',
-  freeShippingFrom: 0,
-  shippingCost:     0,
-  customPrintingPrice: 5,
-  badgeExtraPrice: 3,
-  emailjsPk:        '',
-  emailjsService:   '',
-  emailjsTemplate:  '',
-  adminEmail:       '',
-  publicSiteUrl:    '',
-};
-
-let PRODUCTS = [];
-/** Geen ingebouwde productgrid op de homepage — #shop wijst naar categoriekaarten. */
-const HOME_SKIP_EMBEDDED_SHOP = true;
-let cart = [];
-let wishlist = [];
-/** Browser-terug (mobiel) sluit winkelwagen i.p.v. pagina te verlaten */
-let __kbeCartHistory = 0;
-let currentDetailId = null;
-let currentSz = null; // no default — user must explicitly pick
-let currentPrinting = 'none'; // none|custom
-let currentDetailEmoji = '👕';
-let currentGalleryImages = [];
-let currentGalleryIndex = 0;
-let currentFilterCat = 'all';
-let currentSearchTerm = '';
-let currentSortMode = 'featured';
-let currentShopCardView = 'grid';
-let navSearchSuggestions = [];
-let navSearchActiveIndex = -1;
-const NAV_SEARCH_POPULAR = ['Real Madrid', 'Barcelona', 'PSG', 'Retro', 'Kids', 'Manchester'];
-
-// Vaste site-promo (banner/FAQ): 10% met KITSBYELBA. Extra acties in admin → tabel coupons + api/coupon_validate.php
-let appliedCoupon = null;
-
-function applyPromoTextsFromConfig() {
-  if (CONFIG.promoBanner) {
-    document.querySelectorAll('.announce-promo').forEach(el => { el.innerHTML = CONFIG.promoBanner; });
-  }
-  const pt = document.getElementById('promoPopupTitle');
-  if (pt && CONFIG.promoPopupTitle != null && CONFIG.promoPopupTitle !== '') pt.textContent = CONFIG.promoPopupTitle;
-  const ps = document.getElementById('promoPopupSub');
-  if (ps && CONFIG.promoPopupSub != null && CONFIG.promoPopupSub !== '') ps.textContent = CONFIG.promoPopupSub;
-  const pc = document.getElementById('promoPopupCode');
-  if (pc && CONFIG.promoPopupCode != null && CONFIG.promoPopupCode !== '') pc.textContent = CONFIG.promoPopupCode;
-  const faq = document.getElementById('faqPromoAnswer');
-  if (faq && CONFIG.promoFaqAnswer) faq.innerHTML = CONFIG.promoFaqAnswer;
-}
-const CART_STORAGE_KEY = 'kbe_cart_main';
-const COUPON_STORAGE_KEY = 'kbe_coupon_main';
-const PROMO_POPUP_KEY = 'kbe_seen_promo_10';
-const WISHLIST_STORAGE_KEY = 'kbe_wishlist_main';
-
-// ── INIT ──
-Promise.all([
-  fetch('api/config.php').then(r => r.json()).catch(() => ({})),
-  fetch('api/products.php').then(async r => {
-    const ok = r.ok;
-    const j = await r.json().catch(() => []);
-    const arr = Array.isArray(j) ? j : [];
-    window.__kbeProductsApiFailed = !ok;
-    return arr;
-  }).catch(() => { window.__kbeProductsApiFailed = true; return []; })
-]).then(async ([cfg, products]) => {
-  Object.assign(CONFIG, cfg);
-  applyPromoTextsFromConfig();
-  applySeoFromConfig('index.html');
-  kbeEnsureEmailjsInit(CONFIG.emailjsPk);
-  PRODUCTS = products;
-  if (window.__kbeProductsApiFailed) {
-    showToast('Producten laden lukt niet (server/database). Controleer de verbinding of probeer het zo opnieuw.');
-  }
-  restoreCartState();
-  restoreWishlistState();
-  recalcCartPrintingPrices();
-  clampCartToStock();
-  await restoreCouponState();
-  applyDynamicStoreTexts();
-  applyBannerImagesFromProducts();
-  const pPrint = unitPrintingExtra();
-  const pBadge = unitBadgeExtra();
-  const printPriceEl = document.getElementById('printCustomPrice');
-  const printHintEl = document.getElementById('printCustomPriceHint');
-  const printBadgeHintEl = document.getElementById('printBadgePriceHint');
-  const faqPrintEl = document.getElementById('faqPrintPrice');
-  const faqBadgeEl = document.getElementById('faqBadgePrice');
-  const priceStr = pPrint.toFixed(2).replace('.', ',');
-  const badgeStr = pBadge.toFixed(2).replace('.', ',');
-  if (printPriceEl) printPriceEl.textContent = priceStr;
-  if (printHintEl) printHintEl.textContent = priceStr;
-  if (printBadgeHintEl) printBadgeHintEl.textContent = badgeStr;
-  if (faqPrintEl) faqPrintEl.textContent = priceStr;
-  if (faqBadgeEl) faqBadgeEl.textContent = badgeStr;
-  if (currentDetailId && currentPrinting === 'custom') {
-    refreshDetailDrawerPrice();
-  }
-  const waF = document.getElementById('waFloat');
-  if (waF) waF.href = 'https://wa.me/' + kbeWaDigits();
-  renderHeroShots();
-  renderHero();
-  initShopFromUrl();
-  populateCategoryImages();
-  importPendingCartFromProductPage();
-  updateCount();
-  openProductFromUrl();
-  armPromoPopup();
-  const __qs = new URLSearchParams(window.location.search);
-  if (__qs.get('checkout') === '1' && cart.length) {
-    openModal();
-    try { history.replaceState({}, '', location.pathname); } catch (_) {}
-  } else if (__qs.get('openCart') === '1' && cart.length) {
-    openCart();
-  }
-});
-
-// Run immediately — does NOT need product data
-initRevealAnimations();
-
-// ── BACK TO TOP ──
-(function(){
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'back-to-top';
-  btn.title = 'Back to top';
-  btn.innerHTML = '↑';
-  btn.onclick = () => kbeScrollToTop();
-  document.body.appendChild(btn);
-  window.addEventListener('scroll', () => btn.classList.toggle('on', window.scrollY > 400), {passive:true});
-})();
-
-// Toned down: no longer covers the hero on load. Shows once on exit-intent
-// (desktop) or after the visitor has genuinely browsed (long dwell / deep scroll).
-function armPromoPopup() {
-  try {
-    if (localStorage.getItem(PROMO_POPUP_KEY) === '1') return;
-  } catch (_) {}
-  let fired = false;
-  const fire = () => { if (fired) return; fired = true; maybeShowPromoPopup(); };
-  if (window.matchMedia && window.matchMedia('(hover: hover)').matches) {
-    document.addEventListener('mouseout', (e) => {
-      if (!e.relatedTarget && e.clientY <= 0) fire();
-    });
-  }
-  window.addEventListener('scroll', () => { if (window.scrollY > 1800) fire(); }, { passive: true });
-  setTimeout(fire, 35000);
-}
-
-// ── HOME PRODUCT ALLOCATION ──
-// One shared set so the same kit never shows twice on the homepage
-// (hero shots, "Populaire tenues" grid, and category covers all draw from it).
-const HOME_USED = new Set();
-const homeHasImg = p => !!(p && (p.image || p.image2 || p.image3));
-const homeIsStar = p => /#\s*\d/.test(String(p && p.name || '')); // player number = recognisable shirt
-const homeMarkUsed = p => { if (p) HOME_USED.add(Number(p.id)); };
-const homeUnused = p => p && !HOME_USED.has(Number(p.id));
-const homeCountry = p => String(p && p.name || '').trim().split(/\s+/)[0].toLowerCase();
-// Pick n items, preferring a different country/team each, topping up if needed.
-function pickHomeDiverse(pool, n) {
-  const out = [], seen = new Set();
-  for (const p of pool) { const c = homeCountry(p); if (!seen.has(c)) { out.push(p); seen.add(c); } if (out.length >= n) break; }
-  if (out.length < n) for (const p of pool) { if (!out.includes(p)) { out.push(p); if (out.length >= n) break; } }
-  return out;
-}
-
-// ── HERO SHOTS (recognisable star shirts from the live catalogue) ──
-function renderHeroShots() {
-  const wrap = document.getElementById('heroShots');
-  if (!wrap) return;
-  const shirts = PRODUCTS.filter(p => homeHasImg(p) && detectProductType(p) === 'shirts');
-  const stars = shirts.filter(homeIsStar);
-  const pool = stars.length >= 4 ? stars : shirts;
-  // Curated feature kits first (Brazil beige, Argentinië away, Zuid-Korea, Barcelona roze),
-  // then fill any gap with diverse unused shirts so it still works if a pinned id is gone.
-  const HERO_PIN = [513, 524, 528, 531];
-  let pick = HERO_PIN.map(id => PRODUCTS.find(p => Number(p.id) === id && homeHasImg(p))).filter(Boolean);
-  if (pick.length < 4) pick = pick.concat(pickHomeDiverse(pool.filter(p => homeUnused(p) && !pick.includes(p)), 4 - pick.length));
-  pick = pick.slice(0, 4);
-  if (!pick.length) { wrap.style.display = 'none'; return; }
-  pick.forEach(homeMarkUsed);
-  wrap.style.display = '';
-  wrap.innerHTML = pick.map(p => {
-    const b = String(p.badge || '').toLowerCase();
-    const badge = (b === 'new' || b === 'hot')
-      ? `<span class="hero-shot-badge ${b}">${b === 'new' ? 'Nieuw' : 'Populair'}</span>` : '';
-    return `<div class="hero-shot" onclick="goToProductPage(${p.id})" title="${esc(p.name)}">
-      ${badge}
-      <img src="${productThumbSrc(p.image || p.image2 || p.image3)}" data-full="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" loading="eager" fetchpriority="high" decoding="async" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=this.getAttribute('data-full');}else{this.closest('.hero-shot').style.display='none';}">
-      <span class="hero-shot-tag">${esc(p.name)}</span>
-    </div>`;
-  }).join('');
-}
-
-// Legacy banner-slider was replaced by the single hero; keep no-op stubs in case
-// an old inline handler still references these.
-function goBanner() {}
-function moveBanner() {}
-
-// ── RENDER HERO PRODUCT CARDS ──
-function renderHero() {
-  const el = document.getElementById('hero-grid');
-  if (!el) return;
-  // Prefer recognisable star shirts that aren't already shown elsewhere on the homepage.
-  const fresh = PRODUCTS.filter(p => homeHasImg(p) && homeUnused(p));
-  const freshStars = fresh.filter(homeIsStar);
-  let featured = pickHomeDiverse(freshStars.length >= 4 ? freshStars : fresh, 4);
-  if (!featured.length) featured = PRODUCTS.slice(0, 4);
-  featured.forEach(homeMarkUsed);
-  if (!featured.length) {
-    const failed = !!window.__kbeProductsApiFailed;
-    const msg = failed
-      ? 'Uitgelichte tenues konden niet worden geladen (server of database). Vernieuw de pagina over een moment, of scroll naar de collectie hieronder.'
-      : 'Er zijn nog geen actieve producten om hier te tonen. Controleer of de catalogus in de database staat en of producten op “actief” staan.';
-    el.innerHTML = `<div class="hero-grid-empty"><p>${msg}</p><button type="button" class="btn-primary" onclick="location.href='shirts'">Naar shirts</button></div>`;
-    return;
-  }
-  el.innerHTML = featured.map(p => `
-    <div class="hcard" onclick="goToProductPage(${p.id})">
-      <div class="hcard-img">
-        ${(p.image || p.image2 || p.image3)
-          ? `<img src="${productThumbSrc(p.image || p.image2 || p.image3)}" data-full="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" width="320" height="405" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="thumbErr(this)">`
-          : `<div class="pnoimg"><span class="icon" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m21 16-5-5L5 20"/></svg></span><span>Foto volgt</span></div>`}
-        ${['new','hot'].includes(String(p.badge || '').toLowerCase()) ? `<span class="hcard-badge ${String(p.badge).toLowerCase()}">${String(p.badge).toLowerCase() === 'new' ? 'Nieuw' : 'Populair'}</span>` : ''}
-      </div>
-      <div class="hcard-info">
-        <div class="hcard-name">${esc(p.name)}</div>
-        <div class="hcard-price">€${p.price.toFixed(2)}</div>
-      </div>
-    </div>`).join('');
-}
-
-// ── RENDER PRODUCT GRID ──
-let currentTypeFilter = 'shirts';
-let currentVersionFilter = 'all';
-let currentKitVariantFilter = 'all';
-let currentVoorraadFilter = 'all'; // 'all', 'in_stock', 'out_of_stock'
-
-function renderGrid(cat = currentFilterCat) {
-  if (HOME_SKIP_EMBEDDED_SHOP) return;
-  currentFilterCat = cat;
-  const gridEl = document.getElementById('grid');
-  if (!gridEl) return;
-  gridEl.classList.add('fading');
-  setTimeout(() => { _doRenderGrid(cat); gridEl.classList.remove('fading'); }, 150);
-}
-
-/** Tab-rail: Voorraad is actief bij “alle types + alleen op voorraad”. */
-function syncShopCategoryTabsFromState() {
-  const vTab = document.getElementById('ftab-voorraad');
-  if (!vTab) return;
-  const voorraadTabActive = currentVoorraadFilter === 'in_stock' && currentTypeFilter === 'all';
-  document.querySelectorAll('#catTabs .ftab:not(.ftab-player)').forEach(b => b.classList.remove('on'));
-  if (voorraadTabActive) {
-    vTab.classList.add('on');
-  } else {
-    const labels = { all:'Alles', shirts:'Shirts', sets:'Sets', hemdsetjes:'Hemdsetjes', retro:'Retro', kids:'Kids' };
-    const label = labels[currentTypeFilter] || 'Shirts';
-    const btn = [...document.querySelectorAll('#catTabs .ftab')].find(b => b.textContent.trim() === label);
-    if (btn) btn.classList.add('on');
-  }
-  const pv = document.getElementById('ftab-player');
-  if (pv) pv.classList.toggle('on', currentVersionFilter === 'player');
-}
-
-function buildShopNoResultsTips(cat) {
-  const tips = [];
-  if (currentSearchTerm) tips.push(`Zoekterm <strong>“${esc(currentSearchTerm)}”</strong> wissen of aanpassen.`);
-  if (currentTypeFilter !== 'all') tips.push('Probeer een andere <strong>type-tab</strong> (bijv. Alle tenues).');
-  if (currentVersionFilter !== 'all') tips.push('Zet Fan/Player op <strong>alle</strong>.');
-  if (cat !== 'all') tips.push('Kies <strong>Alle competities</strong> of een andere competitie.');
-  if (currentKitVariantFilter !== 'all') tips.push('Zet kit-variant (thuis/uit) op <strong>alle</strong>.');
-  if (currentVoorraadFilter !== 'all') tips.push('Zet het voorraadfilter op <strong>alle artikelen</strong> (of wissel tussen op/niet op voorraad).');
-  if (!tips.length) tips.push('Gebruik <strong>Filters resetten</strong> om alles terug te zetten.');
-  return '<ul class="no-results-tips">' + tips.map(t => `<li>${t}</li>`).join('') + '</ul>';
-}
-
-function updateLeaguePillCounts() {
-  const leagueKeywords = {
-    all: '',
-    premier: 'premier',
-    laliga: 'la liga',
-    bundesliga: 'bundesliga',
-    seriea: 'serie',
-    ligue1: 'ligue',
-    eredivisie: 'eredivisie',
-    national: 'national'
-  };
-  let base = [...PRODUCTS];
-  if (currentTypeFilter !== 'all') base = base.filter(p => detectProductType(p) === currentTypeFilter);
-  if (currentVersionFilter !== 'all') base = base.filter(p => detectProductVersion(p) === currentVersionFilter);
-  if (currentKitVariantFilter !== 'all') base = base.filter(p => detectKitVariant(p) === currentKitVariantFilter);
-  if (currentVoorraadFilter === 'in_stock') base = base.filter(p => parseInt(p.in_voorraad, 10) === 1);
-  else if (currentVoorraadFilter === 'out_of_stock') base = base.filter(p => parseInt(p.in_voorraad, 10) !== 1);
-  if (currentSearchTerm) {
-    base = base
-      .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
-      .filter((x) => x.score > 0)
-      .map((x) => x.p);
-  }
-  document.querySelectorAll('#leaguePills .fpill').forEach((pill) => {
-    const oc = pill.getAttribute('onclick') || '';
-    const m = oc.match(/doFilter\('([^']+)'/);
-    const key = ((m && m[1]) || 'all').toLowerCase();
-    const kw = leagueKeywords[key] || key;
-    const count = key === 'all'
-      ? base.length
-      : base.filter(p => (p.cat || '').toLowerCase() === key || (p.league || '').toLowerCase().includes(kw)).length;
-    if (!pill.dataset.baseLabel) pill.dataset.baseLabel = pill.textContent.replace(/\s\(\d+\)\s*$/, '').trim();
-    pill.innerHTML = `${esc(pill.dataset.baseLabel)} <span class="fpill-count">(${count})</span>`;
-  });
-}
-
-function _doRenderGrid(cat) {
-  if (HOME_SKIP_EMBEDDED_SHOP) return;
-  let list = [...PRODUCTS];
-
-  // League keyword map for matching against p.league text
-  const leagueKeywords = {
-    premier:'premier', laliga:'la liga', bundesliga:'bundesliga',
-    seriea:'serie', ligue1:'ligue', eredivisie:'eredivisie', national:'national'
-  };
-
-  // Apply type filter (shirts/sets/kids/…) from product naming.
-  if (currentTypeFilter !== 'all') {
-    list = list.filter(p => detectProductType(p) === currentTypeFilter);
-  }
-
-  // Apply version filter (fan/player)
-  if (currentVersionFilter !== 'all') {
-    list = list.filter(p => detectProductVersion(p) === currentVersionFilter);
-  }
-
-  // Apply league filter - matches p.cat OR p.league text
-  if (cat !== 'all') {
-    const kw = leagueKeywords[cat] || cat;
-    list = list.filter(p =>
-      (p.cat || '').toLowerCase() === cat ||
-      (p.league || '').toLowerCase().includes(kw)
-    );
-  }
-
-  if (currentKitVariantFilter !== 'all') {
-    list = list.filter(p => detectKitVariant(p) === currentKitVariantFilter);
-  }
-
-  if (currentVoorraadFilter === 'in_stock') {
-    list = list.filter(p => parseInt(p.in_voorraad, 10) === 1);
-  } else if (currentVoorraadFilter === 'out_of_stock') {
-    list = list.filter(p => parseInt(p.in_voorraad, 10) !== 1);
-  }
-
-  if (currentSearchTerm) {
-    list = list
-      .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
-      .filter((x) => x.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map((x) => x.p);
-  }
-  if (currentSortMode === 'price_asc') list.sort((a,b) => a.price - b.price);
-  if (currentSortMode === 'price_desc') list.sort((a,b) => b.price - a.price);
-  if (currentSortMode === 'name_asc') list.sort((a,b) => a.name.localeCompare(b.name));
-  document.getElementById('shopCount').textContent = list.length + (list.length === 1 ? ' artikel' : ' artikelen');
-  const titleEl = document.getElementById('shopTitle');
-  if (titleEl) {
-    const typeLabels = {all:'Alle tenues',shirts:'Shirts',sets:'Sets',hemdsetjes:'Hemdsetjes',retro:'Retro',kids:'Kids'};
-    if (currentVoorraadFilter === 'in_stock') {
-      titleEl.textContent = currentTypeFilter === 'all' ? 'Op voorraad' : (typeLabels[currentTypeFilter] + ' · op voorraad');
-    } else if (currentVoorraadFilter === 'out_of_stock') {
-      titleEl.textContent = currentTypeFilter === 'all' ? 'Niet op voorraad' : (typeLabels[currentTypeFilter] + ' · niet op voorraad');
-    } else {
-      titleEl.textContent = typeLabels[currentTypeFilter] || 'Alle tenues';
-    }
-  }
-  if (!list.length) {
-    const hasSearch = !!currentSearchTerm;
-    document.getElementById('grid').innerHTML = `
-      <div class="no-results">
-        <strong>${hasSearch ? `Geen resultaten voor “${esc(currentSearchTerm)}”` : 'Geen tenues gevonden'}</strong>
-        <p>${hasSearch ? 'Probeer een andere club, land of competitie.' : 'Pas je filters aan — tips hieronder.'}</p>
-        ${buildShopNoResultsTips(cat)}
-        ${buildNoResultsActions()}
-        <button type="button" class="btn-sec" onclick="resetShopFilters()">Filters resetten</button>
-      </div>`;
-    updateShopVoorraadLede();
-    syncShopCategoryTabsFromState();
-    updateLeaguePillCounts();
-    updateShopHeroLede();
-    return;
-  }
-  document.getElementById('grid').innerHTML = list.map((p, idx) => {
-    const stock = getStockState(p.stock);
-    return `
-    <div class="pcard card-enter" style="animation-delay:${Math.min(idx * 35, 280)}ms" onclick="goToProductPage(${p.id})">
-      <div class="pimg-wrap">
-        ${(p.image || p.image2 || p.image3)
-          ? `<img src="${productThumbSrc(p.image || p.image2 || p.image3)}" data-full="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" loading="lazy" decoding="async" width="320" height="400" onerror="thumbErr(this)">`
-          : `<div class="pnoimg"><span class="icon" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m21 16-5-5L5 20"/></svg></span><span>Foto volgt</span></div>`}
-        <button type="button" class="pwish-btn ${isWishlisted(p.id) ? 'on' : ''}" onclick="event.stopPropagation();toggleWishlist(${p.id},this)" aria-label="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.16 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.42 22 7.5c0 3.66-3.4 6.74-8.55 11.48L12 20.3z"/></svg></button>
-        ${['new','hot'].includes(String(p.badge || '').toLowerCase())
-          ? `<span class="pbadge ${String(p.badge).toLowerCase()}">${String(p.badge).toLowerCase() === 'new' ? 'Nieuw' : 'Populair'}</span>`
-          : (!currentSearchTerm && currentSortMode === 'featured' && idx < 3 ? `<span class="pbadge bestseller">Bestseller</span>` : '')}
-      </div>
-      <div class="pbody">
-        <p class="pleague">${esc(p.league)}</p>
-        <p class="pname">${esc(p.name)}</p>
-        <span class="stock-pill ${stock.key}">${stock.label}</span>
-        <div class="pfooter">
-          <span class="pprice">€${p.price.toFixed(2)}</span>
-          <button type="button" class="padd-btn" onclick="event.stopPropagation();openDetail(${p.id})" title="Snel bekijken &amp; toevoegen" aria-label="Snel toevoegen">+</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-  updateShopVoorraadLede();
-  updateShopRefineUI();
-  syncShopCategoryTabsFromState();
-  updateLeaguePillCounts();
-  updateShopHeroLede();
-}
-
-function toggleShopRefinePanel() {
-  const panel = document.getElementById('shopRefinePanel');
-  const btn = document.getElementById('shopRefineToggle');
-  const wrap = document.getElementById('shopRefineWrap');
-  const bg = document.getElementById('shopFilterBg');
-  if (!panel || !btn) return;
-  const next = !panel.classList.contains('is-open');
-  panel.classList.toggle('is-open', next);
-  btn.setAttribute('aria-expanded', next ? 'true' : 'false');
-  if (wrap) wrap.classList.toggle('on', next);
-  if (bg) bg.classList.toggle('on', next);
-}
-
-function closeShopRefinePanel() {
-  const panel = document.getElementById('shopRefinePanel');
-  const btn = document.getElementById('shopRefineToggle');
-  const wrap = document.getElementById('shopRefineWrap');
-  const bg = document.getElementById('shopFilterBg');
-  if (panel) panel.classList.remove('is-open');
-  if (btn) btn.setAttribute('aria-expanded', 'false');
-  if (wrap) wrap.classList.remove('on');
-  if (bg) bg.classList.remove('on');
-}
-
-function updateShopRefineUI() {
-  const badge = document.getElementById('shopRefineBadge');
-  const panel = document.getElementById('shopRefinePanel');
-  const btn = document.getElementById('shopRefineToggle');
-  if (!badge) return;
-  let n = 0;
-  if (currentVersionFilter !== 'all') n++;
-  if (currentKitVariantFilter !== 'all') n++;
-  if (currentVoorraadFilter !== 'all') n++;
-  if (n > 0) {
-    badge.hidden = false;
-    badge.textContent = String(n);
-    if (panel && btn && !panel.classList.contains('is-open')) {
-      panel.classList.add('is-open');
-      btn.setAttribute('aria-expanded', 'true');
-    }
-  } else {
-    badge.hidden = true;
-  }
-}
-
-function setVoorraadFilter(v) {
-  currentVoorraadFilter = v || 'all';
-  renderGrid();
-}
-
-function populateCategoryImages() {
-  const cats = ['shirts','sets','hemdsetjes','retro','kids','voorraad'];
-  cats.forEach(cat => {
-    const el = document.getElementById('catimg-' + cat);
-    if (!el) return;
-    let inCat;
-    if (cat === 'voorraad') {
-      inCat = PRODUCTS.filter(p => parseInt(p.in_voorraad, 10) === 1 && (p.image||p.image2||p.image3));
-    } else {
-      inCat = PRODUCTS.filter(p => detectProductType(p) === cat && (p.image||p.image2||p.image3));
-    }
-    // Prefer an unused product so the same kit never repeats across the homepage.
-    let p = inCat.find(pp => pp.cat_cover && homeUnused(pp))
-         || inCat.find(homeUnused)
-         || inCat.find(pp => pp.cat_cover)
-         || inCat[0];
-    // Categories with no own products yet (e.g. kids): show an unused recognisable shirt.
-    if (!p && cat === 'kids') {
-      const shirts = PRODUCTS.filter(x => homeHasImg(x) && detectProductType(x) === 'shirts');
-      p = shirts.filter(homeIsStar).find(homeUnused) || shirts.find(homeUnused) || shirts.filter(homeIsStar)[0];
-    }
-    if (p) { homeMarkUsed(p); el.style.backgroundImage = `url('${productImgSrc(p.image||p.image2||p.image3)}')`; }
-  });
-  // Player Version tile
-  const playerEl = document.getElementById('catimg-player');
-  if (playerEl) {
-    const playerProds = PRODUCTS.filter(p => detectProductVersion(p) === 'player' && (p.image||p.image2||p.image3));
-    const p = playerProds.find(p => p.cat_cover) || playerProds[0];
-    if (p) playerEl.style.backgroundImage = `url('${productImgSrc(p.image||p.image2||p.image3)}')`;
-  }
-}
-
-function goToShopPlayer() {
-  if (HOME_SKIP_EMBEDDED_SHOP) {
-    window.location.href = 'shirts';
-    return;
-  }
-  // Reset type filter, activate player version
-  currentTypeFilter = 'all';
-  currentVoorraadFilter = 'all';
-  const _sv = document.getElementById('shopVoorraad');
-  if (_sv) _sv.value = 'all';
-  currentVersionFilter = 'player';
-  currentFilterCat = 'all';
-  _doRenderGrid('all');
-  kbeScrollIntoView(document.getElementById('shop'));
-}
-
-function setTypeFilter(type, btn) {
-  currentTypeFilter = type || 'all';
-  currentVoorraadFilter = 'all';
-  const _sv = document.getElementById('shopVoorraad');
-  if (_sv) _sv.value = 'all';
-  renderGrid();
-}
-
-/** CTA “Alle tenues”: op homepage → shirts-catalogus. */
-function scrollToAlleTenues() {
-  if (HOME_SKIP_EMBEDDED_SHOP) {
-    window.location.href = 'shirts';
-    return;
-  }
-  const shop = document.getElementById('shop');
-  document.querySelectorAll('[id^="navType-"]').forEach(a => a.classList.remove('active'));
-  currentFilterCat = 'all';
-  setTypeFilter('all');
-  kbeScrollIntoView(shop);
-}
-
-function goToShopVoorraad() {
-  if (HOME_SKIP_EMBEDDED_SHOP) {
-    window.location.href = 'voorraad';
-    return;
-  }
-  currentTypeFilter = 'all';
-  currentVoorraadFilter = 'in_stock';
-  currentFilterCat = 'all';
-  currentVersionFilter = 'all';
-  const shopVer = document.getElementById('shopVersion');
-  if (shopVer) shopVer.value = 'all';
-  const vs = document.getElementById('shopVoorraad');
-  if (vs) vs.value = 'in_stock';
-  document.querySelectorAll('[id^="navType-"]').forEach(a => a.classList.remove('active'));
-  renderGrid('all');
-  kbeScrollIntoView(document.getElementById('shop'));
-}
-
-function goToShop(type) {
-  if (HOME_SKIP_EMBEDDED_SHOP) {
-    const t = (type || 'shirts').toLowerCase();
-    window.location.href = t === 'all' ? 'shirts' : t;
-    return;
-  }
-  currentTypeFilter = type || 'all';
-  currentVoorraadFilter = 'all';
-  const vs = document.getElementById('shopVoorraad');
-  if (vs) vs.value = 'all';
-  currentFilterCat = 'all';
-  setActiveTypeNav(type || 'shirts');
-  renderGrid('all');
-  kbeScrollIntoView(document.getElementById('shop'));
-}
-
-function initShopFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  let t = (params.get('type') || '').toLowerCase();
-  if (t === 'hemsetjes') t = 'hemdsetjes';
-  if (t === 'training') t = 'shirts';
-  if (HOME_SKIP_EMBEDDED_SHOP) {
-    if (params.get('voorraad') === '1' || t === 'voorraad') {
-      window.location.replace('voorraad');
-      return;
-    }
-    const allowed = ['shirts', 'sets', 'hemdsetjes', 'retro', 'kids'];
-    if (t && allowed.includes(t)) {
-      window.location.replace(t);
-      return;
-    }
-    return;
-  }
-  if (params.get('voorraad') === '1' || t === 'voorraad') {
-    goToShopVoorraad();
-    return;
-  }
-  const allowed = ['shirts', 'sets', 'hemdsetjes', 'retro', 'kids'];
-  if (t && allowed.includes(t)) {
-    goToShop(t);
-    return;
-  }
-  currentTypeFilter = 'shirts';
-  setActiveTypeNav('shirts');
-  renderGrid('all');
-}
-
-function resetShopFilters() {
-  currentSearchTerm = '';
-  currentSortMode = 'featured';
-  currentFilterCat = 'all';
-  currentTypeFilter = 'shirts';
-  currentVersionFilter = 'all';
-  currentKitVariantFilter = 'all';
-  const searchInput = document.getElementById('shopSearch');
-  if (searchInput) searchInput.value = '';
-  const _rc = document.getElementById('searchClear');
-  if (_rc) _rc.classList.remove('visible');
-  const sortInput = document.getElementById('shopSort');
-  if (sortInput) sortInput.value = 'featured';
-
-  const _pv = document.getElementById('ftab-player');
-  if (_pv) _pv.classList.remove('on');
-
-  document.querySelectorAll('#leaguePills .fpill').forEach(b => b.classList.remove('on'));
-  const allLeague = document.querySelector('#leaguePills .fpill');
-  if (allLeague) allLeague.classList.add('on');
-
-  const sv = document.getElementById('shopVersion');
-  if (sv) sv.value = 'all';
-  const skt = document.getElementById('shopKitType');
-  if (skt) skt.value = 'all';
-  currentVoorraadFilter = 'all';
-  const svoor = document.getElementById('shopVoorraad');
-  if (svoor) svoor.value = 'all';
-
-  const panel = document.getElementById('shopRefinePanel');
-  const rt = document.getElementById('shopRefineToggle');
-  if (panel) panel.classList.remove('is-open');
-  if (rt) rt.setAttribute('aria-expanded', 'false');
-  const rb = document.getElementById('shopRefineBadge');
-  if (rb) rb.hidden = true;
-
-  setActiveTypeNav('shirts');
-  renderGrid('all');
-}
-let _searchDebounce = null;
-function togglePlayerVersion() {
-  if (HOME_SKIP_EMBEDDED_SHOP) {
-    window.location.href = 'shirts';
-    return;
-  }
-  const pv = document.getElementById('ftab-player');
-  const isOn = pv && pv.classList.contains('on');
-  currentVersionFilter = isOn ? 'all' : 'player';
-  _doRenderGrid(currentFilterCat);
-}
-
-function clearSearch() {
-  const inp = document.getElementById('shopSearch');
-  const clearBtn = document.getElementById('searchClear');
-  if (inp) inp.value = '';
-  if (clearBtn) clearBtn.classList.remove('visible');
-  currentSearchTerm = '';
-  _doRenderGrid(currentFilterCat);
-}
-
-function applyDynamicStoreTexts() {
-  const free = Number(CONFIG.freeShippingFrom || 40).toFixed(0);
-  const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
-  set('announceFreeShipA', `Gratis verzending vanaf €${free}`);
-  set('announceFreeShipB', `Gratis verzending vanaf €${free}`);
-  set('bannerFreeShipText', `Vanaf €${free}.`);
-  set('heroFreeShipText', `Gratis verzending vanaf €${free}`);
-  set('trustBarFreeShipText', `Gratis verzending vanaf €${free}`);
-}
-
-function applyBannerImagesFromProducts() {
-  const slides = [
-    document.querySelector('.banner-slide-1'),
-    document.querySelector('.banner-slide-2')
-  ];
-  if (!slides[0] || !slides[1]) return;
-
-  // Optioneel: zet eigen banners in images/hero-1.jpg en images/hero-2.jpg (één probe per slide;
-  // meerdere extensies/paden gaven onnodig veel 404’s in de console).
-  // Bump ?v= whenever you replace a hero image, so cached copies refresh for everyone.
-  const fixedHeroCandidates = [
-    ['images/hero-1.webp?v=3', 'images/hero-1.jpg?v=3'],
-    ['images/hero-2.webp?v=3', 'images/hero-2.jpg?v=3']
-  ];
-
-  // Fallback: uploaded product images (max one unique image per slide).
-  const candidates = [];
-  PRODUCTS.forEach(p => {
-    const img = p.image || p.image2 || p.image3;
-    if (img && !candidates.includes(img)) candidates.push(img);
-  });
-
-  const tryUrls = (urls, onOk, onFail) => {
-    if (!urls.length) { onFail(); return; }
-    const [first, ...rest] = urls;
-    const probe = new Image();
-    probe.onload = () => onOk(first);
-    probe.onerror = () => tryUrls(rest, onOk, onFail);
-    probe.src = first;
-  };
-
-  slides.forEach((slide, idx) => {
-    const slideImg = slide.querySelector('.banner-photo');
-    const slideBlur = slide.querySelector('.banner-bg-blur');
-    const productFile = candidates[idx];
-    const fallbackUrl = productFile ? productImgSrc(productFile) : '';
-    const heroTryList = fixedHeroCandidates[idx] || [];
-
-    const useUrl = (url) => {
-      slide.classList.add('has-photo');
-      if (slideImg) {
-        if (idx === 0) {
-          slideImg.setAttribute('fetchpriority', 'high');
-          slideImg.loading = 'eager';
-        } else {
-          slideImg.setAttribute('fetchpriority', 'low');
-        }
-        slideImg.src = url;
-        slideImg.classList.remove('hide');
-      }
-      if (slideBlur) {
-        slideBlur.style.backgroundImage = `url('${url}')`;
-      }
-    };
-    const useGradient = () => {
-      slide.classList.remove('has-photo');
-      if (slideImg) {
-        slideImg.removeAttribute('fetchpriority');
-        slideImg.removeAttribute('loading');
-        slideImg.src = '';
-        slideImg.classList.add('hide');
-      }
-      if (slideBlur) {
-        slideBlur.style.backgroundImage = '';
-      }
-    };
-
-    tryUrls(heroTryList, useUrl, () => {
-      if (!fallbackUrl) { useGradient(); return; }
-      tryUrls([fallbackUrl], useUrl, useGradient);
-    });
-  });
-}
-
-/** Align canonical + Open Graph URLs with config publicSiteUrl (set in config.php / .env). */
-function applySeoFromConfig(pageFile) {
-  const base = (CONFIG.publicSiteUrl || '').trim().replace(/\/$/, '');
-  if (!base) return;
-  const url = base + '/' + pageFile;
-  const canon = document.querySelector('link[rel="canonical"]');
-  if (canon) canon.setAttribute('href', url);
-  const ogUrl = document.querySelector('meta[property="og:url"]');
-  if (ogUrl) ogUrl.setAttribute('content', url);
-}
-
-// ── DETAIL DRAWER ──
-
-document.getElementById('printName').addEventListener('input', function() {
-  this.value = this.value.slice(0, 15);
-  if (currentPrinting === 'custom') refreshDetailDrawerPrice();
-});
-document.getElementById('printNumber').addEventListener('input', function() {
-  this.value = this.value.replace(/\D/g, '').slice(0, 4);
-  if (currentPrinting === 'custom') refreshDetailDrawerPrice();
-});
-document.getElementById('printBadges').addEventListener('input', function() {
-  this.value = this.value.slice(0, 80);
-  if (currentPrinting === 'custom') refreshDetailDrawerPrice();
-});
-
-// ── CART ──
-
-window.addEventListener('popstate', function () {
-  const cp = document.getElementById('cpanel');
-  if (cp && cp.classList.contains('on')) {
-    document.getElementById('cbg').classList.remove('on');
-    cp.classList.remove('on');
-    document.body.style.overflow = '';
-    __kbeCartHistory = Math.max(0, __kbeCartHistory - 1);
-  }
-});
-
-/** Hamburger = checkbox #kbeNavToggle + label (werkt op iOS zonder click/touch-bugs). */
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initKbeMobileTapFixes);
-} else {
-  initKbeMobileTapFixes();
-}
-
-// Gallery keyboard navigation while drawer is open.
-document.addEventListener('keydown', (e) => {
-  const drawerOpen = document.getElementById('drawer').classList.contains('on');
-  if (!drawerOpen) return;
-  if (e.key === 'ArrowLeft') goGallery(-1);
-  if (e.key === 'ArrowRight') goGallery(1);
-});
-
-// ── Adres: lichte client-check (server doet de echte validatie) ──
-const fCountryEl = document.getElementById('fCountry');
-if (fCountryEl) fCountryEl.addEventListener('change', syncCheckoutPlaceholders);
-syncCheckoutPlaceholders();
-</script>
+<script src="<?= kits_asset('js/home.js') ?>"></script>
 </body>
 </html>
 
