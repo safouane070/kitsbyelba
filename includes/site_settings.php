@@ -2,15 +2,12 @@
 declare(strict_types=1);
 
 /**
- * Public promo copy (banner, popup, FAQ). Coupon logic stays in `coupons` + admin Kortingscodes.
+ * Public promo copy (banner, FAQ). Coupon logic stays in `coupons` + admin Kortingscodes.
  */
 function kits_site_settings_defaults(): array
 {
     return [
-        'promo_banner' => '10% KORTING — code <strong>KITSBYELBA</strong> · <strong>KitsByElbaa</strong>',
-        'promo_popup_title' => '10% KORTING',
-        'promo_popup_sub' => 'Gebruik deze code bij het afrekenen:',
-        'promo_popup_code' => 'kitsbyelba',
+        'promo_banner' => '10% KORTING — code <strong>KITSBYELBA</strong>',
         'promo_faq_answer' => 'Ja! Gebruik code <strong>KITSBYELBA</strong> bij het afrekenen voor <strong>10% korting</strong> op je bestelling.',
     ];
 }

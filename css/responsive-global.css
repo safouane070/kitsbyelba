@@ -115,16 +115,6 @@ main,
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-/* Promo-popup */
-.promo-popup-bg {
-  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
-    max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
-}
-
-.promo-popup {
-  max-width: min(430px, calc(100vw - 24px));
-}
-
 /* Filter-tabs: horizontaal scrollen zonder lelijke scrollbar + lichte snap */
 @media (max-width: 960px) {
   .filter-type-tabs {
@@ -268,18 +258,8 @@ main,
     bottom: max(18px, env(safe-area-inset-bottom));
   }
 
-  /* Promo-slide-in: op mobiel boven de WhatsApp-knop, volle breedte (geen botsing). */
-  .promo-popup-bg {
-    left: max(12px, env(safe-area-inset-left));
-    right: max(12px, env(safe-area-inset-right));
-    bottom: max(88px, env(safe-area-inset-bottom));
-    max-width: none;
-  }
-
-  .back-to-top {
-    right: max(20px, env(safe-area-inset-right));
-    bottom: max(90px, env(safe-area-inset-bottom));
-  }
+  /* Op mobiel alleen de WhatsApp-knop laten zweven — minder rommel. */
+  .back-to-top { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -313,8 +293,8 @@ main,
     flex-wrap: nowrap !important;
     gap: 16px !important;
     row-gap: 0 !important;
-    min-height: 74px !important;
-    height: 74px !important;
+    min-height: 88px !important;
+    height: 88px !important;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
@@ -336,6 +316,10 @@ main,
 
   .nav-links li {
     flex: 0 0 auto !important;
+    /* Centreren i.p.v. op de tekst-basislijn: het ▾-pijltje komt uit een fallback-font met
+       grotere teksthoogte, waardoor items mét uitklapmenu anders 3px lager stonden. */
+    display: flex !important;
+    align-items: center !important;
   }
 
   .nav-links a {
@@ -754,4 +738,10 @@ main,
   nav:not(.dash-nav) #kbeNavToggle:checked ~ #navLinks {
     max-height: min(82dvh, 82vh) !important;
   }
+}
+
+/* Logo op telefoon/tablet: overal even groot. Staat hier (laatst geladen) omdat app.css
+   anders de mobiele regel per pagina overschreef (home 80px vs product 66px). */
+@media (max-width: 960px) {
+  .nav-top .logo-img { height: 68px; }
 }

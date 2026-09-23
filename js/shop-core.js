@@ -1,5 +1,14 @@
 /* shop-core.js — gedeelde, byte-identieke functies uit index.html + shop.html.
    Gegenereerd door dedup (finding A). Page-specifieke/divergerende functies blijven inline. */
+// Niets gevonden? We bestellen bijna alles na — stuur de klant naar WhatsApp i.p.v. een doodlopende weg.
+// Kopie staat in js/nav-search.js (pagina's zonder shop-core).
+function navSearchEmptyHtml(q, waDigits) {
+  const msg = 'Hoi! Ik zoek een shirt van ' + q + '. Kunnen jullie dat bestellen?';
+  return '<div class="nav-search-empty"><strong>Niet gevonden: “' + esc(q) + '”</strong>'
+    + '<span>We bestellen bijna elk shirt voor je na (7–12 werkdagen).</span>'
+    + '<a class="nav-search-wa" href="https://wa.me/' + waDigits + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">Vraag het via WhatsApp</a></div>';
+}
+
 function kbeWaDigits() {
   const d = String(CONFIG.whatsapp || '31684446255').replace(/\D/g, '');
   return d || '31684446255';
@@ -110,10 +119,10 @@ function renderNavSearchSuggestions(queryRaw) {
   navSearchSuggestions = items;
   navSearchActiveIndex = -1;
   if (!items.length) {
-    box.innerHTML = `<div class="nav-search-empty">${q ? 'Geen resultaten. Probeer een andere club of competitie.' : 'Type om direct producten te zien.'}</div>`;
+    box.innerHTML = q ? navSearchEmptyHtml(q, kbeWaDigits()) : '<div class="nav-search-empty">Type om direct producten te zien.</div>';
     return;
   }
-  const popular = !q ? `<div class="nav-search-popular">${NAV_SEARCH_POPULAR.map(t => `<button type="button" class="nav-search-chip" data-popular-term="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : '';
+  const popular = !q ? `<div class="nav-search-popular">${NAV_SEARCH_POPULAR.filter(t => getNavSearchSuggestions(t, 1).length).map(t => `<button type="button" class="nav-search-chip" data-popular-term="${esc(t)}">${esc(t)}</button>`).join('')}</div>` : '';
   box.innerHTML = popular + items.map((p, idx) => {
     const img = productImgSrc(p.image || p.image2 || p.image3);
     const thumb = productThumbSrc(p.image || p.image2 || p.image3);
@@ -123,7 +132,7 @@ function renderNavSearchSuggestions(queryRaw) {
         <div class="nav-search-item-name">${esc(p.name || '')}</div>
         <div class="nav-search-item-meta">${esc(p.league || '')}</div>
       </div>
-      <div class="nav-search-item-price">€${Number(p.price || 0).toFixed(2)}</div>
+      <div class="nav-search-item-price">${eur(Number(p.price || 0))}</div>
     </button>`;
   }).join('');
   box.querySelectorAll('.nav-search-chip').forEach((btn) => {
@@ -258,44 +267,6 @@ function kbeEmailJsSendOpts() {
   return pk ? { publicKey: pk } : {};
 }
 
-function maybeShowPromoPopup() {
-  try {
-    if (localStorage.getItem(PROMO_POPUP_KEY) === '1') return;
-  } catch (_) {}
-  // Never let the promo cover the cart or checkout — it hides the totals at the
-  // decisive moment. Skip when either is (about to be) open.
-  const cp = document.getElementById('cpanel');
-  const mbg = document.getElementById('mbg');
-  if ((cp && cp.classList.contains('on')) || (mbg && mbg.classList.contains('on'))) return;
-  try {
-    const qs = new URLSearchParams(window.location.search);
-    if (qs.get('openCart') === '1' || qs.get('checkout') === '1') return;
-  } catch (_) {}
-  const el = document.getElementById('promoPopup');
-  if (el) el.classList.add('on');
-}
-
-// Tuck the promo away (without marking it "seen") so it can never sit on top of
-// the cart or checkout if it fired just before the shopper opened them.
-function hidePromoOverlay() {
-  const el = document.getElementById('promoPopup');
-  if (el) el.classList.remove('on');
-}
-
-function closePromoPopup() {
-  const el = document.getElementById('promoPopup');
-  if (el) el.classList.remove('on');
-  try { localStorage.setItem(PROMO_POPUP_KEY, '1'); } catch (_) {}
-}
-
-// Klik-om-te-kopiëren voor de kortingscode in de promo-slide-in.
-function copyPromoCode(el) {
-  const code = (el.textContent || '').trim();
-  try { navigator.clipboard.writeText(code); } catch (_) {}
-  el.classList.add('copied');
-  setTimeout(() => el.classList.remove('copied'), 1500);
-}
-
 function persistCartState() {
   try { localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart)); } catch (_) {}
 }
@@ -364,7 +335,7 @@ function updateShopVoorraadLede() {
   if (currentVoorraadFilter === 'in_stock') {
     el.hidden = false;
     el.className = 'shop-voorraad-lede';
-    el.innerHTML = '<div class="shop-voorraad-inner"><span class="shop-voorraad-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d5a27" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg></span><div><p class="shop-voorraad-lede-p"><strong>Op voorraad</strong> — wat je hier ziet hebben we nu liggen. <strong>Levering 1–2 werkdagen</strong> (kan per week wisselen).</p>' +
+    el.innerHTML = '<div class="shop-voorraad-inner"><span class="shop-voorraad-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3a3d38" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m21 8-9-5-9 5v8l9 5 9-5z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg></span><div><p class="shop-voorraad-lede-p"><strong>Op voorraad</strong> — wat je hier ziet hebben we nu liggen. <strong>Levering 1–2 werkdagen</strong> (kan per week wisselen).</p>' +
       '<p class="shop-voorraad-lede-sub">Geen voorraad elders op de site: <strong>7–12 werkdagen</strong>. Filter “Niet op voorraad” of “Voorraad — alle” toont de rest.</p></div></div>';
   } else if (currentVoorraadFilter === 'out_of_stock') {
     el.hidden = false;
@@ -474,10 +445,19 @@ function openProductFromUrl() {
   if (p) openDetail(p.id, false);
 }
 
+// Bedragen in Nederlandse notatie: €37,50.
+function eur(n) {
+  return '€' + Number(n || 0).toFixed(2).replace('.', ',');
+}
+
 function goToProductPage(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
-  window.location.href = 'product.php?slug=' + getProductShareParam(p);
+  window.location.href = productHref(p);
+}
+
+function productHref(p) {
+  return 'product.php?slug=' + getProductShareParam(p);
 }
 
 function setGalleryMainImageByIndex(index) {
@@ -607,7 +587,6 @@ function updateCount() {
 }
 
 function openCart() {
-  hidePromoOverlay();
   const cp = document.getElementById('cpanel');
   const alreadyOpen = cp.classList.contains('on');
   document.getElementById('cbg').classList.add('on');
@@ -695,7 +674,6 @@ function prefillCheckoutFromProfile() {
 }
 
 function openModal() {
-  hidePromoOverlay();
   closeCart();
   const cIn = document.getElementById('couponInput');
   if (cIn) {
@@ -718,13 +696,13 @@ function updateModalRecap() {
 
   let html = `<p class="mrecap-lbl">Overzicht bestelling</p>`;
   cart.forEach(i => {
-    html += `<div class="mrecap-row"><span>${i.qty}× ${i.name} (${i.size}${i.printing_option==='custom' ? ' · ' + (i.print_name||'') + (i.print_number ? ' #' + i.print_number : '') : ''})</span><span>€${(i.price * i.qty).toFixed(2)}</span></div>`;
+    html += `<div class="mrecap-row"><span>${i.qty}× ${i.name} (${i.version==='player' ? 'Player · ' : ''}${i.size}${i.printing_option==='custom' ? ' · ' + (i.print_name||'') + (i.print_number ? ' #' + i.print_number : '') + (i.print_badges ? ' · ' + i.print_badges : '') : ''})</span><span>${eur((i.price * i.qty))}</span></div>`;
   });
   if (discount > 0) {
-    html += `<div class="mrecap-row discount"><span>Korting (${appliedCoupon.type === 'percent' ? appliedCoupon.value + '%' : '€' + Number(appliedCoupon.value).toFixed(2)})</span><span>-€${discount.toFixed(2)}</span></div>`;
+    html += `<div class="mrecap-row discount"><span>Korting (${appliedCoupon.type === 'percent' ? appliedCoupon.value + '%' : eur(Number(appliedCoupon.value))})</span><span>-${eur(discount)}</span></div>`;
   }
-  html += `<div class="mrecap-row"><span>Verzending</span><span>${ship === 0 ? 'GRATIS' : '€' + ship.toFixed(2)}</span></div>`;
-  html += `<div class="mrecap-tot"><span>Totaal</span><span>€${total.toFixed(2)}</span></div>`;
+  html += `<div class="mrecap-row"><span>Verzending</span><span>${ship === 0 ? 'GRATIS' : eur(ship)}</span></div>`;
+  html += `<div class="mrecap-tot"><span>Totaal</span><span>${eur(total)}</span></div>`;
   document.getElementById('mrecap').innerHTML = html;
 }
 
@@ -750,7 +728,7 @@ function renderUpsell() {
       </div>
       <div class="upsell-info">
         <p class="upsell-name">${esc(p.name)}</p>
-        <p class="upsell-price">€${p.price.toFixed(2)}</p>
+        <p class="upsell-price">${eur(p.price)}</p>
       </div>
     </div>`).join('');
 }
@@ -812,10 +790,12 @@ function toggleFi(id) {
   document.querySelectorAll('.faqitem').forEach(f => {
     f.classList.remove('on');
     f.querySelector('.faq-ico').textContent = '+';
+    const b = f.querySelector('.faqbtn'); if (b) b.setAttribute('aria-expanded', 'false');
   });
   if (!isOpen) {
     el.classList.add('on');
     el.querySelector('.faq-ico').textContent = '−';
+    const b = el.querySelector('.faqbtn'); if (b) b.setAttribute('aria-expanded', 'true');
   }
 }
 
@@ -965,7 +945,7 @@ function renderCart() {
   // Shipping progress bar
   document.getElementById('ship-progress-wrap').innerHTML = sub < CONFIG.freeShippingFrom
     ? `<div class="ship-progress">
-        <div class="sp-text">Nog <strong>€${remaining.toFixed(2)}</strong> voor gratis verzending</div>
+        <div class="sp-text">Nog <strong>${eur(remaining)}</strong> voor gratis verzending</div>
         <div class="sp-bar"><div class="sp-fill" style="width:${progress}%"></div></div>
        </div>`
     : `<div class="ship-free-msg"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M20 6L9 17l-5-5"></path></svg>Gratis verzending bereikt</div>`;
@@ -1012,7 +992,7 @@ function renderCart() {
             <span class="qval">${item.qty}</span>
             <button type="button" class="qbtn" data-cart-index="${i}" data-cart-delta="1" onclick="chQ(${i},1)" aria-label="Aantal verhogen">+</button>
           </div>
-          <span class="citem-price">€${(item.price * item.qty).toFixed(2)}</span>
+          <span class="citem-price">${eur((item.price * item.qty))}</span>
         </div>
         <button type="button" class="crm" data-cart-remove="${i}" onclick="rmItem(${i})">Verwijderen</button>
       </div>
@@ -1020,17 +1000,17 @@ function renderCart() {
   }).join('');
 
   // Totals
-  document.getElementById('tSub').textContent = '€' + sub.toFixed(2);
+  document.getElementById('tSub').textContent = eur(sub);
   const discRow = document.getElementById('discountCartRow');
   if (discount > 0) {
     discRow.style.display = 'flex';
-    document.getElementById('discountCartLabel').textContent = 'Korting (' + (appliedCoupon.type === 'percent' ? appliedCoupon.value + '%' : '€' + Number(appliedCoupon.value).toFixed(2)) + ')';
-    document.getElementById('discountCartAmt').textContent = '-€' + discount.toFixed(2);
+    document.getElementById('discountCartLabel').textContent = 'Korting (' + (appliedCoupon.type === 'percent' ? appliedCoupon.value + '%' : eur(Number(appliedCoupon.value))) + ')';
+    document.getElementById('discountCartAmt').textContent = '-' + eur(discount);
   } else {
     discRow.style.display = 'none';
   }
-  document.getElementById('tShip').textContent = ship === 0 ? 'GRATIS' : '€' + ship.toFixed(2);
-  document.getElementById('tTot').textContent = '€' + total.toFixed(2);
+  document.getElementById('tShip').textContent = ship === 0 ? 'GRATIS' : eur(ship);
+  document.getElementById('tTot').textContent = eur(total);
 }
 
 function mergeCartItem(line) {
@@ -1120,7 +1100,7 @@ function calcDiscount(subtotal) {
 
 function couponAppliedLabel(c) {
   if (!c) return '';
-  const bit = c.type === 'percent' ? c.value + '%' : '€' + Number(c.value).toFixed(2).replace(/\.00$/, '');
+  const bit = c.type === 'percent' ? c.value + '%' : eur(Number(c.value)).replace(/,00$/, '');
   return '✓ Kortingscode toegepast — ' + bit + ' korting';
 }
 
@@ -1224,18 +1204,18 @@ function showConfirm(orderId, email, total, ship, items, discount, waUrl, emailO
         ${i.qty > 1 ? '<strong>' + i.qty + '×</strong> ' : ''}${i.name}
         <small>${i.version==='player'?'Player · ':''}Maat: ${i.size}${print ? ' · ' + print : ''}</small>
       </div>
-      <span style="white-space:nowrap;font-weight:600">€${(i.price * i.qty).toFixed(2)}</span>
+      <span style="white-space:nowrap;font-weight:600">${eur((i.price * i.qty))}</span>
     </div>`;
   });
   if (discount > 0) {
-    html += `<div class="cord-meta" style="color:var(--accent);font-weight:600"><span>Korting</span><span>−€${discount.toFixed(2)}</span></div>`;
+    html += `<div class="cord-meta" style="color:var(--accent);font-weight:600"><span>Korting</span><span>−${eur(discount)}</span></div>`;
   }
-  html += `<div class="cord-meta"><span>Verzending</span><span>${ship === 0 ? '<strong style="color:var(--accent)">GRATIS</strong>' : '€' + ship.toFixed(2)}</span></div>`;
+  html += `<div class="cord-meta"><span>Verzending</span><span>${ship === 0 ? '<strong style="color:var(--accent)">GRATIS</strong>' : eur(ship)}</span></div>`;
   ccard.innerHTML = html;
 
   // Total row
   document.getElementById('cord-total-row').innerHTML =
-    `<span>Totaal</span><span>€${total.toFixed(2)}</span>`;
+    `<span>Totaal</span><span>${eur(total)}</span>`;
 
   // Show screen, scroll to top
   const screen = document.getElementById('cscreen');
@@ -1243,8 +1223,20 @@ function showConfirm(orderId, email, total, ship, items, discount, waUrl, emailO
   screen.scrollTop = 0;
 }
 
+// Bijnamen/Engelse namen die klanten typen → zoals het in onze productnamen staat.
+// Kopie staat in js/nav-search.js.
+const SEARCH_ALIASES = {
+  'barca': 'barcelona', 'psg': 'paris', 'spurs': 'tottenham', 'juve': 'juventus', 'atleti': 'atletico', 'bvb': 'dortmund',
+  'man utd': 'manchester united', 'man united': 'manchester united', 'man city': 'manchester city',
+  'oranje': 'nederland', 'holland': 'nederland', 'england': 'engeland', 'germany': 'duitsland', 'spain': 'spanje',
+  'france': 'frankrijk', 'morocco': 'marokko', 'brazil': 'brazili', 'brasil': 'brazili', 'belgium': 'belgi'
+};
+function searchAliases(q) {
+  return Object.keys(SEARCH_ALIASES).reduce((s, k) => s.replace(new RegExp(`(^|\\s)${k}(?=\\s|$)`, 'g'), `$1${SEARCH_ALIASES[k]}`), q);
+}
+
 function getProductSearchScore(p, queryRaw) {
-  const q = normalizeSearchText(queryRaw);
+  const q = searchAliases(normalizeSearchText(queryRaw));
   if (!q) return 0;
 
   const name = normalizeSearchText(p.name || '');
@@ -1355,10 +1347,13 @@ function setGalleryMainImage(filename, thumbEl) {
 
 function switchMaten(v) {
   ['fan','player'].forEach(t => {
-    document.getElementById('mt-'+t).classList.toggle('on', t===v);
-    document.getElementById('mp-'+t).classList.toggle('on', t===v);
+    const tab = document.getElementById('mt-'+t);
+    if (tab) { tab.classList.toggle('on', t===v); tab.setAttribute('aria-selected', t===v ? 'true' : 'false'); }
+    const panel = document.getElementById('mp-'+t);
+    if (panel) panel.classList.toggle('on', t===v);
   });
 }
+
 
 function refreshDetailDrawerPrice() {
   const p = PRODUCTS.find(pr => pr.id === currentDetailId);
@@ -1372,7 +1367,22 @@ function refreshDetailDrawerPrice() {
     if (pn || num) total += unitPrintingExtra();
     if (bd) total += unitBadgeExtra();
   }
-  el.textContent = '€' + total.toFixed(2);
+  el.textContent = eur(total);
+}
+
+// Badge-keuze: alleen clubs uit een grote competitie (competitie + Champions League).
+// Landenteams/overig krijgen geen badge-veld. Zelfde regels als renderBadgeOptions in js/product-page.js.
+function fillBadgeSelect(p) {
+  const sel = document.getElementById('printBadges');
+  if (!sel) return;
+  const league = String(p?.league || '').toLowerCase();
+  const map = [['premier', 'Premier League'], ['la liga', 'La Liga'], ['serie a', 'Serie A'], ['bundesliga', 'Bundesliga'], ['erediv', 'Eredivisie'], ['ligue 1', 'Ligue 1'], ['ligue1', 'Ligue 1']];
+  const hit = map.find(([k]) => league.includes(k));
+  const options = hit ? ['', hit[1], 'Champions League'] : [''];
+  sel.innerHTML = options.map(v => `<option value="${v}">${v || 'Geen badge'}</option>`).join('');
+  sel.value = '';
+  const wrap = sel.closest('div');
+  if (wrap) wrap.hidden = options.length === 1;
 }
 
 function openDetail(id, updateUrl = true) {
@@ -1389,7 +1399,7 @@ function openDetail(id, updateUrl = true) {
   document.getElementById('printFields').style.display = 'none';
   document.getElementById('printName').value = '';
   document.getElementById('printNumber').value = '';
-  document.getElementById('printBadges').value = '';
+  fillBadgeSelect(p);
 
   // Gallery (up to 3 images)
   currentDetailEmoji = p.emoji || '👕';
@@ -1419,7 +1429,7 @@ function openDetail(id, updateUrl = true) {
     ? p.description
     : 'Licht, ademend polyester. Zelfde design als op het veld. Wasbaar op 30°C.';
 
-  document.getElementById('dPrice').textContent = '€' + versionPrice(p, currentVersion).toFixed(2);
+  document.getElementById('dPrice').textContent = eur(versionPrice(p, currentVersion));
   document.getElementById('dPolicy').innerHTML = getDrawerPolicyHTML();
   renderDrawerVersion(p);
 
@@ -1499,7 +1509,12 @@ function productHasSize(p, sizeKey) {
 
 function versionStockSizes(p, version) {
   if (!p) return null;
-  if ((version || 'fan') === 'player') return (p.player_stock_sizes && typeof p.player_stock_sizes === 'object') ? p.player_stock_sizes : null;
+  if ((version || 'fan') === 'player') {
+    const ps = p.player_stock_sizes;
+    // Zelfde als product-page.js + place-order.php: zonder aparte player-voorraad deelt Player de gewone
+    // voorraad. (Voorheen null → voorraad 0 → Player-regel verdween stil uit de winkelwagen.)
+    if (ps && typeof ps === 'object' && Object.keys(ps).length) return ps;
+  }
   return (p.stock_sizes && typeof p.stock_sizes === 'object') ? p.stock_sizes : null;
 }
 
@@ -1633,6 +1648,7 @@ async function placeOrder() {
           size: i.size,
           qty: i.qty,
           price: i.price,
+          version: i.version === 'player' ? 'player' : 'fan',
           printing_option: i.printing_option || 'none',
           print_name: i.print_name || null,
           print_number: i.print_number || null,
@@ -1679,17 +1695,17 @@ async function placeOrder() {
       ? ' · ' + (i.print_name||'') + (i.print_number ? ' #' + i.print_number : '') + (i.print_badges ? ' (' + i.print_badges + ')' : '')
       : '';
     const seasonStr = i.season ? ` · Seizoen ${i.season}` : '';
-    msg += `• ${i.qty}× ${i.name} (${i.size}${extra}${seasonStr}) — €${(i.price * i.qty).toFixed(2)}\n`;
+    msg += `• ${i.qty}× ${i.name} (${i.version==='player' ? '*PLAYER* · ' : ''}${i.size}${extra}${seasonStr}) — ${eur((i.price * i.qty))}\n`;
   });
-  if (verDiscount > 0) msg += `\nKorting (${orderRes.coupon_applied?.toUpperCase() || 'code'}): -€${verDiscount.toFixed(2)}`;
-  msg += `\nVerzending: ${verShip === 0 ? 'GRATIS' : '€' + verShip.toFixed(2)}\n*Totaal: €${verTotal.toFixed(2)}*\n\n_Stuur een Tikkie. Bedankt!_`;
+  if (verDiscount > 0) msg += `\nKorting (${orderRes.coupon_applied?.toUpperCase() || 'code'}): -${eur(verDiscount)}`;
+  msg += `\nVerzending: ${verShip === 0 ? 'GRATIS' : eur(verShip)}\n*Totaal: ${eur(verTotal)}*\n\n_Stuur een Tikkie. Bedankt!_`;
 
   // Confirmation email (sent after WhatsApp opens — EmailJS must not block the WA redirect)
   const itemsText = snap.map(i => {
     const extra = i.printing_option==='custom'
       ? ' · ' + (i.print_name||'') + (i.print_number ? ' #' + i.print_number : '') + (i.print_badges ? ' (' + i.print_badges + ')' : '')
       : '';
-    return `${i.qty}x ${i.name} (${i.version==='player'?'Player · ':''}Maat: ${i.size}${extra}) — €${(i.price * i.qty).toFixed(2)}`;
+    return `${i.qty}x ${i.name} (${i.version==='player'?'Player · ':''}Maat: ${i.size}${extra}) — ${eur((i.price * i.qty))}`;
   }).join('\n');
   const ordersForEmail = snap.map(i => {
     const extra = i.printing_option==='custom'
@@ -1712,17 +1728,17 @@ async function placeOrder() {
     customer_name: name,
     customer_email: email,
     order_items: itemsText,
-    shipping_cost: verShip === 0 ? 'GRATIS' : '€' + verShip.toFixed(2),
-    order_total: '€' + verTotal.toFixed(2),
-    order_discount: verDiscount > 0 ? ('€' + verDiscount.toFixed(2)) : '',
+    shipping_cost: verShip === 0 ? 'GRATIS' : eur(verShip),
+    order_total: eur(verTotal),
+    order_discount: verDiscount > 0 ? (eur(verDiscount)) : '',
     coupon_code: orderRes.coupon_applied || '',
     customer_address: `${street}, ${zip} ${city}`,
     customer_phone: phone,
     customer_notes: notes || '',
     orders: ordersForEmail,
     cost: {
-      shipping: verShip === 0 ? 'GRATIS' : '€' + verShip.toFixed(2),
-      total: '€' + verTotal.toFixed(2),
+      shipping: verShip === 0 ? 'GRATIS' : eur(verShip),
+      total: eur(verTotal),
     },
     order_date: new Date().toLocaleDateString('nl-NL', { day: '2-digit', month: 'short', year: 'numeric' }),
     site_url: emailSiteBase,

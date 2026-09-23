@@ -89,14 +89,16 @@ $displayNameNice = static function (?string $name): string {
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="images/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f9faf7">
 <title>Mijn account — KitsByElbaa</title>
 <meta name="robots" content="noindex,nofollow">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript>
+<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<?php require_once __DIR__ . '/includes/asset.php'; ?><link rel="stylesheet" href="<?= kits_asset('css/fonts.css') ?>">
 <style>
 html{height:100%}
 body{background:var(--cream);color:var(--ink);font-family:var(--font-body);font-weight:400;overflow-x:hidden;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
@@ -104,43 +106,11 @@ a{text-decoration:none;color:inherit}
 .page{flex:1}
 /* Site header = zelfde patroon als index.html (desktop + hamburger ≤960px in responsive-global.css) */
 .site-nav{background:var(--cream);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:var(--z-nav);backdrop-filter:blur(16px)}
-.promo-banner{background:var(--accent-light);border-bottom:1px solid rgba(45,90,39,.15);text-align:center;padding:9px 16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:700}
-.nav-top{max-width:1360px;margin:0 auto;padding:0 48px;height:74px;display:flex;align-items:center;justify-content:space-between;position:relative}
-.logo{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:.02em;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px}
-.logo-img{height:64px;width:auto;display:block;object-fit:contain}
-.logo-text{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-.nav-links{display:flex;list-style:none;gap:36px;margin:0;padding:0}
-.nav-links a{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);text-decoration:none;transition:color .2s;position:relative;padding-bottom:2px}
-.nav-links a::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .22s}
-.nav-links a:hover{color:var(--ink)}
-.nav-links a:hover::after,.nav-links a.active::after{transform:scaleX(1)}
-.nav-links a.active{color:var(--ink)}
-.nav-links>li{position:relative}
-.nav-links .has-mega>.top-link{display:inline-flex;align-items:center;gap:6px}
-.nav-links .has-mega>.top-link::before{content:''}
-.nav-links .has-mega>.top-link::after{content:'▾';font-size:10px;line-height:1;opacity:.65;position:static;background:none;transform:none;height:auto;transition:transform .2s ease}
-.nav-mega{position:absolute;top:100%;left:50%;transform:translate(-50%,6px);min-width:240px;background:#fff;border:1px solid #e2dbcf;box-shadow:0 20px 40px rgba(28,26,23,.14);padding:8px;border-radius:12px;z-index:var(--z-nav-mega);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .2s ease,visibility .18s}
-.nav-mega a{display:flex;align-items:center;gap:10px;padding:8px 12px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);border-bottom:1px solid #eee7da;white-space:nowrap;border-radius:8px}
-.nav-mega a:last-child{border-bottom:none}
-.nav-mega a::after{display:none}
-.nav-mega a:hover{background:var(--cream2);color:var(--ink)}
-.nav-mega a::before{content:'';width:26px;height:26px;flex-shrink:0;background-color:#fff;border:1px solid var(--line);border-radius:6px;background-repeat:no-repeat;background-position:center;background-size:18px 18px}
-.nav-mega a[href*="league=premier"]::before{background-image:url("images/leagues/premier.png")}
-.nav-mega a[href*="league=laliga"]::before{background-image:url("images/leagues/laliga.png")}
-.nav-mega a[href*="league=bundesliga"]::before{background-image:url("images/leagues/bundesliga.png")}
-.nav-mega a[href*="league=seriea"]::before{background-image:url("images/leagues/seriea.png")}
-.nav-mega a[href*="league=ligue1"]::before{background-image:url("images/leagues/ligue1.png")}
-.nav-mega a[href*="league=eredivisie"]::before{background-image:url("images/leagues/eredivisie.png")}
-.nav-mega a[href*="league=national"]::before{background-image:url("images/leagues/national.svg")}
-.nav-mega a[href*="league=overig"]::before{background-image:url("images/leagues/overig.svg")}
-.nav-links .has-mega:hover .nav-mega,.nav-links .has-mega:focus-within .nav-mega{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
-.nav-links .has-mega:hover>.top-link::after,.nav-links .has-mega:focus-within>.top-link::after{transform:rotate(180deg)}
-@media(max-width:960px){.nav-mega{display:none !important}.nav-links .has-mega>.top-link::after{display:none}}
-.nav-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
-.nav-cart{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--cream);border:none;padding:11px 22px;font-family:var(--font-body);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
-.nav-cart-ico{font-size:1.05rem;line-height:1}
-.nav-cart-label{display:inline}
-.nav-cart:hover{background:var(--ink2)}
+.promo-banner{background:var(--accent-light);border-bottom:1px solid var(--line2);text-align:center;padding:9px 16px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);font-weight:700}
+/* Nav-desktop-CSS (nav-top/logo/nav-links/nav-mega/nav-right/nav-cart) stond hier inline
+   maar is byte-voor-byte gedekt door css/app.css (laadt hierna → wint). Verwijderd na
+   computed-style-verificatie: 0 verschil. `.site-nav` (hierboven) blijft — die staat NIET
+   in app.css. Mobiel (≤960px) blijft via responsive-global.css + de @media-regels verderop. */
 /* Page */
 .page{max-width:1100px;margin:0 auto;padding:40px 24px 80px}
 .page-title{font-family:var(--font-display);font-size:36px;font-weight:700;margin-bottom:8px}
@@ -161,7 +131,7 @@ a{text-decoration:none;color:inherit}
 .btn-primary:hover{background:var(--ink2)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed}
 .form-err{background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
-.form-ok{background:var(--accent-light);border:1px solid rgba(45,90,39,.3);color:var(--accent);padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
+.form-ok{background:var(--accent-light);border:1px solid var(--line2);color:var(--ink2);padding:10px 14px;font-size:13px;margin-bottom:16px;display:none}
 /* Dashboard */
 .dash-grid{display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start;min-width:0}
 .dash-nav{position:relative;z-index:1;background:#fff;border:1px solid var(--line);padding:8px 0}
@@ -189,7 +159,7 @@ a{text-decoration:none;color:inherit}
 .orders-table th:last-child,.orders-table td:last-child{min-width:8.5rem}
 .st-pending{background:#fef3c7;color:#92400e}
 .st-confirmed{background:#dbeafe;color:#1e40af}
-.st-paid{background:var(--accent-light);color:var(--accent)}
+.st-paid{background:var(--accent-light);color:var(--ink2)}
 .st-shipped{background:#ede9fe;color:#5b21b6}
 .st-delivered{background:#d1fae5;color:#065f46}
 .st-cancelled{background:#fee2e2;color:#991b1b}
@@ -224,7 +194,7 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 .foot-bottom{max-width:1280px;margin:0 auto;padding:20px 24px;border-top:1px solid rgba(250,248,244,.1);display:flex;justify-content:space-between;font-size:12px;color:rgba(250,248,244,.35)}
 /* Responsive */
 @media(max-width:1024px){
-  .logo-img{height:50px}
+  .logo-img{height:68px}
 }
 @media(max-width:768px){
   .dash-grid{grid-template-columns:1fr}
@@ -240,9 +210,10 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .orders-table .hide-mobile{display:none}
 }
 </style>
-<link rel="stylesheet" href="css/app.css?v=8">
-<link rel="stylesheet" href="css/responsive-global.css?v=16">
-<script defer src="js/kbe-ios-helpers.js?v=2"></script>
+<?php require_once __DIR__ . '/includes/asset.php'; // versie = bestandsdatum → nooit oude CSS uit de cache ?>
+<link rel="stylesheet" href="<?= kits_asset('css/app.css') ?>">
+<link rel="stylesheet" href="<?= kits_asset('css/responsive-global.css') ?>">
+<script defer src="<?= kits_asset('js/kbe-ios-helpers.js') ?>"></script>
 </head>
 <body class="account-page">
 
@@ -252,8 +223,11 @@ footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 $navActive = 'account';
 $navClass = 'site-nav';
 $navCartOnclick = "window.location.href='index.html?openCart=1'";
+$navSearch = true;
 include __DIR__ . '/includes/nav.php';
+include __DIR__ . '/includes/nav-search.php';
 ?>
+<main id="main">
 
 <!-- PAGE CONTENT -->
 <div class="page">
@@ -273,11 +247,11 @@ include __DIR__ . '/includes/nav.php';
   <div class="apanel on" id="panel-login">
     <div class="form-err" id="login-err"></div>
     <div class="form-group">
-      <label>E-mailadres</label>
+      <label for="login-email">E-mailadres</label>
       <input type="email" id="login-email" placeholder="jij@voorbeeld.nl" autocomplete="email">
     </div>
     <div class="form-group">
-      <label>Wachtwoord</label>
+      <label for="login-pass">Wachtwoord</label>
       <input type="password" id="login-pass" placeholder="Je wachtwoord" autocomplete="current-password">
     </div>
     <button type="button" class="btn-primary" id="login-btn" onclick="doLogin()">Inloggen</button>
@@ -287,15 +261,15 @@ include __DIR__ . '/includes/nav.php';
   <div class="apanel" id="panel-register">
     <div class="form-err" id="reg-err"></div>
     <div class="form-group">
-      <label>Volledige naam</label>
+      <label for="reg-name">Volledige naam</label>
       <input type="text" id="reg-name" placeholder="Je naam" autocomplete="name">
     </div>
     <div class="form-group">
-      <label>E-mailadres</label>
+      <label for="reg-email">E-mailadres</label>
       <input type="email" id="reg-email" placeholder="jij@voorbeeld.nl" autocomplete="email">
     </div>
     <div class="form-group">
-      <label>Wachtwoord</label>
+      <label for="reg-pass">Wachtwoord</label>
       <input type="password" id="reg-pass" placeholder="Minimaal 8 tekens" autocomplete="new-password">
       <p class="form-hint">Minimaal 8 tekens.</p>
     </div>
@@ -337,7 +311,7 @@ include __DIR__ . '/includes/nav.php';
           <div class="stat-lbl">Geplaatste bestellingen</div>
         </div>
         <div class="stat-card">
-          <div class="stat-val">€<?= number_format(array_sum(array_column($orders, 'total')), 2) ?></div>
+          <div class="stat-val">€<?= number_format(array_sum(array_column($orders, 'total')), 2, ',', '.') ?></div>
           <div class="stat-lbl">Totaal uitgegeven</div>
         </div>
         <div class="stat-card">
@@ -362,7 +336,7 @@ include __DIR__ . '/includes/nav.php';
             <td><strong><?= $esc($o['order_id']) ?></strong></td>
             <td><?= date('d-m-Y', strtotime($o['created_at'])) ?></td>
             <td class="hide-mobile" style="color:var(--ink3);font-size:12px"><?= nl2br(htmlspecialchars((string)$o['items_list'], ENT_QUOTES, 'UTF-8')) ?></td>
-            <td><strong>€<?= number_format($o['total'], 2) ?></strong></td>
+            <td><strong>€<?= number_format($o['total'], 2, ',', '.') ?></strong></td>
             <td><span class="order-status st-<?= $esc($o['status']) ?>"><?= $esc($statusLabel($o['status'])) ?></span></td>
           </tr>
           <?php endforeach; ?>
@@ -401,8 +375,8 @@ include __DIR__ . '/includes/nav.php';
             <td><strong><?= $esc($o['order_id']) ?></strong></td>
             <td style="white-space:nowrap"><?= date('d-m-Y', strtotime($o['created_at'])) ?></td>
             <td class="hide-mobile" style="color:var(--ink3);font-size:12px;max-width:220px"><?= nl2br(htmlspecialchars((string)$o['items_list'], ENT_QUOTES, 'UTF-8')) ?></td>
-            <td><?= $o['shipping'] == 0 ? 'Gratis' : '€' . number_format($o['shipping'], 2) ?></td>
-            <td><strong>€<?= number_format($o['total'], 2) ?></strong></td>
+            <td><?= $o['shipping'] == 0 ? 'Gratis' : '€' . number_format($o['shipping'], 2, ',', '.') ?></td>
+            <td><strong>€<?= number_format($o['total'], 2, ',', '.') ?></strong></td>
             <td><span class="order-status st-<?= $esc($o['status']) ?>"><?= $esc($statusLabel($o['status'])) ?></span></td>
           </tr>
           <?php endforeach; ?>
@@ -426,30 +400,30 @@ include __DIR__ . '/includes/nav.php';
         <div class="form-err" id="profile-err"></div>
         <div class="form-row">
           <div class="form-group">
-            <label>Volledige naam</label>
+            <label for="p-name">Volledige naam</label>
             <input type="text" id="p-name" value="<?= $esc($user['name']) ?>" autocomplete="name">
           </div>
           <div class="form-group">
-            <label>Telefoonnummer</label>
+            <label for="p-phone">Telefoonnummer</label>
             <input type="tel" id="p-phone" value="<?= $esc($user['phone']) ?>" placeholder="+31 6 12 34 56 78" autocomplete="tel">
           </div>
         </div>
         <div class="form-group">
-          <label>Straat en huisnummer</label>
+          <label for="p-street">Straat en huisnummer</label>
           <input type="text" id="p-street" value="<?= $esc($user['street']) ?>" placeholder="Hoofdstraat 12" autocomplete="street-address">
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Postcode</label>
+            <label for="p-zip">Postcode</label>
             <input type="text" id="p-zip" value="<?= $esc($user['zip']) ?>" placeholder="1234 AB" autocomplete="postal-code">
           </div>
           <div class="form-group">
-            <label>Plaats</label>
+            <label for="p-city">Plaats</label>
             <input type="text" id="p-city" value="<?= $esc($user['city']) ?>" placeholder="Amsterdam" autocomplete="address-level2">
           </div>
         </div>
         <div class="form-group">
-          <label>E-mailadres</label>
+          <label for="pw-current">E-mailadres</label>
           <input type="email" value="<?= $esc($user['email']) ?>" disabled style="background:var(--cream2);color:var(--ink4);cursor:not-allowed">
           <p class="form-hint">E-mail kan niet worden gewijzigd. Neem via WhatsApp contact op als je hulp nodig hebt.</p>
         </div>
@@ -471,12 +445,12 @@ include __DIR__ . '/includes/nav.php';
           <input type="password" id="pw-current" autocomplete="current-password">
         </div>
         <div class="form-group">
-          <label>Nieuw wachtwoord</label>
+          <label for="pw-new">Nieuw wachtwoord</label>
           <input type="password" id="pw-new" autocomplete="new-password">
           <p class="form-hint">Minimaal 8 tekens.</p>
         </div>
         <div class="form-group">
-          <label>Bevestig nieuw wachtwoord</label>
+          <label for="pw-confirm">Bevestig nieuw wachtwoord</label>
           <input type="password" id="pw-confirm" autocomplete="new-password">
         </div>
         <div class="form-actions">
@@ -522,7 +496,7 @@ include __DIR__ . '/includes/nav.php';
     <p>Voer je wachtwoord ter bevestiging in. Hiermee worden al je persoonsgegevens direct en permanent verwijderd.</p>
     <div class="form-err" id="del-err"></div>
     <div class="form-group">
-      <label>Je wachtwoord</label>
+      <label for="del-pass">Je wachtwoord</label>
       <input type="password" id="del-pass" placeholder="Je wachtwoord">
     </div>
     <div style="display:flex;gap:12px;margin-top:8px">
@@ -532,6 +506,7 @@ include __DIR__ . '/includes/nav.php';
   </div>
 </div>
 
+</main>
 <?php
 $footerAnchorPrefix   = 'index.html';
 $footerHideAlleTenues = false;
@@ -725,6 +700,7 @@ document.addEventListener('keydown', e => {
   if (active?.id === 'panel-register') doRegister();
 });
 </script>
+<script src="<?= kits_asset('js/nav-search.js') ?>"></script>
 
 </body>
 </html>
