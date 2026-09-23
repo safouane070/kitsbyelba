@@ -865,12 +865,6 @@ include __DIR__ . '/includes/footer.php';
         </div>
       </div>
 
-      <p class="sz-label" style="margin-top:12px">Seizoen</p>
-      <div class="sz-row" id="seasonRow">
-        <button type="button" class="sz" onclick="pickSeason(this)">23/24</button>
-        <button type="button" class="sz" onclick="pickSeason(this)">24/25</button>
-        <button type="button" class="sz on" onclick="pickSeason(this)">25/26</button>
-      </div>
 
       <button type="button" class="d-add" id="dAddBtn" disabled>Kies eerst een maat</button>
 
@@ -901,10 +895,10 @@ include __DIR__ . '/includes/footer.php';
       <p class="cart-coupon-feedback" id="cartCouponFeedback"></p>
       <button type="button" id="cartCouponRemoveBtn" class="cart-coupon-remove" onclick="removeAppliedCoupon()">Korting wijzigen of verwijderen</button>
     </div>
-    <div class="ctot-row"><span>Subtotaal</span><span id="tSub">€0.00</span></div>
-    <div class="ctot-row" id="discountCartRow" style="display:none"><span id="discountCartLabel">Korting</span><span id="discountCartAmt">-€0.00</span></div>
+    <div class="ctot-row"><span>Subtotaal</span><span id="tSub">€0,00</span></div>
+    <div class="ctot-row" id="discountCartRow" style="display:none"><span id="discountCartLabel">Korting</span><span id="discountCartAmt">-€0,00</span></div>
     <div class="ctot-row"><span>Verzending</span><span id="tShip">€4.99</span></div>
-    <div class="ctot-row grand"><span>Totaal</span><span id="tTot">€0.00</span></div>
+    <div class="ctot-row grand"><span>Totaal</span><span id="tTot">€0,00</span></div>
     <div class="cart-actions">
       <button type="button" class="cart-continue-btn" onclick="closeCart()">← Verder winkelen</button>
       <button type="button" class="cart-clear-btn" onclick="clearCart()" title="Alles verwijderen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 10v7M14 10v7"></path></svg>Leegmaken</button>
@@ -1052,7 +1046,7 @@ include __DIR__ . '/includes/footer.php';
         </div>
         <div class="ccard-body" id="ccard"></div>
         <div class="cord-total" id="cord-total-row">
-          <span>Totaal</span><span>€0.00</span>
+          <span>Totaal</span><span>€0,00</span>
         </div>
       </div>
     </div>
@@ -1229,7 +1223,7 @@ let currentLandingType = '';
 let currentWishlistOnly = false;
 let currentColorFilter = 'all';
 let currentSizeFilter = 'all';
-let currentSeason = '25/26'; // default season
+let currentSeason = null; // seizoen staat in de productnaam
 
 function detectProductColors(p) {
   const hay = `${p.name || ''} ${p.description || ''} ${p.league || ''}`.toLowerCase();
@@ -1527,11 +1521,6 @@ function setSizeFromUi(v) {
   renderGrid();
 }
 
-function pickSeason(btn) {
-  document.querySelectorAll('#seasonRow .sz').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  currentSeason = btn.textContent.trim();
-}
 
 function populateCategoryImages() {
   const cats = ['shirts','sets','hemdsetjes','retro','kids'];
@@ -1878,6 +1867,7 @@ function pickVersionDrawer(v) {
   const stockMsg = document.getElementById('dStockMsg');
   if (stockMsg) { stockMsg.className = 'stock-msg ' + stock.key; stockMsg.textContent = stock.label; }
   document.querySelectorAll('.sz-row .sz').forEach(b => b.classList.remove('on'));
+  markDrawerSizes(p);
   const addBtn = document.getElementById('dAddBtn');
   const soldOut = !productHasSellableStock(p, currentVersion);
   addBtn.disabled = soldOut;

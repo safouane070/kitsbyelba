@@ -50,8 +50,15 @@ if ($pdpId > 0) {
             $seoPrice = (float)$row['price'];
         }
     } catch (Throwable $e) {
-        // keep defaults
+        $pdpDbError = true; // DB tijdelijk weg: geen 404 geven, pagina probeert het client-side
     }
+}
+// Onbekend of uitgeschakeld product: echte 404 + noindex, zodat Google oude links opruimt
+// (voorheen 200 met het eerste product uit de lijst → verkeerd shirt + dubbele content).
+$pdpGone = $seoName === '' && empty($pdpDbError);
+if ($pdpGone) {
+    http_response_code(404);
+    $seoTitle = 'Shirt niet meer beschikbaar | KitsByElbaa';
 }
 ?>
 <!DOCTYPE html>
@@ -64,6 +71,7 @@ if ($pdpId > 0) {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f9faf7">
 <title><?= htmlspecialchars($seoTitle, ENT_QUOTES, 'UTF-8') ?></title>
+<?php if ($pdpGone): ?><meta name="robots" content="noindex"><?php endif; ?>
 <meta name="description" content="<?= htmlspecialchars($seoDesc, ENT_QUOTES, 'UTF-8') ?>">
 <?php if ($seoCanonical !== ''): ?>
 <link rel="canonical" href="<?= htmlspecialchars($seoCanonical, ENT_QUOTES, 'UTF-8') ?>">
@@ -128,7 +136,7 @@ if ($seoImage !== '') {
     </div>
     <div class="info">
       <h1 id="pName">Laden…</h1>
-      <div class="price" id="pPrice">€0.00</div>
+      <div class="price" id="pPrice">€0,00</div>
       <p class="stock-note" id="pStock">Op voorraad</p>
       <p id="pdpLeverNote" class="pdp-lever-note" hidden></p>
       <div class="pdp-trust-row" aria-label="Levering en service">
@@ -240,8 +248,8 @@ if ($seoImage !== '') {
       <div class="pdp-coupon-fb" id="pcCouponFb"></div>
       <button type="button" id="pcCouponRemoveBtn" class="pdp-coupon-remove" onclick="removePdpCoupon()">Korting wijzigen of verwijderen</button>
     </div>
-    <div class="pdp-discount" id="pcDiscount" style="display:none"><span id="pcDiscountLabel">Korting</span><span id="pcDiscountAmt">-€0.00</span></div>
-    <div class="pdp-total"><span>Totaal</span><span id="pcartTotal">€0.00</span></div>
+    <div class="pdp-discount" id="pcDiscount" style="display:none"><span id="pcDiscountLabel">Korting</span><span id="pcDiscountAmt">-€0,00</span></div>
+    <div class="pdp-total"><span>Totaal</span><span id="pcartTotal">€0,00</span></div>
     <button type="button" class="pdp-check" onclick="goToCart()" style="display:inline-flex;align-items:center;justify-content:center;gap:8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>Naar afrekenen</button>
     <button type="button" class="pdp-note" onclick="closePdpCart()" style="background:none;border:none;cursor:pointer;width:100%;padding:10px 0;font-family:inherit;font-size:12px;color:#888;font-weight:700">← Verder winkelen</button>
   </div>
