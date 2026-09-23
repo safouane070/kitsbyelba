@@ -24,6 +24,7 @@ a{text-decoration:none;color:inherit}
 .pdp-gone-actions .cta{flex:0 1 auto;text-decoration:none}
 .pdp-gone-actions .cta-wa{background:#fff;color:var(--ink)}
 .price-extra{display:block;margin-top:2px;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--ink3)}
+.lbl[hidden]{display:none}
 .lbl{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666;margin:14px 0 8px}
 .sizes{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
 .versie-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}

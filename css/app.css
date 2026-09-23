@@ -271,6 +271,8 @@ nav{
 /* ── CART PANEL ── */
 .cbg{position:fixed;inset:0;background:rgba(28,26,23,.45);z-index:var(--z-cart-bg);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
 .cbg.on{opacity:1;pointer-events:auto}
+/* Safari/iOS neemt het site-font niet over in knoppen en velden (toonde Times). */
+button,input,select,textarea{font-family:inherit}
 .cpanel{
   position:fixed;top:0;right:0;bottom:0;width:420px;
   background:var(--cream);border-left:1px solid var(--line);

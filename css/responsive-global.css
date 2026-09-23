@@ -745,3 +745,11 @@ main,
 @media (max-width: 960px) {
   .nav-top .logo-img { height: 68px; }
 }
+
+/* Telefoon: de hele winkelwagen scrollt i.p.v. alleen de artikelenlijst. Anders nam de voet
+   (kortingscode, totalen, knoppen) bijna alle hoogte en bleef er één afgesneden artikel over (iPhone). */
+@media (max-width: 520px) {
+  .cpanel { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .cpanel .chead { position: sticky; top: 0; z-index: 1; background: var(--cream); }
+  .cpanel .cbody { flex: none; overflow: visible; min-height: 38vh; }
+}
