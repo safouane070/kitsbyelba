@@ -1134,8 +1134,7 @@ function showPdpGone(){
     + '<p>Het is uitverkocht of uit de collectie gehaald. Bekijk de nieuwste shirts, of vraag ons of we hem kunnen bestellen.</p>'
     + '<div class="pdp-gone-actions"><a class="cta" href="shop.html">Naar de shop</a>'
     + '<a class="cta cta-wa" href="' + wa + '" target="_blank" rel="noopener">Vraag het via WhatsApp</a></div></div>';
-  const reco = document.querySelector('.reco');
-  if (reco) reco.style.display = 'none';
+  document.querySelectorAll('.reco, .sections').forEach(el => { el.style.display = 'none'; });
   const sticky = document.querySelector('.sticky');
   if (sticky) sticky.remove();
 }
