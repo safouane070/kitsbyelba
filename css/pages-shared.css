@@ -1287,3 +1287,5 @@ a.hcard,a.hero-shot{display:block;color:inherit;text-decoration:none}
 .pcard .padd-btn{position:relative;z-index:2}
 .pcard-link:focus-visible{outline:none}
 .pcard:has(.pcard-link:focus-visible){outline:2px solid var(--ink);outline-offset:3px}
+/* Uitverkochte maat in snel-toevoegen (index + shop). */
+#drawer .sz:disabled,#drawer .sz.out{opacity:.4;cursor:not-allowed;text-decoration:line-through;background:var(--cream2)}

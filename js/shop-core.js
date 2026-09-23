@@ -371,6 +371,11 @@ function updateShopHeroLede() {
     kids: 'Voetbalshirts en tenues in alle kindermaten, met eigen naam en nummer. Zo speelt jouw kind er echt bij.',
     all: 'Alle voetbalshirts, sets, retro en kids-tenues op één plek. Filter op club, competitie, land en maat.'
   };
+  // Wishlist-pagina houdt de server-tekst ("Je favoriete tenues…"), niet de shop-tekst.
+  if (typeof currentWishlistOnly !== 'undefined' && currentWishlistOnly) {
+    el.textContent = 'Je favoriete tenues op één plek. Klik op ♥ bij een product om het hier te bewaren.';
+    return;
+  }
   const typeKey = typeMap[currentTypeFilter] ? currentTypeFilter : 'all';
   const leagueMap = { premier:'Premier League', laliga:'La Liga', bundesliga:'Bundesliga', seriea:'Serie A', ligue1:'Ligue 1', eredivisie:'Eredivisie', national:'Nationale teams' };
   const league = currentFilterCat !== 'all' ? ` Gefilterd op ${leagueMap[currentFilterCat] || 'competitie'}.` : '';
@@ -542,9 +547,20 @@ function closeDetail() {
   window.history.replaceState({}, '', url.toString());
 }
 
+// Uitverkochte maten in het snel-toevoegen-venster grijs + niet klikbaar (zoals op de productpagina).
+function markDrawerSizes(p) {
+  document.querySelectorAll('#drawer .sz[onclick^="pickSz"]').forEach(b => {
+    const size = b.dataset.size || b.textContent.trim();
+    const out = !p || maxQtyForProductSize(p, size, currentVersion) <= 0;
+    b.classList.toggle('out', out);
+    b.disabled = out;
+    b.title = out ? 'Uitverkocht' : '';
+  });
+}
+
 function pickSz(btn) {
   const p = PRODUCTS.find(p => p.id === currentDetailId);
-  if (!p || !productHasSellableStock(p)) return;
+  if (!p || !productHasSellableStock(p) || btn.disabled) return;
   document.querySelectorAll('.sz').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
   currentSz = btn.dataset.size || btn.textContent.trim();
@@ -1448,14 +1464,13 @@ function openDetail(id, updateUrl = true) {
       : 'Niet op voorraad: 7–12 werkdagen';
   }
 
-  // Reset season to default 25/26
-  currentSeason = '25/26';
-  document.querySelectorAll('#seasonRow .sz').forEach(b => {
-    b.classList.toggle('on', b.textContent.trim() === '25/26');
-  });
+  // Geen seizoenkeuze meer: het seizoen staat al in de productnaam (bv. "WK 26/27").
+  // De oude vaste 23/24–25/26-keuze zette ongevraagd "25/26" in de WhatsApp-bestelling.
+  currentSeason = null;
 
-  // Reset sizes — no pre-selection (excluding season row)
+  // Reset sizes — no pre-selection
   document.querySelectorAll('.sz-row .sz').forEach(b => b.classList.remove('on'));
+  markDrawerSizes(p);
 
   const kjd = document.getElementById('kidsJerseyDrawerChart');
   if (kjd) kjd.hidden = detectProductType(p) !== 'kids';

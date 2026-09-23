@@ -17,6 +17,12 @@ a{text-decoration:none;color:inherit}
 .thumb img{width:100%;height:100%;object-fit:cover}
 .info h1{margin:0 0 8px;font-family:var(--font-display);font-size:40px;line-height:1.05}
 .price{font-family:var(--font-display);font-size:34px;font-weight:700;margin-bottom:14px}
+.pdp-gone{max-width:560px;margin:40px auto;padding:32px 24px;text-align:center;background:var(--white);border:1px solid var(--line)}
+.pdp-gone h1{font-family:var(--font-display);font-size:26px;margin:0 0 10px}
+.pdp-gone p{color:var(--ink3);line-height:1.55;margin:0 0 20px}
+.pdp-gone-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.pdp-gone-actions .cta{flex:0 1 auto;text-decoration:none}
+.pdp-gone-actions .cta-wa{background:#fff;color:var(--ink)}
 .price-extra{display:block;margin-top:2px;font-family:var(--font-body);font-size:12px;font-weight:600;color:var(--ink3)}
 .lbl{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666;margin:14px 0 8px}
 .sizes{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}

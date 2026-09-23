@@ -344,8 +344,13 @@ Promise.all([
   Object.assign(CONFIG,cfg||{});
   PRODUCTS = prods || [];
   const id = parseIdFromQuery();
-  P = PRODUCTS.find(x=>x.id===id) || PRODUCTS[0] || null;
-  if(!P){ document.getElementById('pName').textContent='Product niet gevonden'; return; }
+  // Nooit terugvallen op een willekeurig ander product: een oude link moet niet het verkeerde shirt tonen.
+  P = PRODUCTS.find(x=>x.id===id) || null;
+  if(!P){
+    // Lege lijst = API/netwerk faalde, niet 'product weg'.
+    if (PRODUCTS.length) showPdpGone(); else document.getElementById('pName').textContent = 'Kon het shirt niet laden. Vernieuw de pagina.';
+    return;
+  }
   // Default versie: Fan, tenzij Fan geen voorraad heeft maar Player wel.
   pickedVersion = (function(){
     const fanOk = (P.stock_sizes && typeof P.stock_sizes === 'object')
@@ -1118,4 +1123,19 @@ document.addEventListener('keydown', (e) => {
 // Bedragen in Nederlandse notatie: €37,50.
 function eur(n) {
   return '€' + Number(n || 0).toFixed(2).replace('.', ',');
+}
+
+/** Oude/uitgeschakelde productlink: duidelijke melding + wegen terug i.p.v. een verkeerd shirt. */
+function showPdpGone(){
+  const grid = document.querySelector('.wrap .grid');
+  if (!grid) return;
+  const wa = 'https://wa.me/' + kbeWaDigits() + '?text=' + encodeURIComponent('Hoi! Ik zocht een shirt via een oude link: ' + location.href);
+  grid.outerHTML = '<div class="pdp-gone"><h1>Dit shirt is niet meer beschikbaar</h1>'
+    + '<p>Het is uitverkocht of uit de collectie gehaald. Bekijk de nieuwste shirts, of vraag ons of we hem kunnen bestellen.</p>'
+    + '<div class="pdp-gone-actions"><a class="cta" href="shop.html">Naar de shop</a>'
+    + '<a class="cta cta-wa" href="' + wa + '" target="_blank" rel="noopener">Vraag het via WhatsApp</a></div></div>';
+  const reco = document.querySelector('.reco');
+  if (reco) reco.style.display = 'none';
+  const sticky = document.querySelector('.sticky');
+  if (sticky) sticky.remove();
 }
