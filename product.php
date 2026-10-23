@@ -14,6 +14,7 @@ $seoPrice = null;
 $seoName = '';
 $pdpDescFull = '';
 $pdpImgSrc = '';
+$pdpStock = ['ok', 'Op voorraad'];
 $slugQ = isset($_GET['slug']) ? (string)$_GET['slug'] : '';
 $pdpId = 0;
 if ($slugQ !== '' && preg_match('/^(\d+)/', $slugQ, $m)) { $pdpId = (int)$m[1]; }
@@ -26,7 +27,7 @@ $pdpWaHref = $pdpWaDigits !== '' ? 'https://wa.me/' . $pdpWaDigits : '';
 if ($pdpId > 0) {
     try {
         $pdoSeo = kits_pdo($cfg);
-        $st = $pdoSeo->prepare('SELECT id, name, description, image, price FROM products WHERE id = ? AND active = 1 LIMIT 1');
+        $st = $pdoSeo->prepare('SELECT id, name, description, image, price, stock, stock_sizes, in_voorraad FROM products WHERE id = ? AND active = 1 LIMIT 1');
         $st->execute([$pdpId]);
         $row = $st->fetch(PDO::FETCH_ASSOC);
         if ($row) {
@@ -54,6 +55,13 @@ if ($pdpId > 0) {
                 $seoCanonical = $publicBase . '/product.php?slug=' . rawurlencode($__pslug);
             }
             $seoPrice = (float)$row['price'];
+            // Zelfde voorraadregel als getPdpStockState() in js/product-page.js (Fan-versie = standaard).
+            $ss = json_decode((string)($row['stock_sizes'] ?? ''), true);
+            $pdpUnits = is_array($ss) ? array_sum(array_map(static fn($q) => max(0, (int)$q), $ss)) : max(0, (int)($row['stock'] ?? 0));
+            if ($pdpUnits <= 0) { $pdpStock = ['out', 'Niet op voorraad']; }
+            elseif ((int)($row['in_voorraad'] ?? 0) !== 1) { $pdpStock = ['slow', 'Nabestelling — levering 7–12 werkdagen']; }
+            elseif ($pdpUnits <= 5) { $pdpStock = ['low', 'Nog maar ' . $pdpUnits . ' stuks!']; }
+            else { $pdpStock = ['ok', 'Op voorraad']; }
         }
     } catch (Throwable $e) {
         $pdpDbError = true; // DB tijdelijk weg: geen 404 geven, pagina probeert het client-side
@@ -102,7 +110,7 @@ $ldProduct = [
         '@type' => 'Offer',
         'priceCurrency' => 'EUR',
         'price' => round($seoPrice, 2),
-        'availability' => 'https://schema.org/InStock',
+        'availability' => $pdpStock[0] === 'out' ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
         'url' => $seoCanonical,
         'shippingDetails' => [
             '@type' => 'OfferShippingDetails',
@@ -152,7 +160,7 @@ if ($seoImage !== '') {
     <div class="info">
       <h1 id="pName"><?= $seoName !== '' ? htmlspecialchars($seoName, ENT_QUOTES, 'UTF-8') : 'Laden…' ?></h1>
       <div class="price" id="pPrice"><?= $seoPrice !== null ? '€' . number_format($seoPrice, 2, ',', '') : '' ?></div>
-      <p class="stock-note" id="pStock">Op voorraad</p>
+      <p class="stock-note <?= $pdpStock[0] ?>" id="pStock"><?= htmlspecialchars($pdpStock[1], ENT_QUOTES, 'UTF-8') ?></p>
       <p id="pdpLeverNote" class="pdp-lever-note" hidden></p>
       <div class="pdp-trust-row" aria-label="Levering en service">
         <span>Verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?> gratis (NL)</span>

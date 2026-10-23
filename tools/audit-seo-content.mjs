@@ -154,6 +154,10 @@ async function main() {
       const { status, body } = await get(`product.php?slug=${pid[1]}-test`);
       if (status !== 200) die(`FAIL product status ${status}`);
       if (/(Fatal error|Parse error)\s/.test(body)) die('FAIL product: PHP-fout gelekt');
+      // Productinfo moet server-side in de HTML staan (crawlers zonder JS), schema-foto in uploads/products/
+      if (/<h1 id="pName">Laden/.test(body)) die('FAIL product: H1 niet server-side gevuld');
+      if (!/"image":\["[^"]*\/uploads\/products\//.test(body)) die('FAIL product: schema-image niet in uploads/products/');
+      if (!/"availability":"https:\/\/schema\.org\/(InStock|OutOfStock)"/.test(body)) die('FAIL product: availability ontbreekt');
     }
     ok('HTTP_OK');
   }
