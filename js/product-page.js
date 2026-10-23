@@ -578,7 +578,7 @@ function renderProduct(){
     snFb.textContent = '';
   }
 
-  document.title = `${P.name} — KitsByElbaa`;
+  document.title = `${P.name} | KitsByElbaa`;
   document.getElementById('pName').textContent = P.name;
   document.getElementById('mainImg').alt = P.name;
   updatePdpPrice();

@@ -33,7 +33,7 @@ const ok = (msg) => { console.log(msg); process.exit(0); };
 
 // unieke lede/h2-fragmenten per categorie (moeten server-side in de kale HTML staan)
 const CAT_MARKERS = {
-  shirts:     ['Voetbalshirts kopen met naam en nummer', 'draag hetzelfde tenue als de sterren'],
+  shirts:     ['Voetbalshirts kopen met naam en nummer', 'met je eigen naam en nummer erop'],
   sets:       ['Complete voetbalsets en tenues', 'shirt én broekje, klaar om in te spelen'],
   hemdsetjes: ['Voetbal hemdsetjes voor baby en peuter', 'allerkleinste supporters'],
   retro:      ['Retro voetbalshirts en klassieke tenues', 'legendarische seizoenen'],
