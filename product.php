@@ -12,6 +12,8 @@ $seoImage = '';
 $seoCanonical = $publicBase !== '' ? $publicBase . '/product.php' : '';
 $seoPrice = null;
 $seoName = '';
+$pdpDescFull = '';
+$pdpImgSrc = '';
 $slugQ = isset($_GET['slug']) ? (string)$_GET['slug'] : '';
 $pdpId = 0;
 if ($slugQ !== '' && preg_match('/^(\d+)/', $slugQ, $m)) { $pdpId = (int)$m[1]; }
@@ -31,15 +33,19 @@ if ($pdpId > 0) {
             $seoName = (string)$row['name'];
             $seoTitle = $seoName . ' | KitsByElbaa';
             $plain = trim(strip_tags((string)($row['description'] ?? '')));
+            $pdpDescFull = $plain;
             if ($plain !== '') {
                 $seoDesc = mb_strlen($plain) > 160 ? mb_substr($plain, 0, 157) . '…' : $plain;
             }
-            $img = trim((string)($row['image'] ?? ''));
+            $img = trim(ltrim(str_replace('\\', '/', (string)($row['image'] ?? '')), '/'));
             if ($img !== '') {
                 if (preg_match('#^https?://#i', $img)) {
-                    $seoImage = $img;
-                } elseif ($publicBase !== '') {
-                    $seoImage = $publicBase . '/' . ltrim(str_replace('\\', '/', $img), '/');
+                    $pdpImgSrc = $seoImage = $img;
+                } else {
+                    // Zelfde pad als productImgSrc() in js/product-page.js: bestanden staan in uploads/products/.
+                    while (stripos($img, 'uploads/products/') === 0) { $img = substr($img, 17); }
+                    $pdpImgSrc = 'uploads/products/' . implode('/', array_map('rawurlencode', explode('/', $img)));
+                    if ($publicBase !== '') { $seoImage = $publicBase . '/' . $pdpImgSrc; }
                 }
             }
             if ($publicBase !== '') {
@@ -98,6 +104,15 @@ $ldProduct = [
         'price' => round($seoPrice, 2),
         'availability' => 'https://schema.org/InStock',
         'url' => $seoCanonical,
+        'shippingDetails' => [
+            '@type' => 'OfferShippingDetails',
+            'shippingRate' => [
+                '@type' => 'MonetaryAmount',
+                'value' => round($seoPrice, 2) >= (float)$cfg['free_shipping_from'] ? 0 : round((float)$cfg['shipping_cost'], 2),
+                'currency' => 'EUR',
+            ],
+            'shippingDestination' => ['@type' => 'DefinedRegion', 'addressCountry' => 'NL'],
+        ],
     ],
 ];
 if ($seoImage !== '') {
@@ -127,7 +142,7 @@ if ($seoImage !== '') {
     <div class="gallery">
       <div class="main-img-box" id="mainBox">
         <button type="button" class="garr prev" onclick="shiftImg(-1)" aria-label="Vorige productafbeelding">‹</button>
-        <img class="main-img" id="mainImg" alt="<?= htmlspecialchars($seoName !== '' ? $seoName . ' — voetbalshirt' : 'Voetbalshirt', ENT_QUOTES, 'UTF-8') ?>">
+        <img class="main-img" id="mainImg"<?php if ($pdpImgSrc !== ''): ?> src="<?= htmlspecialchars($pdpImgSrc, ENT_QUOTES, 'UTF-8') ?>" fetchpriority="high"<?php endif; ?> alt="<?= htmlspecialchars($seoName !== '' ? $seoName . ' — voetbalshirt' : 'Voetbalshirt', ENT_QUOTES, 'UTF-8') ?>">
         <button type="button" class="garr next" onclick="shiftImg(1)" aria-label="Volgende productafbeelding">›</button>
         <button type="button" class="pdp-wish-btn" id="pdpWishBtn" onclick="togglePdpWishlist()" aria-pressed="false" aria-label="Toevoegen aan wishlist" title="Wishlist">♥</button>
       </div>
@@ -135,8 +150,8 @@ if ($seoImage !== '') {
       <div class="thumbs" id="thumbs"></div>
     </div>
     <div class="info">
-      <h1 id="pName">Laden…</h1>
-      <div class="price" id="pPrice">€0,00</div>
+      <h1 id="pName"><?= $seoName !== '' ? htmlspecialchars($seoName, ENT_QUOTES, 'UTF-8') : 'Laden…' ?></h1>
+      <div class="price" id="pPrice"><?= $seoPrice !== null ? '€' . number_format($seoPrice, 2, ',', '') : '' ?></div>
       <p class="stock-note" id="pStock">Op voorraad</p>
       <p id="pdpLeverNote" class="pdp-lever-note" hidden></p>
       <div class="pdp-trust-row" aria-label="Levering en service">
@@ -207,7 +222,7 @@ if ($seoImage !== '') {
   </div>
 
   <div class="sections">
-    <div class="sec"><h3>Productomschrijving</h3><p id="sDesc">—</p></div>
+    <div class="sec"><h3>Productomschrijving</h3><p id="sDesc"><?= $pdpDescFull !== '' ? htmlspecialchars($pdpDescFull, ENT_QUOTES, 'UTF-8') : '—' ?></p></div>
     <div class="sec"><h3>Pasvorm</h3><p id="sFit">—</p></div>
     <div class="sec"><h3>Maatadvies</h3><p id="sSizeAdvice">—</p></div>
     <div class="sec"><h3>Materiaal</h3><p id="sMaterial">—</p></div>
