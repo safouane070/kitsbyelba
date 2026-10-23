@@ -190,7 +190,7 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
 .foot-logo{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
 footer p,footer a{display:block;font-size:13px;color:rgba(250,248,244,.5);text-decoration:none;margin-bottom:10px;line-height:1.7;transition:color .18s}
 footer a:hover{color:var(--cream)}
-footer h4{font-family:var(--font-body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
+footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
 .foot-bottom{max-width:1280px;margin:0 auto;padding:20px 24px;border-top:1px solid rgba(250,248,244,.1);display:flex;justify-content:space-between;font-size:12px;color:rgba(250,248,244,.35)}
 /* Responsive */
 @media(max-width:1024px){
@@ -523,6 +523,8 @@ function initKbeNavToggleAria() {
   if (!cb || !ham || !nav) return;
   const sync = () => ham.setAttribute('aria-expanded', cb.checked ? 'true' : 'false');
   cb.addEventListener('change', sync);
+  // role="button" op het label: ook met Enter/spatie te bedienen
+  ham.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cb.checked = !cb.checked; sync(); } });
   nav.querySelectorAll('a').forEach((a) => {
     a.addEventListener('click', () => {
       cb.checked = false;

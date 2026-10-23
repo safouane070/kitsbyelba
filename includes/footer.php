@@ -29,9 +29,9 @@ $__kbeFooterAnchor         = htmlspecialchars($__kbeFooterAnchorPrefix, ENT_QUOT
       <div class="foot-logo">KitsByElbaa</div>
       <p>Voetbalshirts en tenues van topclubs en landen. Bestel via WhatsApp, betaal met Tikkie.</p>
     </div>
-    <div><h4>Shop</h4><?php if (!$__kbeFooterHideAlleTenues): ?><a href="shop.html">Alle tenues</a><?php endif; ?><a href="wishlist.php">Wishlist</a><a href="shirts">Shirts</a><a href="sets">Sets</a><a href="hemdsetjes">Hemdsetjes</a><a href="retro">Retro</a><a href="kids">Kids</a><a href="voorraad">Voorraad</a></div>
-    <div><h4>Info</h4><a href="<?= $__kbeFooterAnchor ?>#sizeguide">Maattabel</a><a href="<?= $__kbeFooterAnchor ?>#faq">FAQ</a><a href="<?= $__kbeFooterAnchor ?>#how-it-works">Hoe het werkt</a></div>
-    <div><h4>Contact</h4><a href="https://wa.me/31684446255" target="_blank" rel="noopener noreferrer">WhatsApp (+31 6 84446255)</a><a href="mailto:KitsByElbaa@outlook.com">KitsByElbaa@outlook.com</a><a href="https://www.snapchat.com/add/KitsByElbaa" target="_blank" rel="noopener noreferrer">Snapchat: KitsByElbaa</a><a href="https://www.tiktok.com/@kitsbyelba" target="_blank" rel="noopener noreferrer">TikTok: KitsByElbaa</a><a href="<?= $__kbeFooterAnchor ?>#faq">Retour &amp; veelgestelde vragen</a></div>
+    <div><h2>Shop</h2><?php if (!$__kbeFooterHideAlleTenues): ?><a href="shop.html">Alle tenues</a><?php endif; ?><a href="wishlist.php">Wishlist</a><a href="shirts">Shirts</a><a href="sets">Sets</a><a href="hemdsetjes">Hemdsetjes</a><a href="retro">Retro</a><a href="kids">Kids</a><a href="voorraad">Voorraad</a></div>
+    <div><h2>Info</h2><a href="<?= $__kbeFooterAnchor ?>#sizeguide">Maattabel</a><a href="<?= $__kbeFooterAnchor ?>#faq">FAQ</a><a href="<?= $__kbeFooterAnchor ?>#how-it-works">Hoe het werkt</a></div>
+    <div><h2>Contact</h2><a href="https://wa.me/31684446255" target="_blank" rel="noopener noreferrer">WhatsApp (+31 6 84446255)</a><a href="mailto:KitsByElbaa@outlook.com">KitsByElbaa@outlook.com</a><a href="https://www.snapchat.com/add/KitsByElbaa" target="_blank" rel="noopener noreferrer">Snapchat: KitsByElbaa</a><a href="https://www.tiktok.com/@kitsbyelba" target="_blank" rel="noopener noreferrer">TikTok: KitsByElbaa</a><a href="<?= $__kbeFooterAnchor ?>#faq">Retour &amp; veelgestelde vragen</a></div>
   </div>
   <div class="foot-bottom">
     <span>&copy; 2026 KitsByElbaa. Alle rechten voorbehouden.</span>
