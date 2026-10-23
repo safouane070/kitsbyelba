@@ -791,6 +791,8 @@ function initKbeNavToggleAria() {
   if (!cb || !ham || !nav) return;
   const sync = () => ham.setAttribute('aria-expanded', cb.checked ? 'true' : 'false');
   cb.addEventListener('change', sync);
+  // role="button" op het label: ook met Enter/spatie te bedienen
+  ham.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); cb.checked = !cb.checked; sync(); } });
   nav.querySelectorAll('a').forEach((a) => {
     a.addEventListener('click', () => {
       cb.checked = false;

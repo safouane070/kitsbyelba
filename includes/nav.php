@@ -70,7 +70,7 @@ $__leagues = [
              hier weer 3 <li>-links plaatsen: index.html#sizeguide, index.html#faq, account.php. */ ?>
     </ul>
     <div class="nav-right">
-      <label for="kbeNavToggle" class="ham" id="ham" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></label>
+      <label for="kbeNavToggle" class="ham" id="ham" role="button" tabindex="0" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></label>
 <?php if ($__showSearch): ?>
       <button type="button" class="nav-search" onclick="openNavSearch()" aria-label="Zoeken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></button>
 <?php endif; ?>

@@ -100,6 +100,7 @@ if ($pdpGone) {
 <?php endif; ?>
 <?php if ($seoName !== '' && $seoPrice !== null && $seoCanonical !== ''): ?>
 <?php
+$pdpFast = in_array($pdpStock[0], ['ok', 'low'], true);
 $ldProduct = [
     '@context' => 'https://schema.org',
     '@type' => 'Product',
@@ -120,6 +121,12 @@ $ldProduct = [
                 'currency' => 'EUR',
             ],
             'shippingDestination' => ['@type' => 'DefinedRegion', 'addressCountry' => 'NL'],
+            // Levertijd zoals op de site: op voorraad 1–2 werkdagen, nabestelling 7–12 werkdagen.
+            'deliveryTime' => [
+                '@type' => 'ShippingDeliveryTime',
+                'handlingTime' => ['@type' => 'QuantitativeValue', 'minValue' => $pdpFast ? 0 : 6, 'maxValue' => $pdpFast ? 1 : 10, 'unitCode' => 'DAY'],
+                'transitTime' => ['@type' => 'QuantitativeValue', 'minValue' => 1, 'maxValue' => $pdpFast ? 1 : 2, 'unitCode' => 'DAY'],
+            ],
         ],
     ],
 ];
@@ -179,7 +186,7 @@ if ($seoImage !== '') {
       <div id="kidsJerseyChartPdp" class="kids-jersey-pdp" hidden>
         <div class="maten-table-wrap">
           <div class="kids-maten-banner">
-            <h3 class="kids-maten-title">Maattabel kids jersey</h3>
+            <h2 class="kids-maten-title">Maattabel kids jersey</h2>
             <p class="kids-maten-remark">Let op: door rek in de stof kan de afwijking ongeveer 1–2 cm zijn.</p>
           </div>
           <div class="kids-maten-scroll">
@@ -230,12 +237,12 @@ if ($seoImage !== '') {
   </div>
 
   <div class="sections">
-    <div class="sec"><h3>Productomschrijving</h3><p id="sDesc"><?= $pdpDescFull !== '' ? htmlspecialchars($pdpDescFull, ENT_QUOTES, 'UTF-8') : '—' ?></p></div>
-    <div class="sec"><h3>Pasvorm</h3><p id="sFit">—</p></div>
-    <div class="sec"><h3>Maatadvies</h3><p id="sSizeAdvice">—</p></div>
-    <div class="sec"><h3>Materiaal</h3><p id="sMaterial">—</p></div>
-    <div class="sec"><h3>Verzending</h3><p id="sShipping">—</p></div>
-    <div class="sec"><h3>Verzorging</h3><p id="sCare">—</p></div>
+    <div class="sec"><h2>Productomschrijving</h2><p id="sDesc"><?= $pdpDescFull !== '' ? htmlspecialchars($pdpDescFull, ENT_QUOTES, 'UTF-8') : '—' ?></p></div>
+    <div class="sec"><h2>Pasvorm</h2><p id="sFit">—</p></div>
+    <div class="sec"><h2>Maatadvies</h2><p id="sSizeAdvice">—</p></div>
+    <div class="sec"><h2>Materiaal</h2><p id="sMaterial">—</p></div>
+    <div class="sec"><h2>Verzending</h2><p id="sShipping">—</p></div>
+    <div class="sec"><h2>Verzorging</h2><p id="sCare">—</p></div>
   </div>
 
   <div class="reco">

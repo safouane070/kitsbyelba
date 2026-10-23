@@ -226,7 +226,7 @@
 }
 .sz:hover:not(:disabled){border-color:var(--ink);color:var(--ink)}
 
-.sz:disabled,.sz.out{opacity:.4;cursor:not-allowed;text-decoration:line-through;background:var(--cream2)}
+.sz:disabled,.sz.out{color:#6b6b6b;cursor:not-allowed;text-decoration:line-through;background:var(--cream2)}
 .sz.low .sz-stock{font-size:9px;font-weight:700;letter-spacing:.04em;color:#92400e}
 .sz.on .sz-stock{color:rgba(255,255,255,.65)}
 .sz-stock{font-size:9px;color:var(--ink4);font-weight:500;text-decoration:none}
