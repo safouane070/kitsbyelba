@@ -1,5 +1,5 @@
 import fs from 'fs';
-// Gate G4z: no bare global-overlay z-index (>=80) may remain; must be var(--z-*).
+// No bare global-overlay z-index (>=80) may remain; must be var(--z-*).
 // Local/component stacking (<=25) is allowed to stay raw.
 const files = ['index.html','shop.html','product.php','account.php',
                'css/app.css','css/pages-shared.css','css/responsive-global.css'];

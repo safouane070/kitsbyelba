@@ -847,7 +847,7 @@ function syncCheckoutPlaceholders() {
   c.placeholder = p[1];
 }
 
-/* ── dedup ronde 2 (finding #1): genuinely-shared cart/checkout/search/seo/stock/util.
+/* ── dedup ronde 2: genuinely-shared cart/checkout/search/seo/stock/util.
    Bron van waarheid: shop.html (superset, versie/seizoen-bewust). Page-specifieke
    grid/filter/banner/hero blijven inline per pagina (divergente filter-architectuur). ── */
 function addToCart(p, sz) {

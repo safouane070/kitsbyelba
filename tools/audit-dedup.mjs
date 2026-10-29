@@ -1,5 +1,5 @@
 import fs from 'fs';
-// Gate G1: the 32 genuinely-shared functions live ONLY in js/shop-core.js,
+// The 32 genuinely-shared functions live ONLY in js/shop-core.js,
 // and are gone from BOTH inline scripts. (Grid/filter/banner/hero stay inline
 // per page by design — divergente filter-architectuur, zie NOTES.md.)
 const MERGE = ['addToCart','renderCart','mergeCartItem','clampCartToStock','getMaxQtyForCartItem','maxQtyForProductSize','getStockState','productHasSellableStock','calcDiscount','couponAppliedLabel','setCartItemSize','chQ','showConfirm','getProductSearchScore','applyNavSearch','setSearchTerm','initRevealAnimations','initKbeMobileTapFixes','setGalleryMainImage','switchMaten','refreshDetailDrawerPrice','openDetail','versionPrice','productHasPlayer','productHasSize','versionStockSizes','applyCoupon','applyCouponFromCart','ensureCheckoutCsrf','placeOrder','restoreCouponState','validateCouponCode'];

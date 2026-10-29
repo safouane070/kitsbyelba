@@ -1,5 +1,5 @@
 /**
- * Admin dashboard JS — verhuisd uit admin.php (Fase A van docs/admin-split-plan.md).
+ * Admin dashboard JS — verhuisd uit admin.php.
  * Server-injecties (CSRF_TOKEN, EmailJS-keys, productsCache, ...) staan als globals
  * in een inline <script> in admin.php, vóór dit bestand geladen wordt.
  */

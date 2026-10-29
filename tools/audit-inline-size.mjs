@@ -1,5 +1,5 @@
 import fs from 'fs';
-// Gate G2: inline <script> in index.html/shop.html shrank (shared logic moved to cacheable core).
+// inline <script> in index.html/shop.html shrank (shared logic moved to cacheable core).
 // Baselines (pre-dedup ronde 2): index inline 1777 lines, shop inline 1837 lines.
 const BASE = { 'index.html': 1777, 'shop.html': 1837 };
 function inlineLines(html){

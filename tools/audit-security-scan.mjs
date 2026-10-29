@@ -1,4 +1,4 @@
-// Gate G2 — conservatieve scan op hoog-risico PHP-patronen.
+// Conservatieve scan op hoog-risico PHP-patronen.
 // Detecteert: eval, shell-exec-familie, SQL-string-concatenatie met superglobals,
 // en echo/print van rauwe superglobals zonder htmlspecialchars.
 // Bevat een POSITIEVE CONTROLE (known-bad fixture) zodat "niets gevonden" bewijsbaar

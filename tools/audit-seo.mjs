@@ -1,4 +1,4 @@
-// Gate G6: each category page serves a DISTINCT server-side <title> + canonical
+// Each category page serves a DISTINCT server-side <title> + canonical
 // (raw HTML, no JS). Requires the local server at BASE.
 const BASE = process.env.KBE_BASE || 'http://localhost/kitsbyelba';
 const pages = ['shop.html','shirts','sets','hemdsetjes','retro','kids','voorraad'];

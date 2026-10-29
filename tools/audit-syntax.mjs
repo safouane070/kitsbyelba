@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { execSync } from 'child_process';
-// Gate G2b: shop-core.js + the inline scripts of the pages that load it parse cleanly.
+// Shop-core.js + the inline scripts of the pages that load it parse cleanly.
 function inlineScripts(html){
   return (html.match(/<script>[\s\S]*?<\/script>/g)||[])
     .map(b=>b.replace(/^<script>/,'').replace(/<\/script>$/,''))

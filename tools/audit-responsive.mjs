@@ -1,5 +1,5 @@
 import fs from 'fs';
-// Gate G3css: responsive-global.css audited. Verify:
+// responsive-global.css audited. Verify:
 //  (1) decision recorded in NOTES.md
 //  (2) it is still loaded by the pages (not accidentally orphaned)
 //  (3) no nav BASE-rule duplication: .nav-links/.nav-mega appear in

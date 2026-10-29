@@ -1,4 +1,4 @@
 <?php
 declare(strict_types=1);
-$shopType = 'kids'; // server-side SEO categorie (finding #6)
+$shopType = 'kids'; // server-side SEO categorie
 include __DIR__ . '/shop.html'; // include (not readfile) so shop.html's shared footer PHP runs

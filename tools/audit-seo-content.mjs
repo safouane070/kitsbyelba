@@ -1,4 +1,4 @@
-// Verificatie voor GATES.md (G3–G12). Draait tegen de lokale XAMPP-render zodat
+// SEO-checks (sitemap, robots, server-side content). Draait tegen de lokale XAMPP-render zodat
 // we de ECHTE server-side HTML meten die een crawler krijgt (niet de bronbestanden).
 // Gebruik: node tools/audit-seo-content.mjs <check>
 import fs from 'fs';
@@ -163,7 +163,7 @@ async function main() {
   }
 
   if (check === 'nodocom' || check === 'nodotcom') {
-    // Alleen site-servende bestanden; .md-docs (NOTES/GATES) benoemen het oude
+    // Alleen site-servende bestanden; .md-docs (NOTES) benoemen het oude
     // .com-domein juist om de fix te documenteren — die horen hier niet te falen.
     const exts = /\.(php|html|css|js|xml|txt)$/;
     const skip = new Set(['node_modules', '.git', 'uploads']);

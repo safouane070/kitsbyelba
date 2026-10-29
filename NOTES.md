@@ -29,7 +29,7 @@ canonieke URL's en externe links naar `/index.html` / `/shop.html` wijzen; een
 rename vraagt 301-redirects. Bewust uitgesteld — hier gedocumenteerd zodat het
 geen stille verrassing is.
 
-## css/responsive-global.css — audit (finding #3)
+## css/responsive-global.css — audit
 
 Onderzocht of dit bestand (april, vóór de redesign, 126× `!important`) dood of
 strijdig is met het nieuwe systeem. **Conclusie: behouden.**
@@ -47,7 +47,7 @@ strijdig is met het nieuwe systeem. **Conclusie: behouden.**
 De oorspronkelijke verdenking ("dode/vechtende regels") bleek dus grotendeels
 een vals alarm. Baseline vastgelegd: **126 `!important`**, 729 regels.
 
-## js/shop-core.js — dedup ronde 2 (finding #1)
+## js/shop-core.js — dedup ronde 2
 
 `index.html` en `shop.html` deelden ~32 functies die als kopie inline in BEIDE
 stonden en uit elkaar waren gedreven (o.a. de winkelwagen: shop kende
@@ -80,7 +80,7 @@ bovenaan het inline-script kleine no-op shims + defaults
 (`currentVersion='fan'`, `currentSeason=null`, `renderDrawerVersion(){}`, enz.).
 De homepage-winkelwagen gedraagt zich nu identiek aan de shop (versie 'fan').
 
-## Inline-CSS index vs shop — GEEN dedup (finding #8)
+## Inline-CSS index vs shop — GEEN dedup
 
 Onderzocht of de ~39 selectors die inline in ZOWEL `index.html` als `shop.html`
 voorkomen (`.hero`, `.banner-*`, `.catcard`, `.cats-grid`, `.how-step`, …) naar
@@ -102,7 +102,7 @@ hierboven): gedeeld van naam, niet van gedrag. De inline-CSS blijft dus per
 pagina. Vergelijkingsscript-logica: elke top-level selector-body genormaliseerd
 en gediff't — 0 identieke, 39 verschillend.
 
-## Cache-busting via filemtime — includes/asset.php (finding #9)
+## Cache-busting via filemtime — includes/asset.php
 
 Handmatige `?v=N` op CSS/JS (die je moest onthouden te bumpen na elke edit, en
 die tussen pagina's kon gaan driften) is vervangen door `kbe_asset('css/app.css')`
@@ -113,7 +113,7 @@ werkt zo ook op product.php/account.php). Guard `function_exists` maakt
 dubbel-include veilig. Let op: dit is weer inline-PHP in de `.html`-pagina's, dus
 het valt onder dezelfde SetHandler-afhankelijkheid als nav/footer (zie boven).
 
-## EmailJS via CDN — SRI-pinning (finding #10)
+## EmailJS via CDN — SRI-pinning
 
 `@emailjs/browser@4/dist/email.min.js` (range-versie, geen integrity) is gepind
 op `@4.4.1` mét `integrity="sha384-…"` + `crossorigin` + `referrerpolicy`, in
@@ -124,7 +124,7 @@ de URL én de hash moeten samen mee — een kale `@4` mét integrity breekt zodr
 jsdelivr een nieuwe 4.x publiceert (hash-mismatch → script geblokkeerd → checkout
 stuk). Nieuwe hash: `curl -sL <url> | openssl dgst -sha384 -binary | openssl base64 -A`.
 
-## Sessie-start gecentraliseerd — includes/session.php (finding #11)
+## Sessie-start gecentraliseerd — includes/session.php
 
 Het `session_set_cookie_params([...]) + session_start()`-blok stond **10× gekopieerd**
 (admin, account, place-order, api/auth, checkout_csrf, healthz, upload, stock_notify,
@@ -142,7 +142,7 @@ Nu één `kits_session_start(string $sameSite='Lax', ?int $gcMaxlifetime=null)`:
 Live geverifieerd: Set-Cookie op alle endpoints = `HttpOnly; SameSite=Lax`, geen Secure
 over HTTP; login/checkout-CSRF/upload-403 werken.
 
-## PDO-verbinding gecentraliseerd — includes/db.php (finding #12)
+## PDO-verbinding gecentraliseerd — includes/db.php
 
 `new PDO(...)` stond in **14 bestanden** en was gedrift: 6 misten
 `PDO::ATTR_DEFAULT_FETCH_MODE => FETCH_ASSOC` (kregen stil `FETCH_BOTH`). Geverifieerd
@@ -152,7 +152,7 @@ dat geen van die 6 numerieke rij-indexen gebruikt vóór het gelijktrekken. Nu �
 via `config.php` geladen (elk endpoint laadt config toch), dus geen 14 losse requires.
 Aanroepers houden hun eigen try/catch. admin.php's dode `$DB`-array verwijderd.
 
-## Cookies & toestemming — geen banner, wél transparantie (finding #13)
+## Cookies & toestemming — geen banner, wél transparantie
 
 Onderzocht wat de site opslaat: `PHPSESSID` (login/cart/CSRF = strikt noodzakelijk) +
 localStorage (`kbe_cart_main`, wishlist, coupon, promo-popup-flag = functioneel). Geen
@@ -163,12 +163,12 @@ toestemmingsbanner vereist**. Openstaand (aanbevolen, nog te doen): (A) Google F
 **privacyverklaring** in de footer (AVG art. 13 transparantie). Pas bij toekomstige
 analytics/marketing is een echte opt-in-banner (scripts laden ná consent) nodig.
 
-## Naamconventie: kits_asset (finding #9 vervolg)
+## Naamconventie: kits_asset
 
 De asset-helper heet nu `kits_asset()` (was `kbe_asset()`) — consistent met de rest
 van de codebase (`kits_pdo`, `kits_session_start`, `kits_env`, `kits_log`, …).
 
-## JSON-endpoints: error-guard gecentraliseerd — includes/json_guard.php (finding #14)
+## JSON-endpoints: error-guard gecentraliseerd — includes/json_guard.php
 
 Het blok `ini_set('display_errors','0') + display_startup_errors + error_reporting(E_ALL) + ob_start()`
 stond identiek bovenaan `place-order.php`, `api/auth.php` en `api/checkout_csrf.php`
@@ -181,7 +181,7 @@ in een andere context (de AJAX-tak van de monoliet) en wordt meegenomen bij de
 admin-split, niet nu. Live geverifieerd: checkout_csrf/auth/place-order geven alle
 drie geldige JSON, geen PHP-output gelekt.
 
-## admin.php: restock-debuglogs verwijderd (finding #15)
+## admin.php: restock-debuglogs verwijderd
 
 `sendRestockNotifications()` had 6 achtergebleven `console.log('[restock] …')`-regels
 van tijdens het debuggen; één logde klant-e-mailadressen (`n.email`) naar de
@@ -189,7 +189,7 @@ browserconsole. Admin-only (achter login) dus geen datalek, maar rommelig + PII 
 console → verwijderd. De `console.error`-regels in de catch-blokken blijven: dat is
 echte foutdiagnostiek voor de admin als een mail faalt.
 
-## Canonical-domein: nooit hardcoden (finding #16)
+## Canonical-domein: nooit hardcoden
 
 `index.html` + `shop.html` hadden het domein 8× hardcoded als
 `https://kitsbyelba.com` (één a, .com) in `<link canonical>`, `og:url` en de
@@ -208,7 +208,7 @@ Aanpalend opgeruimd: root `hero-1.jpg`/`hero-2.jpg` waren byte-identieke,
 nergens gerefereerde duplicaten van `images/hero-*.jpg` (de code laadt alleen de
 `images/`-versies) → verwijderd met `git rm`.
 
-## SEO: sitemap + robots + Product-brand (finding #17)
+## SEO: sitemap + robots + Product-brand
 
 - **`sitemap.xml` verwijderd**: stale, hardcoded oude `.com`-domein, maar 3 URLs.
   Botste met de dynamische `sitemap.php` (config-driven, incl. producten uit DB).
@@ -222,14 +222,14 @@ nergens gerefereerde duplicaten van `images/hero-*.jpg` (de code laadt alleen de
 Nog OPEN (grotere klussen, bewust niet nu): categorie-grids renderen producten
 pas via JS (`fetch api/products.php` → leeg `#grid` in kale HTML) = crawler ziet
 lege categorie; `product.php` H1 = "Laden…" tot JS draait; categorie-pagina's
-hebben geen beschrijvende introtekst (dunne content). Zie chat-actieplan.
+hebben geen beschrijvende introtekst (dunne content).
 
-## Pre-deploy: security-review + keyword-content (finding #18)
+## Pre-deploy: security-review + keyword-content
 
 Vóór de eerste echte deploy naar Hostinger (kitsbyelbaa.nl) een gestructureerde
-pass gedaan met een gates-ledger (`GATES.md`, 12 gates, allemaal MET met bewijs).
+pass gedaan op security en SEO-content.
 
-**Security (G1 handmatig + G2 scanner).** Gevoelige endpoints herbeoordeeld —
+**Security (handmatige review + scanner).** Gevoelige endpoints herbeoordeeld —
 `place-order.php` (prijzen server-side, prepared statements, CSRF, rate-limit,
 honeypot, idempotency, coupon geclamped, voorraad FOR UPDATE), `api/auth.php`
 (CSRF, lockout, timing-safe, bcrypt 12, session_regenerate_id, GDPR-erasure),
@@ -238,11 +238,11 @@ honeypot, idempotency, coupon geclamped, voorraad FOR UPDATE), `api/auth.php`
 scant op eval/shell/SQL-concat/echo-superglobal mét positieve controle → 0.
 Niet-blokkerend: coupons zonder max_uses/expiry (korting is gecapt).
 
-**Content/SEO (G3–G9).** Server-side keyword-tekst toegevoegd zodat crawlers
+**Content/SEO.** Server-side keyword-tekst toegevoegd zodat crawlers
 (zonder JS) echte inhoud zien i.p.v. een leeg JS-grid:
 - `shop.html`: `$__seoMap` uitgebreid met per-categorie lede (#shopHeroLede) +
   tekstblok onder het grid (>=120 woorden/categorie), plus keyword-titels/-descriptions.
-  JS-`pageMap` gespiegeld (finding #6: server==client, anders overschrijft JS).
+  JS-`pageMap` gespiegeld (server==client, anders overschrijft JS).
 - `index.html`: keyword-tekstsectie + titel/desc/og/twitter aangescherpt op
   "voetbalshirts met naam & nummer".
 - `.seo-content` styling in `css/pages-shared.css` (gedeeld, on-brand).
@@ -258,7 +258,7 @@ LET OP: dit staat nu alleen LOKAAL. Live (kitsbyelbaa.nl) draaide bij deze commi
 nog de oude build (titel "Premium voetbaltenues online", canonical .com). Moet
 gedeployed worden naar Hostinger voordat Google er iets van ziet.
 
-## Hero-achtergrond herzien (finding #19)
+## Hero-achtergrond herzien
 
 De homepage-hero had een vage grijzige spookfoto (`images/hero-1.jpg` op
 opacity .18 + `mix-blend-mode:luminosity` + grayscale) → modderig/"slop"-gevoel.
@@ -268,9 +268,9 @@ grayscale) op opacity .55, `background-position:center right`, met een donkere
 blijven, plus de bestaande gouden gloed (`.hero::after`). Mobiel (`@media
 max-width:960px`) krijgt een sterkere verticale sluier zodat de gestapelde tekst
 boven de foto leesbaar blijft. Alleen inline-CSS in `index.html` (.hero-blok);
-`images/hero-1.jpg` blijft de bron (root-duplicaten waren al weg, finding #16).
+`images/hero-1.jpg` blijft de bron (root-duplicaten waren al weg).
 
-## css/app.css — z-index schaal (finding #4)
+## css/app.css — z-index schaal
 
 Alle globale overlay-`z-index`-waarden lopen nu via semantische tokens in
 `:root` (`--z-nav`, `--z-cart`, `--z-modal`, `--z-toast`, …). De waarden

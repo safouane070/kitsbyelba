@@ -1,5 +1,5 @@
 import fs from 'fs';
-// Gate G7: SetHandler dependency documented — in NOTES.md AND a comment atop both entry pages.
+// SetHandler dependency documented — in NOTES.md AND a comment atop both entry pages.
 let ok = true;
 const need = (cond, msg) => { if(!cond){ ok=false; console.log('FAIL: '+msg); } };
 const notes = fs.existsSync('NOTES.md') ? fs.readFileSync('NOTES.md','utf8') : '';
