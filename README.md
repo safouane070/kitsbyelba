@@ -22,9 +22,9 @@ security en architectuur zijn met de hand geschreven.
 
 ---
 
-## 🚀 Live demo
+## 🚀 Live
 
-> _Binnenkort online — hier komt een link naar de live webshop, zodat je 'm direct kunt uitproberen zonder lokaal te installeren._
+De webshop draait live voor de klant: **[kitsbyelbaa.nl](https://kitsbyelbaa.nl)**
 
 ---
 
