@@ -40,3 +40,6 @@ jobs:
 
       - name: Unit tests
         run: php tests/run.php
+
+      - name: Frontend-logica (filters, zoeken, voorraad)
+        run: node --test tests/js/*.test.mjs
