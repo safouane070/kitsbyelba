@@ -548,7 +548,7 @@ function kbeUpdateNavCartCount() {
       ? cart.reduce((s, i) => s + Number(i && i.qty ? i.qty : 0), 0)
       : 0;
     const el = document.getElementById('cartN');
-    if (el) el.textContent = String(count);
+    if (el) { el.textContent = String(count); el.dataset.n = String(count); }
   } catch (_) {}
 }
 kbeUpdateNavCartCount();

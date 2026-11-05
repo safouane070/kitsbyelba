@@ -75,7 +75,7 @@ $__leagues = [
       <button type="button" class="nav-search" onclick="openNavSearch()" aria-label="Zoeken"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></button>
 <?php endif; ?>
       <button type="button" class="nav-cart" onclick="<?= $__esc($__cartClick) ?>" aria-label="Winkelwagen" title="Winkelwagen — aantal artikelen">
-        <span class="nav-cart-ico" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></span><span class="nav-cart-label">Winkelwagen</span><span class="nav-cart-num" id="<?= $__esc($__cartNum) ?>" title="Aantal in winkelwagen">0</span>
+        <span class="nav-cart-ico" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="8" width="15" height="13" rx="2"/><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/></svg></span><span class="nav-cart-label">Winkelwagen</span><span class="nav-cart-num" id="<?= $__esc($__cartNum) ?>" data-n="0" title="Aantal in winkelwagen">0</span>
       </button>
     </div>
   </div>

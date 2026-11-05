@@ -54,11 +54,14 @@ Options -Indexes
 </FilesMatch>
 
 # Compressie voor tekst-assets (HTML/CSS/JS/JSON/SVG) — woff2 is al gecomprimeerd, dus overgeslagen
+# AddOutputFilterByType vereist mod_filter (lokaal XAMPP heeft die standaard uit → anders 500)
+<IfModule mod_filter.c>
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/javascript application/x-javascript application/json application/xml image/svg+xml application/rss+xml
 </IfModule>
 <IfModule mod_brotli.c>
     AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml application/javascript application/x-javascript application/json application/xml image/svg+xml application/rss+xml
+</IfModule>
 </IfModule>
 
 # Block HTTP access to PHP includes (not used for normal URLs; prevents accidental probing)

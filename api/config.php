@@ -6,7 +6,7 @@ require_once __DIR__ . '/../includes/cors.php';
 kits_emit_cors_headers($cfg, false);
 
 $promoDefaults = [
-    'promoBanner'     => '10% KORTING — code <strong>KITSBYELBA</strong> · <strong>KitsByElbaa</strong>',
+    'promoBanner'     => '10% KORTING — code <strong>KITSBYELBA</strong>',
     'promoFaqAnswer'  => 'Ja! Gebruik code <strong>KITSBYELBA</strong> bij het afrekenen voor <strong>10% korting</strong> op je bestelling.',
 ];
 try {

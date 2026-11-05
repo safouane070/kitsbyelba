@@ -115,6 +115,7 @@
   }
   window.openNavSearch = function () {
     var bg = document.getElementById('navSearchBg'), m = document.getElementById('navSearchModal'), inp = document.getElementById('navSearchInput');
+    if (window.kbeCloseNav) window.kbeCloseNav();
     if (bg) bg.classList.add('on');
     if (m) m.classList.add('on');
     if (inp) { inp.value = ''; setTimeout(function () { inp.focus(); }, 50); }

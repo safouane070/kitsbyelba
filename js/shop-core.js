@@ -28,6 +28,7 @@ function openNavSearch() {
   const bg = document.getElementById('navSearchBg');
   const modal = document.getElementById('navSearchModal');
   const input = document.getElementById('navSearchInput');
+  if (window.kbeCloseNav) window.kbeCloseNav();
   if (bg) bg.classList.add('on');
   if (modal) modal.classList.add('on');
   if (input) {
@@ -599,7 +600,9 @@ function importPendingCartFromProductPage() {
 
 function updateCount() {
   const count = cart.reduce((s, i) => s + i.qty, 0);
-  document.getElementById('cartN').textContent = count;
+  const n = document.getElementById('cartN');
+  n.textContent = count;
+  n.dataset.n = String(count); // CSS verbergt de badge bij 0
 }
 
 function openCart() {
@@ -799,6 +802,9 @@ function initKbeNavToggleAria() {
       sync();
     });
   });
+  // Escape sluit het menu; zoeken roept kbeCloseNav() aan zodat menu + zoekvenster nooit samen open staan
+  window.kbeCloseNav = () => { if (cb.checked) { cb.checked = false; sync(); } };
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && cb.checked) { window.kbeCloseNav(); ham.focus(); } });
   sync();
 }
 
@@ -926,13 +932,11 @@ function renderCart() {
   const body = document.getElementById('cbody');
   const foot = document.getElementById('cfoot');
   if (!cart.length) {
-    body.innerHTML = `<div class="cempty"><div class="cempty-ico" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg></div><p>Je winkelwagen is leeg.<br>Voeg tenues toe om te starten.</p><button type="button" class="cart-empty-cta" onclick="closeCart()">Terug naar winkelen</button></div>`;
+    body.innerHTML = `<div class="cempty"><div class="cempty-ico" aria-hidden="true"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="8" width="15" height="13" rx="2"/><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/></svg></div><p>Je winkelwagen is leeg.<br>Voeg tenues toe om te starten.</p><button type="button" class="cart-empty-cta" onclick="closeCart()">Terug naar winkelen</button></div>`;
     foot.style.display = 'none';
-    const checkoutBtn = document.getElementById('checkoutBtn');
-    if (checkoutBtn) checkoutBtn.textContent = 'Bestellen via WhatsApp';
     return;
   }
-  foot.style.display = 'block';
+  foot.style.display = 'flex'; // kolom: bestelknop direct onder het totaal (zie .cfoot in responsive-global)
 
   const sub = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const discount = calcDiscount(sub);
@@ -1092,7 +1096,7 @@ function maxQtyForProductSize(p, sizeStr, version) {
 function getStockState(stock) {
   const s = Number(stock || 0);
   if (s <= 0) return { key: 'out', label: 'Niet op voorraad' };
-  if (s <= 5) return { key: 'low', label: `Nog ${s} op voorraad!` };
+  if (s <= 5) return { key: 'low', label: `Nog ${s} op voorraad` };
   return { key: 'ok', label: 'Op voorraad' };
 }
 
@@ -1105,6 +1109,11 @@ function productHasSellableStock(p, version) {
   }
   if (ver === 'player') return false;
   return Number(p.stock || 0) > 0;
+}
+
+// "Op voorraad" = voorraadartikel (in_voorraad) én nog echt leverbaar; een uitverkocht voorraadshirt hoort niet onder 1–2 werkdagen.
+function productInVoorraad(p) {
+  return !!p && parseInt(p.in_voorraad, 10) === 1 && (productHasSellableStock(p, "fan") || productHasSellableStock(p, "player"));
 }
 
 function calcDiscount(subtotal) {
@@ -1300,10 +1309,16 @@ function applyNavSearch() {
   }
   currentSearchTerm = next;
   if (next) {
-    const top = getNavSearchSuggestions(next, 1);
+    // limit 2: alleen bij precies één treffer direct naar het product
+    const top = getNavSearchSuggestions(next, 2);
     if (top.length === 1) {
       closeNavSearch();
       goToProductPage(top[0].id);
+      return;
+    }
+    // Homepage heeft geen grid → resultaten tonen in de shop
+    if (!document.getElementById('grid')) {
+      location.href = 'shop.html?q=' + encodeURIComponent(next);
       return;
     }
   }
@@ -1369,6 +1384,9 @@ function switchMaten(v) {
     if (tab) { tab.classList.toggle('on', t===v); tab.setAttribute('aria-selected', t===v ? 'true' : 'false'); }
     const panel = document.getElementById('mp-'+t);
     if (panel) panel.classList.toggle('on', t===v);
+    // Snelle gids wisselt mee (player-chips stonden altijd hidden)
+    const chips = document.getElementById('sizeChips' + (t === 'fan' ? 'Fan' : 'Player'));
+    if (chips) chips.hidden = t !== v;
   });
 }
 
@@ -1461,7 +1479,7 @@ function openDetail(id, updateUrl = true) {
   // Voorraad info
   const voorraadEl = document.getElementById('dVoorraadText');
   if (voorraadEl) {
-    voorraadEl.textContent = parseInt(p.in_voorraad) === 1
+    voorraadEl.textContent = productInVoorraad(p)
       ? 'Op voorraad: levering binnen 1–2 werkdagen'
       : 'Niet op voorraad: 7–12 werkdagen';
   }

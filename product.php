@@ -14,7 +14,7 @@ $seoPrice = null;
 $seoName = '';
 $pdpDescFull = '';
 $pdpImgSrc = '';
-$pdpStock = ['ok', 'Op voorraad'];
+$pdpStock = ['', '']; // pas gevuld als het product bestaat (anders geen valse 'Op voorraad' op een 404)
 $slugQ = isset($_GET['slug']) ? (string)$_GET['slug'] : '';
 $pdpId = 0;
 if ($slugQ !== '' && preg_match('/^(\d+)/', $slugQ, $m)) { $pdpId = (int)$m[1]; }
@@ -60,7 +60,7 @@ if ($pdpId > 0) {
             $pdpUnits = is_array($ss) ? array_sum(array_map(static fn($q) => max(0, (int)$q), $ss)) : max(0, (int)($row['stock'] ?? 0));
             if ($pdpUnits <= 0) { $pdpStock = ['out', 'Niet op voorraad']; }
             elseif ((int)($row['in_voorraad'] ?? 0) !== 1) { $pdpStock = ['slow', 'Nabestelling — levering 7–12 werkdagen']; }
-            elseif ($pdpUnits <= 5) { $pdpStock = ['low', 'Nog maar ' . $pdpUnits . ' stuks!']; }
+            elseif ($pdpUnits <= 5) { $pdpStock = ['low', 'Nog ' . $pdpUnits . ' op voorraad']; }
             else { $pdpStock = ['ok', 'Op voorraad']; }
         }
     } catch (Throwable $e) {
@@ -145,7 +145,7 @@ if ($seoImage !== '') {
 <link rel="stylesheet" href="<?= kits_asset('css/responsive-global.css') ?>">
 <script defer src="<?= kits_asset('js/kbe-ios-helpers.js') ?>"></script>
 </head>
-<body>
+<body<?= $pdpGone ? ' data-pdp-gone="1"' : '' ?>>
 <?php include __DIR__ . '/includes/announce.php'; ?>
 <?php $navCartOnclick = 'openPdpCart()'; $navCartNumId = 'cartNProduct'; $navSearch = true; include __DIR__ . '/includes/nav.php'; ?>
 <main id="main">
@@ -169,15 +169,6 @@ if ($seoImage !== '') {
       <div class="price" id="pPrice"><?= $seoPrice !== null ? '€' . number_format($seoPrice, 2, ',', '') : '' ?></div>
       <p class="stock-note <?= $pdpStock[0] ?>" id="pStock"><?= htmlspecialchars($pdpStock[1], ENT_QUOTES, 'UTF-8') ?></p>
       <p id="pdpLeverNote" class="pdp-lever-note" hidden></p>
-      <div class="pdp-trust-row" aria-label="Levering en service">
-        <span>Verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?> gratis (NL)</span>
-        <span>·</span>
-        <a href="index.html#faq">Veelgestelde vragen</a>
-        <?php if ($pdpWaHref !== ''): ?>
-        <span>·</span>
-        <a href="<?php echo htmlspecialchars($pdpWaHref, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">WhatsApp</a>
-        <?php endif; ?>
-      </div>
 
       <div class="lbl" id="versieLbl" hidden>Versie</div>
       <div class="versie-row" id="versieRow" hidden></div>
@@ -221,8 +212,8 @@ if ($seoImage !== '') {
 
       <label class="lbl" for="printName">Naam op de rug (max. 15 tekens)</label>
       <input class="inp" id="printName" placeholder="bijv. Palmer" maxlength="15" autocomplete="off">
-      <label class="lbl" for="printNumber">Nummer (max. 4 cijfers)</label>
-      <input class="inp" id="printNumber" placeholder="bijv. 10" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      <label class="lbl" for="printNumber">Nummer (1–99)</label>
+      <input class="inp" id="printNumber" placeholder="bijv. 10" maxlength="2" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
       <label class="lbl" for="printBadges">Badges (optioneel)</label>
       <select class="inp" id="printBadges">
         <option value="">Geen badge</option>
@@ -232,7 +223,16 @@ if ($seoImage !== '') {
         <div class="qty"><button type="button" onclick="chgQty(-1)" aria-label="Aantal verlagen">−</button><span id="qtyV">1</span><button type="button" onclick="chgQty(1)" aria-label="Aantal verhogen">+</button></div>
         <button type="button" class="cta" id="addBtn" onclick="addToCart()">In winkelwagen</button>
       </div>
-      <div class="small" id="addMsg">Bedrukking (naam en/of nummer): <strong>één</strong> meerprijs van €<?= number_format((float)$cfg['custom_printing_price'],2,',','') ?> per shirt. Badge/patch (indien gekozen): +€<?= number_format((float)($cfg['badge_extra_price'] ?? 3),2,',','') ?> per shirt. Gratis verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?>.</div>
+      <div class="small" id="addMsg">Bedrukking (naam en/of nummer): <strong>één</strong> meerprijs van €<?= number_format((float)$cfg['custom_printing_price'],2,',','') ?> per shirt. Badge/patch (indien gekozen): +€<?= number_format((float)($cfg['badge_extra_price'] ?? 3),2,',','') ?> per shirt.</div>
+      <div class="pdp-trust-row" aria-label="Levering en service">
+        <span>Verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?> gratis (NL)</span>
+        <span>·</span>
+        <a href="index.html#faq">Veelgestelde vragen</a>
+        <?php if ($pdpWaHref !== ''): ?>
+        <span>·</span>
+        <a href="<?php echo htmlspecialchars($pdpWaHref, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">WhatsApp</a>
+        <?php endif; ?>
+      </div>
     </div>
   </div>
 

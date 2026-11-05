@@ -96,7 +96,7 @@ main,
   }
 }
 
-/* Respect reduced-motion preference */
+/* Respect reduced-motion preference: geen beweging, wel korte fades/kleurwissels als feedback */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto !important;
@@ -106,8 +106,28 @@ main,
   *::before,
   *::after {
     animation: none !important;
-    transition: none !important;
+    transition-property: opacity, color, background-color, border-color !important;
+    transition-duration: .15s !important;
   }
+}
+
+/* Touch: hover-lift "plakt" na een tik → alleen op apparaten met echte hover */
+@media (hover: none) {
+  .pcard:hover, .hcard:hover, .catcard:hover, .social-card:hover, .hero-shot:hover,
+  .upsell-card:hover, .pwish-btn:hover, .wa-float:hover,
+  .btn-primary:hover, .hero-btn:hover, .banner-btn:hover, .d-add:hover,
+  .wa-order-btn:hover, .msub:hover, .wa-confirm-btn:hover,
+  .pcard:hover .pimg-wrap img, .catcard:hover .catcard-img, .reco-track .card:hover .cimg img {
+    transform: none !important;
+  }
+}
+
+/* Indrukfeedback: knop reageert direct op de tik/klik (wint van de hover-lift) */
+.btn-primary:active, .btn-sec:active, .hero-btn:active, .cta:active, .banner-btn:active,
+.wa-order-btn:active, .msub:active, .wa-confirm-btn:active, .nav-search-wa:active,
+.d-add:active:not(:disabled), .sz:active:not(:disabled), .versie-btn:active, .ftab:active, .fpill:active {
+  transform: scale(.97) !important;
+  transition-duration: .1s !important;
 }
 
 .shop-page-head {
@@ -501,6 +521,23 @@ main,
     padding-right: max(16px, env(safe-area-inset-right, 0px)) !important;
     background: var(--cream, #faf8f4) !important;
   }
+
+  /* .nav-top is een 3-koloms grid; het uitklapmenu is hier absolute en telt niet mee,
+     waardoor de iconen naar de middelste kolom schoven. Vast in kolom 3, rechts uitgelijnd. */
+  .nav-top > .logo { grid-column: 1; }
+  .nav-top > .nav-right { grid-column: 3; justify-self: end; }
+
+  /* Drie icoonknoppen als één set: zelfde hoogte (44px tikvlak), rand en hoek */
+  .ham, .nav-search, .nav-cart {
+    height: 44px !important;
+    min-height: 44px !important;
+    border: 1.5px solid var(--line2) !important;
+    border-radius: 10px !important;
+    background: var(--white) !important;
+  }
+  .ham, .nav-search { width: 44px !important; padding: 0 !important; }
+  .ham { align-items: center !important; justify-content: center !important; gap: 4px !important; }
+  .ham span { width: 18px !important; }
 }
 
 /* Account-dashboard: horizontale tabrij zonder zichtbare scrollbar (zoals shop-ftabs) */
@@ -752,4 +789,108 @@ main,
   .cpanel { overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .cpanel .chead { position: sticky; top: 0; z-index: 1; background: var(--cream); }
   .cpanel .cbody { flex: none; overflow: visible; min-height: 38vh; }
+}
+
+/* Winkelwagen: tasje-icoon met teller-badge rechtsboven; geen tekstlabel (staat in aria-label). */
+.nav-cart { position: relative !important; width: 40px; padding: 0 !important; gap: 0 !important; }
+.nav-cart .nav-cart-label {
+  position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important;
+  clip: rect(0 0 0 0) !important; white-space: nowrap !important;
+}
+.nav-cart .nav-cart-ico svg { width: 20px !important; height: 20px !important; }
+.nav-cart .nav-cart-num {
+  position: absolute !important; top: -7px; right: -7px;
+  min-width: 19px; width: auto !important; height: 19px !important; padding: 0 5px; box-sizing: border-box;
+  border-radius: 999px !important; background: var(--ink) !important; color: var(--cream) !important;
+  font-weight: 700; font-variant-numeric: tabular-nums; box-shadow: 0 0 0 2px var(--cream);
+}
+.nav-cart .nav-cart-num[data-n="0"] { display: none !important; }
+@media (max-width: 1240px) { .nav-cart { width: 44px !important; } }
+
+@media (max-width: 560px) {
+  /* Footer mobiel: merkblok en contact over de volle breedte, Shop | Info naast elkaar (was één lange kolom) */
+  footer .foot-inner { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }
+  footer .foot-inner > div:first-child,
+  footer .foot-inner > div:last-child { grid-column: 1 / -1; }
+  /* Ruimte voor de zwevende WhatsApp-knop, zodat de copyrightregel niet bedekt wordt */
+  footer .foot-bottom { padding-bottom: 96px !important; }
+
+  /* Horizontaal scrollende competitie-pills: geen grijze scrollbalk */
+  .filter-pills { scrollbar-width: none; }
+  .filter-pills::-webkit-scrollbar { display: none; }
+}
+
+/* FAQ: decoratieve volgnummers (01–08) dragen geen informatie → weg; antwoord lijnt uit met de vraag */
+.faq-n { display: none !important; }
+.faq-ans-inner { padding-left: 24px !important; }
+
+/* Winkelwagen-voet: na het totaal direct de bestelknop; "verder winkelen / leegmaken" als laatste, rustig */
+.cfoot { flex-direction: column; }
+.cfoot .wa-order-btn { order: 1; margin-top: 16px; }
+.cfoot .cnote { order: 2; }
+.cfoot .cart-actions { order: 3; margin: 14px 0 0; }
+/* "Toepassen" is secundair: rand i.p.v. zwart blok, zodat hij niet concurreert met bestellen */
+.cart-coupon-row button {
+  background: transparent !important; color: var(--ink) !important;
+  border: 1.5px solid var(--line2) !important; transition: border-color .16s ease;
+}
+.cart-coupon-row button:hover { border-color: var(--ink) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   KNOPPEN- EN HOEKENSYSTEEM — één bron voor de hele winkel
+   Rollen: primair (zwart vlak) · secundair (rand) · WhatsApp (groen).
+   Hoeken: --r-control (10px) voor knoppen/velden/maatvakjes, --r-pill voor chips.
+   Tekst in knoppen: zinsnotatie, 14px semibold — hoofdletters alleen voor mini-labels.
+   Staat als laatste laag omdat de oude regels verspreid staan over 5 bestanden.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.btn-primary, .cart-empty-cta, .d-add, .cta, .banner-btn, .nav-search-wa,
+.btn-sec, .cart-continue-btn, .cart-coupon-row button, .coupon-apply-btn, .wa-sent-btn, .cscreen-back,
+.wa-order-btn, .msub, .wa-confirm-btn, .faq-wa-btn, .pdp-check, .hero-btn {
+  border-radius: var(--r-control) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+/* Hoofdacties: één vaste hoogte */
+.btn-primary, .cart-empty-cta, .d-add, .cta, .wa-order-btn, .msub, .wa-confirm-btn, .faq-wa-btn, .pdp-check, .hero-btn {
+  min-height: 48px;
+}
+/* Primair */
+.btn-primary, .cart-empty-cta, .d-add:not(:disabled), .cta:not(.cta-wa), .nav-search-wa {
+  background: var(--ink) !important; color: var(--cream) !important; border: 1.5px solid var(--ink) !important;
+}
+.btn-primary:hover, .cart-empty-cta:hover, .d-add:hover:not(:disabled), .cta:not(.cta-wa):hover:not(:disabled), .nav-search-wa:hover {
+  background: var(--ink2) !important; border-color: var(--ink2) !important;
+}
+/* Secundair */
+.btn-sec, .cart-continue-btn, .cart-coupon-row button, .coupon-apply-btn, .wa-sent-btn, .cta.cta-wa {
+  background: var(--white) !important; color: var(--ink) !important; border: 1.5px solid var(--line2) !important;
+}
+.btn-sec:hover, .cart-continue-btn:hover, .cart-coupon-row button:hover, .coupon-apply-btn:hover, .wa-sent-btn:hover, .cta.cta-wa:hover {
+  border-color: var(--ink) !important; background: var(--white) !important;
+}
+.cart-continue-btn { min-height: 44px; }
+/* WhatsApp (groen, donkere tekst — wit op #25D366 haalt het contrast niet) */
+.wa-order-btn, .msub, .wa-confirm-btn, .faq-wa-btn, .pdp-check {
+  background: var(--wa) !important; color: var(--ink) !important; border: 0 !important;
+}
+.wa-order-btn:hover, .msub:hover, .wa-confirm-btn:hover, .faq-wa-btn:hover, .pdp-check:hover { background: #1ebe5a !important; }
+
+/* Chips (categorie-tabs + competitie-pills): rond, rustig, zinsnotatie */
+.ftab, .fpill {
+  border-radius: var(--r-pill) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+/* Controls: velden, selects, maat- en versiekeuze, kleine knoppen */
+.finput, .fselect, .inp, .nav-search-field, .sz, .versie-btn, .qty, .padd-btn, .popt,
+.shop-refine-toggle, .shop-mobile-filter-btn, .shop-view-btn {
+  border-radius: var(--r-control) !important;
+}
+.qty { overflow: hidden; }
+.shop-refine-toggle, .shop-mobile-filter-btn, .vtab {
+  text-transform: none !important; letter-spacing: 0 !important; font-size: 13px !important;
 }

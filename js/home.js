@@ -74,7 +74,7 @@ Promise.all([
   kbeEnsureEmailjsInit(CONFIG.emailjsPk);
   PRODUCTS = products;
   if (window.__kbeProductsApiFailed) {
-    showToast('Producten laden lukt niet (server/database). Controleer de verbinding of probeer het zo opnieuw.');
+    showToast('Shirts laden lukt even niet. Vernieuw de pagina over een moment.');
   }
   restoreCartState();
   restoreWishlistState();
@@ -180,37 +180,79 @@ function renderHeroShots() {
 function goBanner() {}
 function moveBanner() {}
 
-// ── RENDER HERO PRODUCT CARDS ──
+// ── OP VOORRAAD (homepage) ──
+// Voorraadshirts heten "Portugal Thuistenue WK 2026 Ronaldo #7": tenue | speler | nummer.
+// De speler staat na het laatste tenue-woord (jaar/seizoen/thuis/uit/kleur…).
+// ponytail: woordenlijst-heuristiek; nieuwe tenue-woorden (bv. "Derde") hier toevoegen, anders valt de speler in de tenue-regel.
+const HOME_KIT_WORD = /^(\d{4}|\d{2}\/\d{2}|thuistenue|uittenue|derdetenue|zomertenue|zomershirt|kit|special|roze|beige|wit|zwart|donkerblauw|blauw|rood|groen|geel)$/i;
+function homeSplitPlayer(name) {
+  const m = String(name || '').match(/^(.*\S)\s*#\s*(\d{1,2})\s*$/);
+  if (!m) return { kit: String(name || ''), player: '', num: '' };
+  const w = m[1].split(/\s+/);
+  let i = w.length - 1;
+  while (i > 0 && !HOME_KIT_WORD.test(w[i])) i--;
+  if (i <= 0 || i === w.length - 1) return { kit: m[1], player: '', num: m[2] };
+  return { kit: w.slice(0, i + 1).join(' '), player: w.slice(i + 1).join(' '), num: m[2] };
+}
+const homeStockSizes = p => (p.stock_sizes && typeof p.stock_sizes === 'object')
+  ? Object.keys(p.stock_sizes).filter(k => Number(p.stock_sizes[k]) > 0) : [];
+const homeInStock = p => productInVoorraad(p) && homeHasImg(p);
+
+function homeStockCard(p) {
+  const s = homeSplitPlayer(p.name);
+  const img = p.image || p.image2 || p.image3;
+  const sizes = homeStockSizes(p);
+  return `
+    <a class="hcard" href="${productHref(p)}">
+      <div class="hcard-img">
+        <img src="${productThumbSrc(img)}" data-full="${productImgSrc(img)}" alt="${esc(p.name)}" width="320" height="405" loading="lazy" decoding="async" onerror="thumbErr(this)">
+        ${s.num ? `<span class="hcard-print" aria-hidden="true"><b>${esc(s.num)}</b>${esc(s.player)}</span>` : ''}
+      </div>
+      <div class="hcard-info">
+        <div class="hcard-name">${esc(s.kit)}</div>
+        <div class="hcard-row">
+          <span class="hcard-price">${eur(p.price)}</span>
+          ${sizes.length ? `<span class="hcard-sizes">${sizes.map(esc).join(' · ')}</span>` : ''}
+        </div>
+      </div>
+    </a>`;
+}
+
 function renderHero() {
   const el = document.getElementById('hero-grid');
   if (!el) return;
-  // Prefer recognisable star shirts that aren't already shown elsewhere on the homepage.
-  const fresh = PRODUCTS.filter(p => homeHasImg(p) && homeUnused(p));
-  const freshStars = fresh.filter(homeIsStar);
-  let featured = pickHomeDiverse(freshStars.length >= 4 ? freshStars : fresh, 4);
-  if (!featured.length) featured = PRODUCTS.slice(0, 4);
-  featured.forEach(homeMarkUsed);
-  if (!featured.length) {
+  const pool = PRODUCTS.filter(homeInStock);
+  const countEl = document.getElementById('stockCount');
+  if (countEl) countEl.textContent = pool.length ? String(pool.length) : '';
+  const search = document.getElementById('stockSearch');
+  if (search) search.closest('.stock-search').hidden = !pool.length;
+  if (!pool.length) {
     const failed = !!window.__kbeProductsApiFailed;
-    const msg = failed
-      ? 'Uitgelichte tenues konden niet worden geladen (server of database). Vernieuw de pagina over een moment, of scroll naar de collectie hieronder.'
-      : 'Er zijn nog geen actieve producten om hier te tonen. Controleer of de catalogus in de database staat en of producten op “actief” staan.';
-    el.innerHTML = `<div class="hero-grid-empty"><p>${msg}</p><button type="button" class="btn-primary" onclick="location.href='shirts'">Naar shirts</button></div>`;
+    const wa = 'https://wa.me/' + kbeWaDigits() + '?text=' + encodeURIComponent('Hoi! Ik zoek een shirt. Hebben jullie dat?');
+    el.innerHTML = `<div class="hero-grid-empty"><p>${failed
+      ? 'De voorraad laadt even niet. Vernieuw de pagina over een moment.'
+      : 'De voorraad wordt bijgewerkt. Zoek je een shirt? We bestellen bijna elk shirt voor je na (7–12 werkdagen).'}</p>
+      <a class="nav-search-wa" href="${wa}" target="_blank" rel="noopener">Vraag het via WhatsApp</a></div>`;
     return;
   }
-  el.innerHTML = featured.map(p => `
-    <a class="hcard" href="${productHref(p)}">
-      <div class="hcard-img">
-        ${(p.image || p.image2 || p.image3)
-          ? `<img src="${productThumbSrc(p.image || p.image2 || p.image3)}" data-full="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" width="320" height="405" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="thumbErr(this)">`
-          : `<div class="pnoimg"><span class="icon" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m21 16-5-5L5 20"/></svg></span><span>Foto volgt</span></div>`}
-        ${['new','hot'].includes(String(p.badge || '').toLowerCase()) ? `<span class="hcard-badge ${String(p.badge).toLowerCase()}">${String(p.badge).toLowerCase() === 'new' ? 'Nieuw' : 'Populair'}</span>` : ''}
-      </div>
-      <div class="hcard-info">
-        <div class="hcard-name">${esc(p.name)}</div>
-        <div class="hcard-price">${eur(p.price)}</div>
-      </div>
-    </a>`).join('');
+  // Standaard: 8 verschillende landen/clubs, nog niet elders op de homepage, spelersshirts eerst
+  const fresh = pool.filter(homeUnused);
+  const base = pickHomeDiverse([...fresh.filter(homeIsStar), ...fresh.filter(p => !homeIsStar(p)), ...pool.filter(p => !homeUnused(p))], 8);
+  base.forEach(homeMarkUsed);
+  const draw = (q) => {
+    const list = q
+      ? pool.map(p => ({ p, s: getProductSearchScore(p, q) })).filter(x => x.s > 0).sort((a, b) => b.s - a.s).map(x => x.p)
+      : base;
+    el.classList.toggle('is-searching', !!q);
+    el.innerHTML = list.length
+      ? list.map(homeStockCard).join('')
+      : `<div class="hero-grid-empty">${navSearchEmptyHtml(q, kbeWaDigits())}</div>`;
+  };
+  draw('');
+  if (search && !search.dataset.bound) {
+    search.dataset.bound = '1';
+    search.addEventListener('input', () => draw(search.value.trim()));
+  }
 }
 
 // ── RENDER PRODUCT GRID ──
@@ -249,7 +291,7 @@ function syncShopCategoryTabsFromState() {
 function buildShopNoResultsTips(cat) {
   const tips = [];
   if (currentSearchTerm) tips.push(`Zoekterm <strong>“${esc(currentSearchTerm)}”</strong> wissen of aanpassen.`);
-  if (currentTypeFilter !== 'all') tips.push('Probeer een andere <strong>type-tab</strong> (bijv. Alle tenues).');
+  if (currentTypeFilter !== 'all') tips.push('Kies <strong>Alles</strong> bovenaan om alle soorten tenues te zien.');
   if (currentVersionFilter !== 'all') tips.push('Zet Fan/Player op <strong>alle</strong>.');
   if (cat !== 'all') tips.push('Kies <strong>Alle competities</strong> of een andere competitie.');
   if (currentKitVariantFilter !== 'all') tips.push('Zet kit-variant (thuis/uit) op <strong>alle</strong>.');
@@ -273,8 +315,8 @@ function updateLeaguePillCounts() {
   if (currentTypeFilter !== 'all') base = base.filter(p => detectProductType(p) === currentTypeFilter);
   if (currentVersionFilter !== 'all') base = base.filter(p => detectProductVersion(p) === currentVersionFilter);
   if (currentKitVariantFilter !== 'all') base = base.filter(p => detectKitVariant(p) === currentKitVariantFilter);
-  if (currentVoorraadFilter === 'in_stock') base = base.filter(p => parseInt(p.in_voorraad, 10) === 1);
-  else if (currentVoorraadFilter === 'out_of_stock') base = base.filter(p => parseInt(p.in_voorraad, 10) !== 1);
+  if (currentVoorraadFilter === 'in_stock') base = base.filter(productInVoorraad);
+  else if (currentVoorraadFilter === 'out_of_stock') base = base.filter(p => !productInVoorraad(p));
   if (currentSearchTerm) {
     base = base
       .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
@@ -328,9 +370,9 @@ function _doRenderGrid(cat) {
   }
 
   if (currentVoorraadFilter === 'in_stock') {
-    list = list.filter(p => parseInt(p.in_voorraad, 10) === 1);
+    list = list.filter(productInVoorraad);
   } else if (currentVoorraadFilter === 'out_of_stock') {
-    list = list.filter(p => parseInt(p.in_voorraad, 10) !== 1);
+    list = list.filter(p => !productInVoorraad(p));
   }
 
   if (currentSearchTerm) {
@@ -382,7 +424,7 @@ function _doRenderGrid(cat) {
         <button type="button" class="pwish-btn ${isWishlisted(p.id) ? 'on' : ''}" onclick="event.stopPropagation();toggleWishlist(${p.id},this)" aria-label="Wishlist"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 20.3l-1.45-1.32C5.4 14.24 2 11.16 2 7.5 2 4.42 4.42 2 7.5 2c1.74 0 3.41.81 4.5 2.09C13.09 2.81 14.76 2 16.5 2 19.58 2 22 4.42 22 7.5c0 3.66-3.4 6.74-8.55 11.48L12 20.3z"/></svg></button>
         ${['new','hot'].includes(String(p.badge || '').toLowerCase())
           ? `<span class="pbadge ${String(p.badge).toLowerCase()}">${String(p.badge).toLowerCase() === 'new' ? 'Nieuw' : 'Populair'}</span>`
-          : (!currentSearchTerm && currentSortMode === 'featured' && idx < 3 ? `<span class="pbadge bestseller">Bestseller</span>` : '')}
+          : ''}
       </div>
       <div class="pbody">
         <p class="pleague">${esc(p.league)}</p>
@@ -469,7 +511,7 @@ function populateCategoryImages() {
     if (!el) return;
     let inCat;
     if (cat === 'voorraad') {
-      inCat = PRODUCTS.filter(p => parseInt(p.in_voorraad, 10) === 1 && (p.image||p.image2||p.image3));
+      inCat = PRODUCTS.filter(p => productInVoorraad(p) && (p.image||p.image2||p.image3));
     } else {
       inCat = PRODUCTS.filter(p => detectProductType(p) === cat && (p.image||p.image2||p.image3));
     }
@@ -662,7 +704,6 @@ function applyDynamicStoreTexts() {
   set('announceFreeShipA', `Gratis verzending vanaf €${free}`);
   set('announceFreeShipB', `Gratis verzending vanaf €${free}`);
   set('bannerFreeShipText', `Vanaf €${free}.`);
-  set('heroFreeShipText', `Gratis verzending vanaf €${free}`);
   set('trustBarFreeShipText', `Gratis verzending vanaf €${free}`);
 }
 

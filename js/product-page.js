@@ -68,6 +68,9 @@ function initKbeNavToggleAria() {
       sync();
     });
   });
+  // Escape sluit het menu; zoeken roept kbeCloseNav() aan zodat menu + zoekvenster nooit samen open staan
+  window.kbeCloseNav = () => { if (cb.checked) { cb.checked = false; sync(); } };
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && cb.checked) { window.kbeCloseNav(); ham.focus(); } });
   sync();
 }
 if (document.readyState === 'loading') {
@@ -110,7 +113,7 @@ let pdpCoupon = null;
 function getStockState(stock){
   const s = Number(stock || 0);
   if (s <= 0) return { key:'out', label:'Niet op voorraad' };
-  if (s <= 5) return { key:'low', label:`Nog maar ${s} stuks!` };
+  if (s <= 5) return { key:'low', label:`Nog ${s} op voorraad` };
   return { key:'ok', label:'Op voorraad' };
 }
 /** Zelfde `in_voorraad`-logica als shop: alleen bij snelle voorraad groene “op voorraad”-tekst; anders nabestelling 7–12 dagen. */
@@ -350,7 +353,8 @@ Promise.all([
   P = PRODUCTS.find(x=>x.id===id) || null;
   if(!P){
     // Lege lijst = API/netwerk faalde, niet 'product weg'.
-    if (PRODUCTS.length) showPdpGone(); else document.getElementById('pName').textContent = 'Kon het shirt niet laden. Vernieuw de pagina.';
+    // Server weet het zeker (404) → altijd de nette 'niet beschikbaar'-staat, ook als de catalogus leeg is
+    if (PRODUCTS.length || document.body.dataset.pdpGone) showPdpGone(); else document.getElementById('pName').textContent = 'Kon het shirt niet laden. Vernieuw de pagina.';
     return;
   }
   // Default versie: Fan, tenzij Fan geen voorraad heeft maar Player wel.
@@ -537,7 +541,7 @@ function syncPdpAddButtons() {
       levNote.hidden = true;
       levNote.textContent = '';
     } else {
-      levNote.textContent = 'Levering meestal binnen 1 à 2 werkdagen (kan per week wisselen).';
+      levNote.textContent = 'Levering in 1–2 werkdagen';
       levNote.classList.add('show');
       levNote.hidden = false;
     }
@@ -780,6 +784,18 @@ function addToCart(){
   }, 700);
 }
 
+// Sticky koopbalk (mobiel/tablet): alleen tonen als de echte "In winkelwagen" omhoog uit beeld is,
+// zodat er nooit twee dezelfde knoppen tegelijk in beeld staan.
+(function initStickyBuyBar() {
+  const bar = document.querySelector('.sticky');
+  const btn = document.getElementById('addBtn');
+  if (!bar || !btn) return;
+  if (!('IntersectionObserver' in window)) { bar.classList.add('on'); return; }
+  new IntersectionObserver(([e]) => {
+    bar.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.top < 0);
+  }).observe(btn);
+})();
+
 function openStickyWhatsApp() {
   const size = document.querySelector('.sz.on')?.textContent?.trim() || '';
   const bits = [
@@ -856,7 +872,7 @@ function renderPdpCart(){
   const discount = calcPdpDiscount(subtotal);
   const total = subtotal - discount;
   title.textContent = `Mijn artikelen • ${count}`;
-  if (navCount) navCount.textContent = String(count);
+  if (navCount) { navCount.textContent = String(count); navCount.dataset.n = String(count); }
   totalEl.textContent = `${eur(total)}`;
   const discRow = document.getElementById('pcDiscount');
   const discAmt = document.getElementById('pcDiscountAmt');
