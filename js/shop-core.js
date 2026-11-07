@@ -54,12 +54,7 @@ function getNavSearchSuggestions(queryRaw, limit = 8) {
       .filter((p) => (p.image || p.image2 || p.image3))
       .slice(0, limit);
   }
-  return PRODUCTS
-    .map((p) => ({ p, score: getProductSearchScore(p, q) }))
-    .filter((x) => x.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((x) => x.p);
+  return searchProducts(PRODUCTS, q).slice(0, limit);
 }
 
 function applyPopularNavSearch(term) {
@@ -808,21 +803,6 @@ function initKbeNavToggleAria() {
   sync();
 }
 
-function toggleFi(id) {
-  const el = document.getElementById(id);
-  const isOpen = el.classList.contains('on');
-  document.querySelectorAll('.faqitem').forEach(f => {
-    f.classList.remove('on');
-    f.querySelector('.faq-ico').textContent = '+';
-    const b = f.querySelector('.faqbtn'); if (b) b.setAttribute('aria-expanded', 'false');
-  });
-  if (!isOpen) {
-    el.classList.add('on');
-    el.querySelector('.faq-ico').textContent = '−';
-    const b = el.querySelector('.faqbtn'); if (b) b.setAttribute('aria-expanded', 'true');
-  }
-}
-
 function getCheckoutCountry() {
   const el = document.getElementById('fCountry');
   return (el && el.value) ? String(el.value).toLowerCase() : 'nl';
@@ -1111,6 +1091,22 @@ function productHasSellableStock(p, version) {
   return Number(p.stock || 0) > 0;
 }
 
+// Spelersshirts heten "Portugal Thuistenue WK 2026 Ronaldo #7": tenue | speler | nummer.
+// De speler staat na het laatste tenue-woord (jaar/seizoen/thuis/uit/kleur…).
+// ponytail: woordenlijst-heuristiek; nieuwe tenue-woorden (bv. "Derde") hier toevoegen, anders valt de speler in de tenue-regel.
+const KIT_WORD = /^(\d{4}|\d{2}\/\d{2}|thuistenue|uittenue|derdetenue|zomertenue|zomershirt|kit|special|roze|beige|wit|zwart|donkerblauw|blauw|rood|groen|geel)$/i;
+function splitPlayerName(name) {
+  const m = String(name || '').match(/^(.*\S)\s*#\s*(\d{1,2})\s*$/);
+  if (!m) return { kit: String(name || ''), player: '', num: '' };
+  const w = m[1].split(/\s+/);
+  let i = w.length - 1;
+  while (i > 0 && !KIT_WORD.test(w[i])) i--;
+  if (i <= 0 || i === w.length - 1) return { kit: m[1], player: '', num: m[2] };
+  return { kit: w.slice(0, i + 1).join(' '), player: w.slice(i + 1).join(' '), num: m[2] };
+}
+// Rugbedrukking op de productfoto (nummer + naam), decoratief: de volle naam staat in alt/link.
+const kitPrintHtml = s => s.num ? `<span class="kit-print" aria-hidden="true"><b>${esc(s.num)}</b>${esc(s.player)}</span>` : '';
+
 // "Op voorraad" = voorraadartikel (in_voorraad) én nog echt leverbaar; een uitverkocht voorraadshirt hoort niet onder 1–2 werkdagen.
 function productInVoorraad(p) {
   return !!p && parseInt(p.in_voorraad, 10) === 1 && (productHasSellableStock(p, "fan") || productHasSellableStock(p, "player"));
@@ -1262,7 +1258,15 @@ function searchAliases(q) {
   return Object.keys(SEARCH_ALIASES).reduce((s, k) => s.replace(new RegExp(`(^|\\s)${k}(?=\\s|$)`, 'g'), `$1${SEARCH_ALIASES[k]}`), q);
 }
 
-function getProductSearchScore(p, queryRaw) {
+const SEARCH_STOPWORDS = new Set(['shirt', 'shirts', 'shirtje', 'tenue', 'tenues', 'voetbalshirt', 'voetbalshirts', 'jersey', 'trui', 'van', 'met', 'de', 'het', 'een']);
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+const wordStart = (text, t) => new RegExp(`\\b${reEsc(t)}`).test(text);
+// Eén letter telt alleen als woordbegin ("k" → Kane, Korea), anders ook midden in een woord.
+const tokenHit = (hay, t) => wordStart(hay, t) || (t.length > 1 && hay.includes(t));
+
+// loose=false: elk woord moet passen. loose=true: losse woorden die nergens voorkomen
+// ("harry kane", "kane shirt") tellen niet mee, zolang er minstens één echt woord (≥3 tekens) past.
+function getProductSearchScore(p, queryRaw, loose = false) {
   const q = searchAliases(normalizeSearchText(queryRaw));
   if (!q) return 0;
 
@@ -1272,17 +1276,16 @@ function getProductSearchScore(p, queryRaw) {
   const path = normalizeSearchText(String(p.kits_path || '').replace(/\\/g, '/'));
   const season = normalizeSearchText(CONFIG.season || '');
   const hay = `${name} ${league} ${cat} ${path} ${season}`.trim();
-  const tokens = q.split(' ').filter(Boolean);
-  if (!tokens.length) return 0;
+  const all = q.split(' ').filter(Boolean);
+  if (!all.length) return 0;
+  // Algemene woorden ("kane shirt") niet laten meetellen, tenzij er niets anders getypt is
+  const real = all.filter((t) => !SEARCH_STOPWORDS.has(t));
+  const tokens = real.length ? real : all;
 
-  // Every token must match strongly (word-start or full token inside the text).
-  const allTokensMatch = tokens.every((t) => {
-    if (t.length <= 1) return false;
-    return new RegExp(`\\b${t}`).test(hay) || hay.includes(t);
-  });
-  if (!allTokensMatch) return 0;
+  const hits = tokens.filter((t) => tokenHit(hay, t));
+  if (loose ? !hits.some((t) => t.length >= 3) : hits.length !== tokens.length) return 0;
 
-  let score = 0;
+  let score = hits.length * 60;
   if (name === q) score += 300;
   if (name.startsWith(q)) score += 220;
   if (name.includes(q)) score += 170;
@@ -1290,14 +1293,25 @@ function getProductSearchScore(p, queryRaw) {
   if (cat.includes(q)) score += 70;
   if (path.includes(q)) score += 40;
 
-  for (const t of tokens) {
+  for (const t of hits) {
     if (name.startsWith(t)) score += 40;
-    if (new RegExp(`\\b${t}`).test(name)) score += 26;
-    if (new RegExp(`\\b${t}`).test(league)) score += 18;
-    if (new RegExp(`\\b${t}`).test(cat)) score += 10;
+    if (wordStart(name, t)) score += 26;
+    if (wordStart(league, t)) score += 18;
+    if (wordStart(cat, t)) score += 10;
   }
 
   return score;
+}
+
+// Gerangschikte zoekresultaten: eerst exact (alle woorden), lukt dat niet dan de beste gedeeltelijke treffers.
+function searchProducts(list, queryRaw) {
+  const rank = (loose) => list
+    .map((p) => ({ p, s: getProductSearchScore(p, queryRaw, loose) }))
+    .filter((x) => x.s > 0)
+    .sort((a, b) => b.s - a.s)
+    .map((x) => x.p);
+  const strict = rank(false);
+  return strict.length ? strict : rank(true);
 }
 
 function applyNavSearch() {
@@ -1376,18 +1390,6 @@ function setGalleryMainImage(filename, thumbEl) {
   if (thumbEl) thumbEl.classList.add('on');
   else if (thumbs[0]) thumbs[0].classList.add('on');
   updateGalleryArrows();
-}
-
-function switchMaten(v) {
-  ['fan','player'].forEach(t => {
-    const tab = document.getElementById('mt-'+t);
-    if (tab) { tab.classList.toggle('on', t===v); tab.setAttribute('aria-selected', t===v ? 'true' : 'false'); }
-    const panel = document.getElementById('mp-'+t);
-    if (panel) panel.classList.toggle('on', t===v);
-    // Snelle gids wisselt mee (player-chips stonden altijd hidden)
-    const chips = document.getElementById('sizeChips' + (t === 'fan' ? 'Fan' : 'Player'));
-    if (chips) chips.hidden = t !== v;
-  });
 }
 
 

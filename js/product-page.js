@@ -327,17 +327,6 @@ function parseIdFromQuery(){
   return Number.isFinite(fromId) ? fromId : null;
 }
 
-// ── BACK TO TOP ──
-(function(){
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'back-to-top';
-  btn.title = 'Terug naar boven';
-  btn.innerHTML = '↑';
-  btn.onclick = () => (typeof kbeScrollToTop === 'function' ? kbeScrollToTop() : window.scrollTo(0, 0));
-  document.body.appendChild(btn);
-  window.addEventListener('scroll', () => btn.classList.toggle('on', window.scrollY > 300), {passive:true});
-})();
 
 Promise.all([
   fetch('api/config.php').then(r=>r.json()).catch(()=>({})),
@@ -794,6 +783,12 @@ function addToCart(){
   new IntersectionObserver(([e]) => {
     bar.classList.toggle('on', !e.isIntersecting && e.boundingClientRect.top < 0);
   }).observe(btn);
+})();
+
+// Maattabel-venster: klik op de achtergrond sluit het (Escape en ✕ doet <dialog> zelf)
+(function initSizeGuideDialog() {
+  const dlg = document.getElementById('sizeGuideDlg');
+  if (dlg) dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
 })();
 
 function openStickyWhatsApp() {

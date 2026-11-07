@@ -30,6 +30,8 @@ if ($base !== '') {
         ['retro',       '0.8', 'weekly'],
         ['kids',        '0.7', 'weekly'],
         ['voorraad',    '0.8', 'daily'],
+        ['maattabel.php', '0.5', 'monthly'],
+        ['faq.php',     '0.5', 'monthly'],
     ];
     foreach ($static as [$path, $prio, $freq]) {
         $urls[] = ['loc' => $base . '/' . $path, 'changefreq' => $freq, 'priority' => $prio];

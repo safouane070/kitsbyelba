@@ -36,6 +36,8 @@
   --r-lg:16px;
   --r-control:10px;  /* knoppen, velden, maatvakjes */
   --r-pill:999px;    /* filterchips, tellers */
+  --container:1360px; /* één paginabreedte: elke sectie op dezelfde linkerrand als logo/nav */
+  --gutter:48px;
   --ease-out:cubic-bezier(.23,1,.32,1);
   --shadow-sm:0 1px 3px rgba(24,26,23,.05),0 1px 2px rgba(24,26,23,.04);
   --shadow:0 6px 24px rgba(24,26,23,.08);
@@ -45,7 +47,7 @@
      stacking (0–25) blijft rauw; alleen page-chrome & overlays gebruiken tokens. */
   --z-nav-menu:89;      /* uitklappend mobiel nav-menu, net onder de balk */
   --z-nav:90;           /* sticky nav-balk */
-  --z-back-to-top:140;  /* zwevende terug-naar-boven knop */
+
   --z-float:150;        /* whatsapp-float / generieke drawer-backdrop */
   --z-float-raised:151; /* drawer boven zijn backdrop */
   --z-drawer-bg:180;    /* shop filter/refine backdrop */
@@ -541,3 +543,67 @@ button,input,select,textarea{font-family:inherit}
 .ham:hover{border-color:var(--ink)}
 .ham span{width:20px;height:2px;background:var(--ink);display:block;transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s}
 
+
+/* ── HULPKLASSEN ── */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ── MAATTABEL (includes/sizeguide.php — productpagina-venster + maattabel.php) ── */
+.sg{font-size:14px;color:var(--ink2);line-height:1.6}
+.sg-lede{margin:0 0 20px;text-wrap:pretty}
+.sg-lede strong{color:var(--ink)}
+.sg-h{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--ink);margin:0 0 10px}
+.sg-table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px}
+.sg-table th,.sg-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.sg-table th{font-size:12px;font-weight:600;color:var(--ink3);background:var(--cream2)}
+.sg-table td:first-child{font-weight:600;color:var(--ink)}
+.sg-table tbody tr:last-child td{border-bottom:0}
+.sg-quick{border:1px solid var(--line);border-radius:var(--r-control);overflow:hidden;border-collapse:separate;border-spacing:0}
+.sg-note{margin:8px 0 0;font-size:13px;color:var(--ink3)}
+.sg-more{margin-top:12px;border:1px solid var(--line);border-radius:var(--r-control);background:var(--white)}
+.sg-more>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:0 16px;cursor:pointer;list-style:none;font-weight:600;color:var(--ink)}
+.sg-more>summary::-webkit-details-marker{display:none}
+.sg-more>summary::after{content:"";width:8px;height:8px;border-right:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:translateY(-3px) rotate(45deg);transition:transform .2s var(--ease-out);flex-shrink:0}
+.sg-more[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
+.sg-more>summary:focus-visible{outline:2px solid var(--ink);outline-offset:-2px;border-radius:var(--r-control)}
+.sg-more .sg-scroll{overflow-x:auto;border-top:1px solid var(--line);-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.sg-more .sg-note{padding:0 16px 14px}
+
+/* Maattabel-venster op de productpagina */
+.sg-dialog{margin:auto;width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 48px);padding:0;border:0;border-radius:var(--r-lg);background:var(--cream);color:var(--ink);box-shadow:0 24px 64px rgba(24,26,23,.24)}
+.sg-dialog::backdrop{background:rgba(24,26,23,.45)}
+.sg-dialog[open]{animation:sgIn .22s var(--ease-out)}
+@keyframes sgIn{from{opacity:0;transform:translateY(8px) scale(.98)}}
+.sg-dialog-head{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px;background:var(--cream);border-bottom:1px solid var(--line)}
+.sg-dialog-head h2{margin:0;font-family:var(--font-display);font-size:20px;font-weight:700}
+.sg-close{width:40px;height:40px;border:1.5px solid var(--line2);border-radius:var(--r-control);background:var(--white);color:var(--ink);font-size:16px;cursor:pointer}
+.sg-close:hover{border-color:var(--ink)}
+.sg-dialog .sg{padding:20px}
+@media (max-width:560px){
+  .sg-dialog{width:100vw;max-width:100vw;max-height:88dvh;margin:auto 0 0;border-radius:var(--r-lg) var(--r-lg) 0 0}
+}
+
+/* ── INFOPAGINA'S (faq.php, maattabel.php) ── */
+.info-page{max-width:760px;margin:0 auto;padding:40px 20px 72px}
+.info-page h1{font-family:var(--font-display);font-size:clamp(30px,5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.05;color:var(--ink);margin:0 0 12px}
+.info-lede{font-size:16px;color:var(--ink3);line-height:1.6;margin:0 0 32px;max-width:60ch}
+.faq-list{border-top:1px solid var(--line)}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-item>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;padding:14px 0;cursor:pointer;list-style:none;font-size:16px;font-weight:600;color:var(--ink)}
+.faq-item>summary::-webkit-details-marker{display:none}
+.faq-item>summary::after{content:"";width:9px;height:9px;border-right:1.8px solid var(--ink3);border-bottom:1.8px solid var(--ink3);transform:translateY(-3px) rotate(45deg);transition:transform .2s var(--ease-out);flex-shrink:0}
+.faq-item[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
+.faq-item>summary:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.faq-item>div{padding:0 0 18px;font-size:15px;color:var(--ink2);line-height:1.7;max-width:62ch}
+.faq-item a,.info-page .sg a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.info-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-top:40px;padding:22px 24px;border:1px solid var(--line);border-radius:var(--r);background:var(--white)}
+.info-cta p{margin:0;font-size:15px;color:var(--ink2)}
+.info-cta p strong{display:block;color:var(--ink);font-size:16px}
+.info-wa{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:var(--r-control);background:var(--wa);color:var(--ink);font-weight:600;font-size:14px;text-decoration:none}
+.info-wa:hover{background:#1ebe5a}
+.info-wa svg{width:18px;height:18px;fill:currentColor}
+.info-more{margin:28px 0 0;font-size:15px}
+.info-more a{color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
+/* Paginarand smaller op tablet/mobiel (zelfde maat voor elke sectie) */
+@media (max-width:960px){:root{--gutter:24px}}
+@media (max-width:560px){:root{--gutter:16px}}

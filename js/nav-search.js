@@ -44,13 +44,24 @@
       loaded = true; cb && cb();
     }).catch(function () { loaded = true; cb && cb(); });
   }
-  function score(p, q) {
-    var name = String(p.name || '').toLowerCase();
-    var hay = (name + ' ' + String(p.league || '') + ' ' + String(p.cat || '')).toLowerCase();
-    if (hay.indexOf(q) === -1) return 0;
-    if (name.indexOf(q) === 0) return 3;
-    if (name.indexOf(q) !== -1) return 2;
-    return 1;
+  // Zelfde regels als getProductSearchScore/searchProducts in js/shop-core.js (deze pagina's laden shop-core niet).
+  function norm(s) {
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9\s/.-]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  var STOP = { shirt: 1, shirts: 1, shirtje: 1, tenue: 1, tenues: 1, voetbalshirt: 1, voetbalshirts: 1, jersey: 1, trui: 1, van: 1, met: 1, de: 1, het: 1, een: 1 };
+  function wordStart(text, t) { return new RegExp('\\b' + t.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')).test(text); }
+  function tokenHit(hay, t) { return wordStart(hay, t) || (t.length > 1 && hay.indexOf(t) !== -1); }
+  function score(p, q, loose) {
+    var name = norm(p.name), hay = name + ' ' + norm(p.league) + ' ' + norm(p.cat);
+    var all = q.split(' ').filter(Boolean);
+    var real = all.filter(function (t) { return !STOP[t]; });
+    var tokens = real.length ? real : all;
+    var hits = tokens.filter(function (t) { return tokenHit(hay, t); });
+    if (loose ? !hits.some(function (t) { return t.length >= 3; }) : hits.length !== tokens.length) return 0;
+    var s = hits.length * 60 + (name.indexOf(q) === 0 ? 220 : 0) + (name.indexOf(q) !== -1 ? 170 : 0);
+    hits.forEach(function (t) { if (wordStart(name, t)) s += 26; });
+    return s;
   }
   // Kopie van SEARCH_ALIASES in js/shop-core.js.
   var ALIASES = {
@@ -66,13 +77,17 @@
   }
   function suggest(qraw, limit) {
     limit = limit || 8;
-    var q = aliases(String(qraw || '').trim().toLowerCase());
+    var q = aliases(norm(qraw));
     if (!PRODUCTS.length) return [];
     if (!q) return PRODUCTS.filter(function (p) { return p.image || p.image2 || p.image3; }).slice(0, limit);
-    return PRODUCTS.map(function (p) { return { p: p, s: score(p, q) }; })
-      .filter(function (x) { return x.s > 0; })
-      .sort(function (a, b) { return b.s - a.s; })
-      .slice(0, limit).map(function (x) { return x.p; });
+    function rank(loose) {
+      return PRODUCTS.map(function (p) { return { p: p, s: score(p, q, loose) }; })
+        .filter(function (x) { return x.s > 0; })
+        .sort(function (a, b) { return b.s - a.s; })
+        .map(function (x) { return x.p; });
+    }
+    var strict = rank(false);
+    return (strict.length ? strict : rank(true)).slice(0, limit);
   }
   function slugify(s) { return String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); }
   function go(id) {

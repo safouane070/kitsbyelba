@@ -26,102 +26,89 @@
   touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
 
-/* ── HERO (single, product-forward) ── */
-.hero{
-  position:relative;overflow:hidden;isolation:isolate;
-  background:#12110e;
-  background-image:radial-gradient(125% 120% at 14% 8%, #2a2620 0%, #16140f 52%, #0b0a08 100%);
+/* ── HERO: acht echte rugshirts (eigen voorraad, uitgeknipt, kleur gelijkgetrokken) als schuivende waaier op een warm vlak, tekst ernaast.
+   Posities in cqw: de waaier schaalt mee met zijn eigen breedte, op elk scherm dezelfde compositie. ── */
+.hero{max-width:var(--container);margin:0 auto;box-sizing:border-box;padding:clamp(16px,2vw,28px) var(--gutter) 0}
+.hero-frame{
+  position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--cream3);
+  display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;
+  min-height:clamp(440px,calc(100svh - 260px),540px);
 }
-/* Shirt-collage als RUSTIGE achtergrond: zacht wazig + gedimd, zodat het sfeer geeft maar
-   niet concurreert met de 4 kaartjes (die zijn de ster). */
-.hero-bg{
-  position:absolute;inset:0;z-index:0;
-  background-size:cover;background-position:center;
-  opacity:.58;filter:blur(2px) saturate(.94);transform:scale(1.04);pointer-events:none;
+.hero-copy{padding:clamp(28px,4vw,64px);padding-right:0;position:relative;z-index:2}
+.hero .hero-h1{
+  margin:0 0 14px;font-family:var(--font-display);font-weight:700;color:var(--ink);
+  font-size:clamp(30px,3.4vw,48px);line-height:1.04;letter-spacing:-.03em;text-wrap:balance;
 }
-/* Gelijkmatige, diepe donkere sluier → één rustig "podium" waarop kop/CTA + kaartjes poppen.
-   Twee lagen: een egale basislaag + een lichte extra dip links voor de tekst. */
-.hero::before{
-  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:
-    linear-gradient(90deg, rgba(10,9,7,.40) 0%, rgba(10,9,7,.16) 55%, rgba(10,9,7,.26) 100%),
-    linear-gradient(0deg,  rgba(9,8,6,.62),  rgba(9,8,6,.62));
+.hero-sub{margin:0 0 24px;font-size:16px;line-height:1.55;color:var(--ink2);max-width:40ch;text-wrap:pretty}
+.hero-btns{flex-wrap:wrap;gap:10px}
+.hero-btns a{display:inline-flex;align-items:center;justify-content:center;width:auto;min-height:48px;padding:0 24px;text-decoration:none}
+
+.hero-kits{position:relative;align-self:stretch;container-type:inline-size;min-height:100%}
+/* Schuivende waaier. Stapelvolgorde staat vast van links naar rechts (elk shirt ligt op zijn linker buur,
+   zoals een waaier speelkaarten). Omdat alles dezelfde kant op schuift verandert die volgorde nooit tijdens
+   de beweging: er springt dus nooit een mouw door een ander shirt heen. De posities liggen zo ver uit elkaar
+   dat een buur alleen mouw en zijkant bedekt, nooit het nummer.
+   Alleen transform-eigenschappen (soepel op de GPU); de schaduw zit in de afbeelding (48px rand),
+   48.3cqw = 42cqw shirt + rand. */
+.hero-kit{
+  position:absolute;left:56%;bottom:-3.15cqw;width:48.3cqw;height:auto;z-index:var(--z,1);opacity:var(--o,1);
+  translate:calc(-50% + var(--x,0cqw)) calc(-1 * var(--y,0cqw));scale:var(--s,1);rotate:var(--r,0deg);
+  transform-origin:50% 93%;will-change:translate,scale,rotate;
+  --ease-slide:cubic-bezier(.5,0,.15,1);
+  transition:translate 1.1s var(--ease-slide),scale 1.1s var(--ease-slide),rotate 1.1s var(--ease-slide),opacity .8s var(--ease-slide);
 }
-.hero::after{
-  content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:radial-gradient(60% 55% at 85% 30%, rgba(212,171,56,.15), transparent 60%);
+.hero-kit.no-t{transition:none}
+/* Plek 3 = midden en het grootst; "out" = links weg, "in" = rechts klaar om binnen te komen (beide onzichtbaar) */
+.hero-kit[data-slot="0"]{--x:-51cqw;--y:22cqw;--s:.56;--r:-11deg;--z:1}
+.hero-kit[data-slot="1"]{--x:-38cqw;--y:16cqw;--s:.68;--r:-7deg; --z:2}
+.hero-kit[data-slot="2"]{--x:-21cqw;--y:10cqw;--s:.82;--r:-3.5deg;--z:3}
+.hero-kit[data-slot="3"]{--x:0cqw;  --y:6cqw; --s:1;  --r:0deg;  --z:4}
+.hero-kit[data-slot="4"]{--x:21cqw; --y:10cqw;--s:.82;--r:3.5deg;--z:5}
+.hero-kit[data-slot="5"]{--x:38cqw; --y:16cqw;--s:.68;--r:7deg;  --z:6}
+.hero-kit[data-slot="6"]{--x:51cqw; --y:22cqw;--s:.56;--r:11deg; --z:7}
+.hero-kit[data-slot="out"]{--x:-62cqw;--y:28cqw;--s:.46;--r:-15deg;--z:0;--o:0}
+.hero-kit[data-slot="in"]{--x:62cqw; --y:28cqw;--s:.46;--r:15deg; --z:8;--o:0}
+/* Binnenkomst bij laden: van het midden naar buiten, elk shirt een tik later */
+@media (prefers-reduced-motion:no-preference){
+  .hero-kit{animation:kitIn .7s var(--ease-out) both;animation-delay:calc(var(--d,0) * 70ms + 80ms)}
+  .hero-kit[data-slot="2"],.hero-kit[data-slot="4"]{--d:1}
+  .hero-kit[data-slot="1"],.hero-kit[data-slot="5"]{--d:2}
+  .hero-kit[data-slot="0"],.hero-kit[data-slot="6"]{--d:3}
+  .hero-copy{animation:heroRise .5s var(--ease-out) both}
 }
-.hero-inner{
-  position:relative;z-index:3;max-width:1360px;margin:0 auto;
-  padding:clamp(44px,6vw,84px) clamp(24px,5vw,64px);
-  display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(32px,5vw,56px);align-items:center;
-  min-height:clamp(440px,60vh,600px);
-}
-.hero-copy{max-width:620px}
-.hero-pill{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(212,171,56,.13);border:1px solid rgba(212,171,56,.42);color:var(--gold2);
-  padding:7px 16px;border-radius:100px;
-  font-size:11.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:22px;
-}
-.hero-pill strong{color:#fff}
-.hero-h1{
-  font-family:var(--font-display);
-  font-size:clamp(40px,6.2vw,76px);font-weight:700;line-height:.97;letter-spacing:-.03em;
-  color:#fff;margin-bottom:18px;text-wrap:balance;text-shadow:0 2px 22px rgba(0,0,0,.6),0 1px 3px rgba(0,0,0,.5);
-}
-.hero-h1 em{font-style:normal;color:var(--gold2)}
-.hero-sub{
-  font-size:clamp(15px,1.35vw,17px);color:rgba(255,255,255,.82);
-  line-height:1.65;margin-bottom:30px;max-width:47ch;text-shadow:0 1px 12px rgba(0,0,0,.7);
-}
-.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:30px}
-.hero-btn{
-  padding:16px 34px;font-family:var(--font-body);
-  font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  cursor:pointer;transition:transform .2s var(--ease-out),background .2s,box-shadow .2s;
-  border-radius:10px;border:1.5px solid transparent;line-height:1;
-}
-.hero-btn.primary{background:var(--gold2);color:var(--ink)}
-.hero-btn.primary:hover{background:#e6c14a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(212,171,56,.32)}
-.hero-btn.ghost{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.3);color:#fff}
-.hero-btn.ghost:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
-.hero-shots{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:16px;align-content:center;
-}
-.hero-shot{
-  position:relative;border-radius:14px;overflow:hidden;aspect-ratio:3/3.7;
-  background:linear-gradient(160deg,#26231c,#141210);
-  border:1px solid rgba(255,255,255,.09);box-shadow:0 20px 42px rgba(0,0,0,.42);
-  cursor:pointer;transition:transform .3s var(--ease-out),box-shadow .3s;
-}
-.hero-shot:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 30px 58px rgba(0,0,0,.5)}
-.hero-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.hero-shot-tag{
-  position:absolute;left:0;right:0;bottom:0;z-index:2;
-  padding:22px 12px 11px;font-size:11.5px;font-weight:700;letter-spacing:.02em;color:#fff;line-height:1.25;
-  background:linear-gradient(to top,rgba(0,0,0,.82),transparent);
-}
-.hero-shot-badge{
-  position:absolute;top:9px;left:9px;z-index:2;font-size:9px;font-weight:800;letter-spacing:.1em;
-  text-transform:uppercase;padding:3px 8px;border-radius:5px;
-}
-.hero-shot-badge.new{background:var(--accent);color:#fff}
-.hero-shot-badge.hot{background:var(--gold2);color:var(--ink)}
+@keyframes kitIn{from{opacity:0;transform:translateY(28px)}}
+@keyframes heroRise{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){.hero-kit{transition:none}}
+/* Middelgroot scherm: de tekstkolom is smal, dus de buitenste linker plek blijft leeg (anders valt een shirt onder de tekst) */
+@media(min-width:901px) and (max-width:1240px){.hero-kit[data-slot="0"]{--o:0}}
 @media(max-width:900px){
-  .hero-inner{grid-template-columns:1fr;gap:26px;min-height:0}
-  .hero-shots{grid-template-columns:repeat(4,1fr);gap:10px}
-  /* Gestapelde hero: verticale sluier zodat kop+CTA leesbaar blijven boven de collage. */
-  .hero::before{background:linear-gradient(180deg, rgba(8,10,6,.90) 0%, rgba(10,14,9,.72) 50%, rgba(8,10,6,.86) 100%)}
+  /* Gestapeld: waaier boven, tekst eronder in hetzelfde vlak */
+  .hero-frame{grid-template-columns:minmax(0,1fr);min-height:0}
+  .hero-kits{order:-1;aspect-ratio:16/9;min-height:0}
+  .hero-kit{left:50%}
+  .hero-copy{padding:8px 28px 32px}
 }
 @media(max-width:560px){
-  .hero-shots{grid-template-columns:repeat(2,1fr);gap:12px}
-  .hero-shot:nth-child(n+3){display:none}
+  .hero{padding-top:12px}
+  /* Telefoon: vijf zichtbare plekken, grotere shirts; de buitenste twee plekken vallen weg */
+  .hero-kits{aspect-ratio:3/2}
+  .hero-kit[data-slot="0"],.hero-kit[data-slot="6"]{--o:0}
+  .hero-kit[data-slot="3"]{--y:5cqw; --s:1.29}
+  .hero-kit[data-slot="2"]{--x:-27cqw;--y:10cqw;--s:1}
+  .hero-kit[data-slot="4"]{--x:27cqw; --y:10cqw;--s:1}
+  .hero-kit[data-slot="1"]{--x:-47cqw;--y:16cqw;--s:.81}
+  .hero-kit[data-slot="5"]{--x:47cqw; --y:16cqw;--s:.81}
+  .hero-copy{padding:4px 20px 22px}
+  .hero .hero-h1{font-size:28px;margin-bottom:10px}
+  .hero-sub{font-size:15px;margin-bottom:18px}
+  .hero .hero-btns{flex-direction:row;align-items:stretch}
+  .hero-btns a{flex:1 1 0;padding:0 14px}
 }
-@media (prefers-reduced-motion: reduce){
-  .hero-shot,.hero-btn{transition:none}
-  .hero-shot:hover{transform:none}
-}
+/* Elk shirt is een link naar zijn product */
+.hero-kit{display:block}
+.hero-kit img{display:block;width:100%;height:auto;pointer-events:none}
+.hero-kit:focus-visible{outline:none}
+.hero-kit:focus-visible img{outline:2px solid var(--ink);outline-offset:-10%;border-radius:12px}
 
 /* ── FEATURED PRODUCTS ── */
 .featured{max-width:1360px;margin:0 auto;padding:72px 48px 8px}
@@ -140,12 +127,10 @@
 .featured-link svg{transition:transform .22s var(--ease-out)}
 .featured-link:hover svg{transform:translateX(4px)}
 
-.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-
 /* Op voorraad: kop + zoekveld */
 .featured-sub{margin:0;color:var(--ink3);font-size:15px;line-height:1.6;max-width:52ch;text-wrap:pretty}
 .featured-tools{display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:flex-end}
-.featured-count{font-variant-numeric:tabular-nums;color:var(--ink4)}
+.featured-count{font-variant-numeric:tabular-nums;color:var(--ink3)}
 .featured-count:empty{display:none}
 .stock-search{
   display:flex;align-items:center;gap:9px;height:44px;padding:0 16px;min-width:260px;
@@ -156,7 +141,7 @@
 .stock-search:focus-within{border-color:var(--ink);box-shadow:0 0 0 3px rgba(24,26,23,.08)}
 .stock-search input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:inherit;font-size:16px;color:var(--ink)}
 .stock-search input::placeholder{color:var(--ink3)}
-.stock-search input::-webkit-search-cancel-button{cursor:pointer}
+.stock-search input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;width:18px;height:18px;margin-left:6px;cursor:pointer;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23181a17' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center/14px no-repeat}
 
 /* Featured product cards */
 .featured-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
@@ -183,27 +168,19 @@
   font-size:64px;position:relative;overflow:hidden;
 }
 .hcard-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-/* Rugbedrukking: nummer + spelersnaam, zoals op het shirt */
-.hcard-print{
-  position:absolute;left:10px;bottom:10px;max-width:calc(100% - 20px);
-  display:flex;align-items:baseline;gap:7px;padding:6px 11px 6px 9px;border-radius:8px;
-  background:rgba(24,26,23,.84);color:var(--cream);
-  font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.hcard-print b{font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--gold2);font-variant-numeric:tabular-nums}
 .featured .hcard-name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;min-height:2.8em}
 .hcard-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:6px}
 .featured .hcard-price{font-size:14px;color:var(--ink)}
 .hcard-sizes{font-size:11px;font-weight:600;color:var(--ink3);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .hero-grid-empty{
-  grid-column:1 / -1;align-self:center;padding:28px 24px;border:1px dashed var(--line);border-radius:10px;
-  background:var(--cream2);text-align:center;max-width:420px;margin:0 auto;
+  grid-column:1 / -1;padding:40px 16px 48px;text-align:center;max-width:440px;margin:0 auto;
 }
-.hero-grid-empty p{margin:0 0 16px;font-size:14px;color:var(--ink3);line-height:1.65}
-.hero-grid-empty .nav-search-empty{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px;color:var(--ink3)}
-.hero-grid-empty .nav-search-empty strong{color:var(--ink)}
+.hero-grid-empty p{margin:0 0 20px;font-size:15px;color:var(--ink3);line-height:1.6;text-wrap:pretty}
+.hero-grid-empty .nav-search-empty{display:flex;flex-direction:column;align-items:center;gap:0;padding:0;font-size:15px;color:var(--ink3)}
+.hero-grid-empty .nav-search-empty span{max-width:34ch;line-height:1.6;text-wrap:pretty}
+.hero-grid-empty .nav-search-wa{margin-top:20px}
+.hero-grid-empty .nav-search-empty strong{margin:0 0 8px;font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--ink)}
 
 .fpill{
   background:var(--white);border:1.5px solid var(--line);color:var(--ink3);
@@ -322,14 +299,9 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 }
 
 /* ── BACK TO TOP ── */
-.back-to-top{position:fixed;bottom:96px;right:28px;width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--cream);border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(10px);transition:opacity .25s,transform .25s;z-index:var(--z-back-to-top);box-shadow:0 2px 12px rgba(28,26,23,.18)}
-.back-to-top.on{opacity:1;transform:translateY(0)}
-.back-to-top:hover{background:var(--ink2)}
 
 /* ── RESPONSIVE ── */
 @media(max-width:960px){
-  .hero-inner{grid-template-columns:1fr;padding:40px 24px;min-height:auto;gap:32px}
-  .hero-left{padding:48px 0 0}
   
   
   .nav-links a{font-size:13px;padding:10px 0;display:block;border-bottom:1px solid var(--line);letter-spacing:.1em}
@@ -345,23 +317,20 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
   
   
   
-  .nav-top,.shop,.foot-inner,.foot-bottom{padding-left:24px;padding-right:24px}
+  .nav-top,.shop{padding-left:24px;padding-right:24px}
   .shop{padding-top:56px;padding-bottom:56px}
   
   
   
   
-  .foot-inner{grid-template-columns:1fr 1fr;padding-top:40px;padding-bottom:24px;gap:28px}
-  .foot-bottom{flex-direction:column;gap:6px;text-align:center;padding-top:16px;padding-bottom:16px}
+  
+  
   
   
   
   
   
 
-  .hero{grid-template-columns:1fr;padding:40px 24px;min-height:auto;gap:32px}
-  .hero-left{padding:48px 0 0}
-  .hero-right{padding:0 0 24px;gap:10px}
   .hcard:nth-child(1),.hcard:nth-child(2),.hcard:nth-child(3),.hcard:nth-child(4){margin-top:0!important}
   .banner-slide{min-height:auto;padding:28px 0}
   .banner-content{padding:0 24px}
@@ -375,32 +344,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
   color:var(--ink);margin-bottom:14px;text-wrap:balance;
 }
 
-.maten-howto{max-width:1100px;margin:0 auto 36px;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:left}
-.maten-howto li{display:flex;gap:14px;align-items:flex-start;background:var(--cream);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
-.maten-howto-n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:var(--font-display)}
-.maten-howto strong{display:block;font-size:14px;color:var(--ink);margin-bottom:4px;font-weight:700}
-.maten-howto p{font-size:12.5px;color:var(--ink3);line-height:1.6;margin:0}
-@media(max-width:760px){.maten-howto{grid-template-columns:1fr}}
-
 /* display:grid wint anders van het native [hidden] — dan staan fan- én player-chips tegelijk */
-.size-chips[hidden]{
-  display:none !important;
-}
-
-.size-chip-lbl{font-size:15px;font-weight:700;letter-spacing:.08em;color:var(--ink);margin-bottom:5px;line-height:1.2}
-.size-chip-info{font-size:12px;color:var(--ink3);line-height:1.6}
-.size-chip-tag{font-size:9px;font-weight:700;color:#fff;background:var(--accent);border-radius:4px;padding:1px 5px;margin-top:4px;display:inline-block;letter-spacing:.4px;text-transform:uppercase}
-
-.vtab.on{background:var(--cream2);color:var(--ink);box-shadow:inset 0 -3px 0 var(--accent)}
-
-.maten-fan-player-wrap .maten-table-scroll{position:relative;overflow:visible}
-.maten-tab-hint{
-  font-size:13px;color:var(--ink3);line-height:1.65;text-align:center;
-  padding:14px 18px 12px;margin:0;
-  border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg, var(--cream3) 0%, var(--cream) 100%);
-}
-.maten-tab-hint strong{color:var(--ink);font-weight:600}
 
 .maten-table th{
   padding:14px 24px;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
@@ -415,30 +359,12 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 .maten-table tbody tr:hover td{background:var(--cream3)}
 
 /* KIDS Jersey — zelfde visuele taal als Fan/Player maattabel (maten-table-wrap + .maten-table) */
-.maten-kids-jersey{max-width:1100px;margin:48px auto 0;padding-top:40px;border-top:1px solid var(--line)}
 
 /* Maattabel compact: tabs boven de snelle gids, volledige cm-tabellen ingeklapt */
-#sizeguide .vtabs{max-width:1100px;margin:0 auto;border:1px solid var(--line);border-bottom:0;background:var(--cream)}
-#sizeguide .maten-grid{grid-template-columns:1fr}
-#sizeguide .maten-card{border-top:0}
-.maten-more{max-width:1100px;margin:0 auto 32px;border:1px solid var(--line);background:var(--cream)}
-.maten-more>summary{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;padding:0 22px;
-  cursor:pointer;list-style:none;font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--ink);
-}
-.maten-more>summary::-webkit-details-marker{display:none}
-.maten-more>summary span{margin-right:auto;font-family:var(--font-body);font-size:13px;font-weight:500;color:var(--ink3)}
-.maten-more>summary::after{content:"";width:9px;height:9px;border-right:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:translateY(-3px) rotate(45deg);transition:transform .2s var(--ease-out);flex-shrink:0}
-.maten-more[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
-.maten-more>summary:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
-.maten-more[open]{padding-bottom:8px}
-.maten-more .maten-table-wrap{border-left:0;border-right:0;margin-bottom:0}
-.maten-more .maten-kids-jersey{margin-top:24px;padding:24px 0 0}
-@media(max-width:560px){.maten-more>summary span{display:none}}
 
 @media(max-width:960px){
   
-  .maten-grid{grid-template-columns:1fr}
+  
   
   
   
@@ -525,25 +451,11 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 
 /* Maattabel: tabs blijven vast; alleen de tabel scrollt horizontaal op smal scherm */
 @media(max-width:720px){
-  .maten-fan-player-wrap{overflow:hidden}
-  .maten-tab-hint{font-size:12px;padding:12px 14px}
-  .maten-fan-player-wrap .maten-table-scroll{
-    overflow-x:auto;-webkit-overflow-scrolling:touch;
-    overflow-y:hidden;
-    overscroll-behavior-x:contain;
-    border:1px solid var(--line);border-radius:12px;background:var(--cream);
-    padding-right:0;padding-bottom:2px;
-    scroll-padding-right:0;
-    touch-action:pan-x;
-    scrollbar-width:none;
-    scroll-snap-type:x proximity;
-  }
-  .maten-fan-player-wrap .maten-table-scroll::-webkit-scrollbar{display:none}
-  .maten-fan-player-wrap .maten-table-scroll .maten-table{
-    min-width:640px;
-    width:max-content;
-    table-layout:auto;
-  }
+  
+  
+  
+  
+  
   .maten-table th,
   .maten-table td{
     padding:10px 12px;
@@ -560,11 +472,8 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
     box-shadow:1px 0 0 var(--line);
   }
   
-  .vtab{
-    min-height:48px;padding:14px 12px;font-size:10px;letter-spacing:.12em;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .vtab.on{font-weight:800;color:var(--ink)}
+  
+  
   
   
   .kids-maten-scroll .maten-table{
@@ -577,7 +486,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 /* Small screens: stack everything cleanly */
 @media(max-width:480px){
   /* Footer: 1 column */
-  .foot-inner{grid-template-columns:1fr;gap:28px}
+  
 
   /* Hero buttons: stack */
   
@@ -585,7 +494,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 
   /* Size guide cards */
   
-  .size-chips{grid-template-columns:repeat(2,1fr)}
+  
 
   /* Drawer font sizes */
   
@@ -600,7 +509,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 
   /* Section padding */
   .maten{padding:48px 16px}
-  .faq-sec{padding:48px 16px}
+  
   .cats{padding:40px 16px}
   .shop{padding:40px 16px}
 
@@ -618,12 +527,11 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 .social::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(58% 52% at 50% 0%,rgba(184,150,46,.07),transparent 68%)}
 .social-inner{position:relative;max-width:1180px;margin:0 auto}
 .social-head{text-align:center;margin-bottom:38px}
-.social-eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold2);margin-bottom:13px}
 .social-head .section-title{margin:0 0 12px}
 .social-sub{margin:0 auto;max-width:50ch;color:var(--ink3);font-size:15px;line-height:1.65;text-wrap:pretty}
 .social-reel{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
-.social-card{position:relative;flex:0 0 auto;width:clamp(178px,20vw,212px);aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#1f2320;border:1px solid rgba(255,255,255,.55);box-shadow:0 16px 36px -10px rgba(28,26,23,.30),0 4px 12px rgba(28,26,23,.10);transition:transform .42s cubic-bezier(.2,.7,.2,1),box-shadow .42s}
-.social-card:hover{transform:translateY(-9px);box-shadow:0 32px 60px -12px rgba(28,26,23,.38),0 10px 22px rgba(28,26,23,.15)}
+.social-card{position:relative;flex:0 0 auto;width:clamp(178px,20vw,212px);aspect-ratio:9/16;border-radius:20px;overflow:hidden;background:#1f2320;border:1px solid rgba(255,255,255,.55);box-shadow:0 16px 36px -10px rgba(28,26,23,.30),0 4px 12px rgba(28,26,23,.10);transition:transform .25s var(--ease-out),box-shadow .25s var(--ease-out)}
+.social-card:hover{transform:translateY(-4px);box-shadow:0 24px 48px -12px rgba(28,26,23,.32),0 8px 18px rgba(28,26,23,.12)}
 .social-card>img,.social-card>video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .social-card{cursor:pointer;padding:0;font:inherit;text-align:left}
 .social-card:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
@@ -637,7 +545,7 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 /* Tijdens de stille voorvertoning alleen het play-rondje tonen bij hover. */
 .social-card.previewing .play{opacity:0}
 .social-card.previewing:hover .play{opacity:1}
-.social-tag{position:absolute;top:11px;left:11px;z-index:3;background:rgba(18,20,18,.6);color:#fff;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:100px;backdrop-filter:blur(4px)}
+.social-tag{position:absolute;top:11px;left:11px;z-index:3;background:rgba(18,20,18,.6);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:100px;backdrop-filter:blur(4px)}
 .social.on .social-card{animation:socialCardIn .55s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--i,0) * 75ms)}
 @keyframes socialCardIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 .social-foot{text-align:center;margin-top:36px}
@@ -665,3 +573,33 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 .social-lb-count{position:absolute;top:24px;left:50%;transform:translateX(-50%);font-size:13px;letter-spacing:.08em;opacity:.8}
 @media(max-width:760px){.social-lb-stage{padding:64px 0 16px}.social-lb-stage img,.social-lb-stage video{border-radius:0}.social-lb .social-lb-prev,.social-lb .social-lb-next{display:none}}
 @media(prefers-reduced-motion:reduce){.social.on .social-card{animation:none}.social-card,.social-card .play::before{transition:none}}
+
+/* ── Eén paginarand (homepage): elke sectie begint op dezelfde lijn als logo en nav ── */
+.featured{max-width:var(--container);padding-left:var(--gutter);padding-right:var(--gutter)}
+.cats,.social{padding-left:0;padding-right:0}
+.cats-inner,.social-inner{max-width:var(--container);margin:0 auto;padding:0 var(--gutter);box-sizing:border-box}
+.social-head,.social-foot{text-align:left}
+.social-sub{margin:0}
+.social-reel{justify-content:flex-start}
+/* Slider op elke breedte: één rij die je veegt (of met de pijlen schuift), nooit een tweede rij */
+.social-inner{padding:0}
+.social-head,.social-foot{padding:0 var(--gutter)}
+.social-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:24px}
+.social-reel{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:var(--gutter);
+  padding:8px var(--gutter) 28px;margin-bottom:-14px;scrollbar-width:none;overscroll-behavior-x:contain}
+.social-reel::-webkit-scrollbar{display:none}
+.social-card{scroll-snap-align:start}
+.social-head>*{grid-column:1}
+.social-head>.social-nav{grid-column:2;grid-row:1 / span 2;display:flex;gap:8px}
+.social-head>.social-nav[hidden]{display:none}
+.social-arrow{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;
+  border:1.5px solid var(--line2);background:var(--white);color:var(--ink);cursor:pointer;
+  transition:border-color .2s,opacity .2s,transform .16s var(--ease-out)}
+.social-arrow svg{width:18px;height:18px}
+.social-arrow:hover:not(:disabled){border-color:var(--ink)}
+.social-arrow:active:not(:disabled){transform:scale(.94)}
+.social-arrow:disabled{opacity:.35;cursor:default}
+.social-arrow:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media(max-width:720px),(hover:none){.social-head>.social-nav{display:none}} /* telefoon: gewoon vegen */
+
+

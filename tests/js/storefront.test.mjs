@@ -107,6 +107,22 @@ test('zoeken: diakrieten, aliassen en spelersnamen', () => {
   assert.equal(run("getNavSearchSuggestions('portugal', 1).length"), 1, 'limit wordt gerespecteerd');
 });
 
+test('zoeken tijdens typen: 1 letter, extra woorden en onzin', () => {
+  const { run } = shopPage();
+  const names = (q) => JSON.parse(run(`JSON.stringify(searchProducts(PRODUCTS, ${JSON.stringify(q)}).map(p => p.id))`));
+  assert.ok(names('r').includes(1), '"r" (eerste letter) vindt Ronaldo al');
+  assert.ok(!names('r').includes(4), '1 letter alleen op woordbegin: de r in "Barcelona" telt niet');
+  assert.deepEqual(names('ronaldo'), [1]);
+  assert.deepEqual(names('cristiano ronaldo'), [1], 'onbekende voornaam blokkeert niet');
+  assert.deepEqual(names('ronaldo shirt'), [1], 'los woord "shirt" blokkeert niet');
+  run("PRODUCTS.push(Object.assign({}, PRODUCTS[3], { id: 99, name: 'FC Barcelona Special Zomershirt Lamine Yamal #10' }))");
+  assert.deepEqual(names('ronaldo shirt'), [1], '"shirt" haalt geen Zomershirt erbij');
+  assert.ok(names('shirt').includes(99), 'alleen "shirt" getypt zoekt wél op shirt');
+  assert.deepEqual(names('portugal leao').slice(0, 1), [3], 'meeste woorden passend staat bovenaan');
+  assert.deepEqual(names('qqqq'), [], 'onzin geeft niets');
+  assert.deepEqual(names('xx yy'), [], 'alleen korte onzin-woorden geven niets');
+});
+
 test('Enter in zoekbalk: 1 treffer → product, meerdere op homepage → shop.html?q=', () => {
   const els = { navSearchInput: { value: 'portugal' }, grid: null };
   const { run, location } = shopPage({ els });
@@ -119,9 +135,9 @@ test('Enter in zoekbalk: 1 treffer → product, meerdere op homepage → shop.ht
   assert.equal(run('__went'), 4, 'precies één treffer → direct naar dat product');
 });
 
-test('homepage: spelersnaam en nummer uit productnaam', () => {
-  const { run } = load([...SHOP, 'js/home.js'], { pathname: '/' });
-  const split = (n) => JSON.parse(run(`JSON.stringify(homeSplitPlayer(${JSON.stringify(n)}))`));
+test('spelersnaam en nummer uit productnaam (gedeeld: homepage + shop)', () => {
+  const { run } = shopPage();
+  const split = (n) => JSON.parse(run(`JSON.stringify(splitPlayerName(${JSON.stringify(n)}))`));
   assert.deepEqual(split('Portugal Thuistenue WK 2026 Ronaldo #7'), { kit: 'Portugal Thuistenue WK 2026', player: 'Ronaldo', num: '7' });
   assert.deepEqual(split('Nederland Uittenue WK 2026 F. De Jong #21'), { kit: 'Nederland Uittenue WK 2026', player: 'F. De Jong', num: '21' });
   assert.deepEqual(split('Santos 11/12 Roze Neymar Jr #11'), { kit: 'Santos 11/12 Roze', player: 'Neymar Jr', num: '11' });
@@ -161,6 +177,17 @@ test('shop-filters: type, competitie, voorraad, maat, zoeken, sortering', () => 
   run("resetShopFilters(); currentSortMode='price_asc'; PRODUCTS[0].price = 99; renderGrid('all');");
   const prices = [...grid.innerHTML.matchAll(/class="pprice">€([\d,]+)/g)].map((m) => parseFloat(m[1].replace(',', '.')));
   assert.deepEqual(prices, [...prices].sort((a, b) => a - b), 'prijs oplopend');
+});
+
+test('shop-kaart: speler als rugbedrukking, korte tenuenaam, volle naam voor schermlezers', () => {
+  const grid = gridEl();
+  const { run } = shopPage({ els: { grid } });
+  run("resetShopFilters(); currentSearchTerm='ronaldo'; renderGrid('all');");
+  assert.match(grid.innerHTML, /<span class="kit-print" aria-hidden="true"><b>7<\/b>Ronaldo<\/span>/);
+  assert.match(grid.innerHTML, /class="pcard-link"[^>]*>Portugal Thuistenue WK 2026<span class="sr-only"> Ronaldo #7<\/span><\/a>/);
+  assert.match(grid.innerHTML, /alt="Portugal Thuistenue WK 2026 Ronaldo #7"/, 'foto-alt houdt de volle naam');
+  run("resetShopFilters(); currentSearchTerm='corinthians'; renderGrid('all');");
+  assert.doesNotMatch(grid.innerHTML, /kit-print/, 'geen nummer in de naam → geen rugbedrukking');
 });
 
 test('shop: elke product is via precies één competitie bereikbaar', () => {

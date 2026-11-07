@@ -141,6 +141,7 @@ if ($seoImage !== '') {
 <?php require_once __DIR__ . '/includes/asset.php'; ?><link rel="stylesheet" href="<?= kits_asset('css/fonts.css') ?>">
 <?php require_once __DIR__ . '/includes/asset.php'; ?>
 <link rel="stylesheet" href="<?= kits_asset('css/product.css') ?>">
+<link rel="stylesheet" href="<?= kits_asset('css/footer.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/app.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/responsive-global.css') ?>">
 <script defer src="<?= kits_asset('js/kbe-ios-helpers.js') ?>"></script>
@@ -172,7 +173,7 @@ if ($seoImage !== '') {
 
       <div class="lbl" id="versieLbl" hidden>Versie</div>
       <div class="versie-row" id="versieRow" hidden></div>
-      <div class="lbl">Maat</div>
+      <div class="lbl lbl-row"><span>Maat</span><button type="button" class="sg-link" onclick="document.getElementById('sizeGuideDlg').showModal()">Maattabel</button></div>
       <div class="sizes" id="sizes"></div>
       <div id="kidsJerseyChartPdp" class="kids-jersey-pdp" hidden>
         <div class="maten-table-wrap">
@@ -227,7 +228,7 @@ if ($seoImage !== '') {
       <div class="pdp-trust-row" aria-label="Levering en service">
         <span>Verzending vanaf €<?= (int)$cfg['free_shipping_from'] ?> gratis (NL)</span>
         <span>·</span>
-        <a href="index.html#faq">Veelgestelde vragen</a>
+        <a href="faq.php">Veelgestelde vragen</a>
         <?php if ($pdpWaHref !== ''): ?>
         <span>·</span>
         <a href="<?php echo htmlspecialchars($pdpWaHref, ENT_QUOTES, 'UTF-8'); ?>" target="_blank" rel="noopener">WhatsApp</a>
@@ -291,6 +292,14 @@ if ($seoImage !== '') {
   <button type="button" class="close" onclick="closeLightbox();event.stopPropagation()" aria-label="Lightbox sluiten">✕</button>
   <img id="lbImg" alt="Vergrote afbeelding">
 </div>
+
+<dialog class="sg-dialog" id="sizeGuideDlg" aria-labelledby="sgTitle">
+  <div class="sg-dialog-head">
+    <h2 id="sgTitle">Maattabel</h2>
+    <form method="dialog"><button class="sg-close" aria-label="Maattabel sluiten">✕</button></form>
+  </div>
+  <?php include __DIR__ . '/includes/sizeguide.php'; ?>
+</dialog>
 
 </main>
 <?php include __DIR__ . '/includes/footer.php'; // shared 4-column footer, identical to the rest of the site ?>

@@ -1,0 +1,26 @@
+/* ── FOOTER — enige bron voor includes/footer.php (alle pagina's laden dit vóór app.css) ── */
+footer{background:var(--ink);color:rgba(250,248,244,.66)}
+.foot-inner{
+  max-width:var(--container);margin:0 auto;padding:56px var(--gutter) 36px;box-sizing:border-box;
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;
+}
+.foot-logo{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--cream);margin:0 0 10px}
+.foot-brand p{margin:0;max-width:30ch;font-size:14px;line-height:1.6}
+footer h2{margin:0 0 10px;font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cream)}
+.foot-col a{display:block;padding:6px 0;font-size:14px;line-height:1.45;color:rgba(250,248,244,.66);text-decoration:none;transition:color .15s ease}
+.foot-col a:hover{color:var(--cream)}
+.foot-col a:focus-visible{outline:2px solid var(--gold2);outline-offset:2px;border-radius:4px}
+.foot-bottom{
+  max-width:var(--container);margin:0 auto;padding:18px var(--gutter);box-sizing:border-box;
+  display:flex;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;
+  border-top:1px solid rgba(250,248,244,.1);font-size:13px;color:rgba(250,248,244,.55);
+}
+@media (max-width:960px){
+  .foot-inner{grid-template-columns:repeat(3,1fr);gap:32px 24px;padding-top:44px}
+  .foot-brand{grid-column:1/-1}
+}
+@media (max-width:560px){
+  .foot-inner{grid-template-columns:1fr 1fr;gap:28px 20px;padding-top:40px}
+  .foot-inner>.foot-col:last-child{grid-column:1/-1}
+  .foot-bottom{flex-direction:column;padding-bottom:96px} /* ruimte voor de zwevende WhatsApp-knop */
+}

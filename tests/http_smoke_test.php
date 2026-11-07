@@ -51,6 +51,8 @@ $pages = [
     '/voorraad' => 'id="grid"',
     '/wishlist.php' => 'id="grid"',
     '/account.php' => '<h1',
+    '/faq.php' => '<details class="faq-item">',
+    '/maattabel.php' => 'class="sg-table',
 ];
 foreach ($pages as $path => $marker) {
     test("pagina $path: 200, HTML, geen PHP-fouten", function () use ($base, $path, $marker): void {
@@ -63,6 +65,21 @@ foreach ($pages as $path => $marker) {
         assert_false(str_contains($body, '<?'), "$path lekt ruwe PHP (SetHandler uit?)");
     });
 }
+
+test('homepage kort: maattabel en FAQ staan op eigen pagina\'s, footer linkt ernaar', function () use ($base): void {
+    $body = kits_http($base . '/')[2];
+    assert_false(str_contains($body, 'id="sizeguide"'), 'maattabel staat nog op de homepage');
+    assert_false(str_contains($body, 'id="faq"'), 'FAQ staat nog op de homepage');
+    assert_true(str_contains($body, 'href="maattabel.php"') && str_contains($body, 'href="faq.php"'), 'footer-links ontbreken');
+});
+
+test('faq.php heeft FAQPage-schema met evenveel vragen als op de pagina', function () use ($base): void {
+    $body = kits_http($base . '/faq.php')[2];
+    preg_match('#<script type="application/ld\+json">(.*?)</script>#s', $body, $m);
+    $ld = json_decode($m[1] ?? '', true);
+    assert_eq('FAQPage', $ld['@type'] ?? null);
+    assert_eq(substr_count($body, '<details class="faq-item">'), count($ld['mainEntity'] ?? []));
+});
 
 test('categoriepagina\'s hebben elk een eigen <title>', function () use ($base): void {
     $titles = [];
@@ -138,6 +155,7 @@ test('product.php: bestaand product 200 met naam, prijs en schema', function () 
     assert_no_php_errors($body, 'product.php');
     assert_true(str_contains($body, htmlspecialchars($p['name'], ENT_QUOTES, 'UTF-8')), 'naam ontbreekt in HTML');
     assert_true(str_contains($body, '"@type":"Product"') || str_contains($body, '"@type": "Product"'), 'Product-schema ontbreekt');
+    assert_true(str_contains($body, 'id="sizeGuideDlg"') && str_contains($body, 'class="sg-link"'), 'maattabel-link/venster ontbreekt');
 });
 
 test('product.php: onbekend product → 404, geen valse "Op voorraad"', function () use ($base): void {

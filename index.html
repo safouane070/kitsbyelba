@@ -8,6 +8,14 @@ require_once __DIR__ . '/includes/asset.php';
 // domeinnaam staat op één plek (config.php ← .env public_site_url).
 if (!isset($cfg) || !is_array($cfg)) { $cfg = @include __DIR__ . '/config.php'; }
 $__base = rtrim((string)($cfg['public_site_url'] ?? 'http://localhost/kitsbyelba'), '/');
+// Hero-waaier: shirts uit images/hero/manifest.json waarvan het product nog te koop is (zie includes/hero_kits.php)
+require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/hero_kits.php';
+$__heroPdo = null;
+try { $__heroPdo = kits_pdo((array)$cfg); } catch (Throwable $e) { error_log('[index hero] ' . $e->getMessage()); }
+$__heroKits  = kits_hero_kits($__heroPdo, __DIR__ . '/images/hero/manifest.json');
+$__heroSlots = kits_hero_slots(count($__heroKits));
+$__heroLead  = $__heroKits[array_search('3', $__heroSlots, true) ?: 0]['file'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -39,9 +47,8 @@ $__base = rtrim((string)($cfg['public_site_url'] ?? 'http://localhost/kitsbyelba
 <link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
 <?php require_once __DIR__ . '/includes/asset.php'; ?><link rel="stylesheet" href="<?= kits_asset('css/fonts.css') ?>">
-<!-- Hero = LCP-element: vroeg ontdekken zodat de browser 'm meteen laadt (was 9,2s LCP). -->
-<link rel="preload" as="image" href="images/hero-shirts.webp?v=21" type="image/webp" fetchpriority="high">
 <!-- Fonts niet-blokkerend: laadt als 'print' (telt niet mee voor render) en switcht onload naar 'all'. -->
+<?php if ($__heroLead !== ''): ?><link rel="preload" as="image" href="images/hero/<?= $__heroLead ?>.webp?v=3" type="image/webp" fetchpriority="high"><?php endif; ?>
 <script defer src="<?= kits_asset('js/kbe-ios-helpers.js') ?>"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js" integrity="sha384-SALc35EccAf6RzGw4iNsyj7kTPr33K7RoGzYu+7heZhT8s0GZouafRiCg1qy44AS" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="application/ld+json">
@@ -68,6 +75,7 @@ $__base = rtrim((string)($cfg['public_site_url'] ?? 'http://localhost/kitsbyelba
 </script>
 <link rel="stylesheet" href="<?= kits_asset('css/pages-shared.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/home.css') ?>">
+<link rel="stylesheet" href="<?= kits_asset('css/footer.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/app.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/responsive-global.css') ?>">
 </head>
@@ -93,19 +101,23 @@ $__base = rtrim((string)($cfg['public_site_url'] ?? 'http://localhost/kitsbyelba
 </div>
 
 <!-- HERO -->
-<!-- Tip: vervang images/hero-1.jpg door een brede collage van topclub-shirts voor de sterkste look. -->
-<section class="hero reveal" id="heroSection">
-  <div class="hero-bg" id="heroBg" style="background-image:url('images/hero-shirts.jpg?v=21');background-image:image-set(url('images/hero-shirts.webp?v=21') type('image/webp'), url('images/hero-shirts.jpg?v=21') type('image/jpeg'))"></div>
-  <div class="hero-inner">
+<!-- HERO: echte rugshirts uit de eigen voorraad als schuivende waaier op een warm vlak; elk shirt linkt naar zijn product.
+     Tekst links (desktop) of onder de shirts (telefoon); zelfde letter en knoppen als de rest van de site. -->
+<section class="hero" id="heroSection">
+  <div class="hero-frame">
     <div class="hero-copy">
-      <h1 class="hero-h1">Het shirt van je team,<br><em>met jouw naam en nummer.</em></h1>
-      <p class="hero-sub">Topclubs, landenteams en retro-klassiekers. Snel thuisbezorgd, veilig betalen met Tikkie.</p>
-      <div class="hero-cta">
-        <button type="button" class="hero-btn primary" onclick="location.href='shirts'">Shop shirts</button>
-        <button type="button" class="hero-btn ghost" onclick="location.href='retro'">Retro drops</button>
+      <h1 class="hero-h1">Het shirt van je team, met jouw naam en nummer.</h1>
+      <p class="hero-sub">Topclubs, landenteams en retro. Shirts op voorraad heb je binnen 1–2 werkdagen in huis.</p>
+      <div class="hero-btns">
+        <a class="btn-primary" href="shirts">Shop shirts</a>
+        <a class="btn-sec" href="#op-voorraad">Op voorraad</a>
       </div>
     </div>
-    <div class="hero-shots" id="heroShots" aria-label="Uitgelichte tenues"></div>
+    <div class="hero-kits">
+<?php foreach ($__heroKits as $__i => $__k): $__slot = $__heroSlots[$__i]; $__hidden = $__slot === 'in'; ?>
+      <a class="hero-kit" data-slot="<?= $__slot ?>" href="<?= htmlspecialchars($__k['href'], ENT_QUOTES, 'UTF-8') ?>" aria-label="Bekijk het shirt van <?= htmlspecialchars($__k['label'], ENT_QUOTES, 'UTF-8') ?>"<?= $__hidden ? ' tabindex="-1" aria-hidden="true"' : '' ?>><img src="images/hero/<?= $__k['file'] ?>.webp?v=3" alt="" width="736" height="720" decoding="async"<?= $__slot === '3' ? ' fetchpriority="high"' : '' ?>></a>
+<?php endforeach; ?>
+    </div>
   </div>
 </section><!-- /hero -->
 
@@ -115,7 +127,7 @@ $__base = rtrim((string)($cfg['public_site_url'] ?? 'http://localhost/kitsbyelba
     <div class="featured-head">
       <div>
         <h2 class="section-title" id="stockTitle">Op voorraad</h2>
-        <p class="featured-sub">Spelersshirts met naam en nummer. Binnen 1–2 werkdagen in huis.</p>
+        <p class="featured-sub">Spelersshirts met naam en nummer, direct leverbaar.</p>
       </div>
       <div class="featured-tools">
         <label class="stock-search">
@@ -165,8 +177,12 @@ $__social = array_values($__social);
 <section class="social reveal" aria-label="Echte foto's en video's van KitsByElbaa">
   <div class="social-inner">
     <div class="social-head">
-      <h2 class="section-title">Echt gedragen</h2>
-      <p class="social-sub">Echte foto&#39;s en video&#39;s van onze shirts &mdash; geen stockbeeld. Wat je ziet, is wat je krijgt.</p>
+      <h2 class="section-title">Zo ziet het eruit</h2>
+      <p class="social-sub">Echte foto&#39;s en video&#39;s van onze shirts. Wat je ziet, is wat je krijgt.</p>
+      <div class="social-nav" hidden>
+        <button type="button" class="social-arrow" data-dir="-1" aria-label="Vorige foto&#39;s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button type="button" class="social-arrow" data-dir="1" aria-label="Volgende foto&#39;s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
     </div>
     <div class="social-reel">
       <?php foreach ($__social as $__i => $__it): $__src = htmlspecialchars($__it['src'], ENT_QUOTES, 'UTF-8'); $__tile = htmlspecialchars($__it['tile'], ENT_QUOTES, 'UTF-8'); ?>
@@ -196,7 +212,7 @@ $__social = array_values($__social);
       <button type="button" class="social-lb-close" aria-label="Sluiten">&#10005;</button>
     </dialog>
     <div class="social-foot">
-      <a class="social-follow" href="https://www.snapchat.com/@kitsbyelbaa" target="_blank" rel="noopener nofollow">
+      <a class="social-follow" href="https://www.snapchat.com/add/kitsbyelbaa" target="_blank" rel="noopener nofollow">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c2.5 0 4 1.8 4 4.2 0 1-.1 1.8-.1 2.2.4.3 1 .3 1.6.1.6-.2 1 .6.5 1-.5.4-1.3.6-1.8.9-.3.2 0 .8.3 1.4.5 1 1.4 1.7 2.5 2 .5.1.5.7 0 .9-.7.2-1.5.2-1.8.6-.1.2 0 .5-.1.7-.2.3-.8.1-1.4.1-.8 0-1.5.6-2.4.9-.6.2-1.2 0-1.8 0s-1.2.2-1.8 0c-.9-.3-1.6-.9-2.4-.9-.6 0-1.2.2-1.4-.1-.1-.2 0-.5-.1-.7-.3-.4-1.1-.4-1.8-.6-.5-.2-.5-.8 0-.9 1.1-.3 2-1 2.5-2 .3-.6.6-1.2.3-1.4-.5-.3-1.3-.5-1.8-.9-.5-.4-.1-1.2.5-1 .6.2 1.2.2 1.6-.1 0-.4-.1-1.2-.1-2.2C8 4.8 9.5 3 12 3z"/></svg>
         Volg ons op Snapchat
       </a>
@@ -205,6 +221,7 @@ $__social = array_values($__social);
 </section>
 <script type="application/json" id="kbeSocialData"><?= json_encode(array_map(fn($it) => ['src' => $it['src'], 'video' => $it['video'], 'poster' => $it['poster'] ?? ''], $__social), JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES) ?></script>
 <script src="<?= kits_asset('js/home-social.js') ?>"></script>
+<script src="<?= kits_asset('js/home-hero.js') ?>"></script>
 <?php endif; ?>
 
 <!-- CATEGORY CARDS (id=shop: scroll-doel nav / zoek wanneer embedded shop uit staat) -->
@@ -266,237 +283,18 @@ $__social = array_values($__social);
   </div>
 </section>
 
-<!-- SIZE GUIDE -->
-<section class="maten" id="sizeguide">
-  <div class="section-header">
-    <h2 class="section-title">Maattabel</h2>
-    <p class="section-sub"><strong>Fan</strong> valt ruimer, voor dagelijks dragen. <strong>Player</strong> zit strakker en sportiever: neem dan vaak één maat groter. Marge ± 1–2 cm.</p>
-  </div>
-
-  <div class="vtabs" role="tablist" aria-label="Kies fan of player maattabel">
-    <button type="button" role="tab" class="vtab on" id="mt-fan" aria-selected="true" aria-controls="mp-fan" onclick="switchMaten('fan')">Fan version</button>
-    <button type="button" role="tab" class="vtab" id="mt-player" aria-selected="false" aria-controls="mp-player" onclick="switchMaten('player')">Player version</button>
-  </div>
-
-  <div class="maten-grid">
-    <div class="maten-card">
-      <div class="maten-card-title">Snelle Gids</div>
-      <div class="size-chips" id="sizeChipsFan" aria-label="Fan version — snelle gids">
-        <div class="size-chip"><div class="size-chip-lbl">XS</div><div class="size-chip-info">150–160 cm<br>45–54 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">S</div><div class="size-chip-info">160–170 cm<br>55–65 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">M</div><div class="size-chip-info">170–175 cm<br>66–70 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">L</div><div class="size-chip-info">175–180 cm<br>71–75 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">XL</div><div class="size-chip-info">180–185 cm<br>76–80 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">XXL</div><div class="size-chip-info">185–190 cm<br>81–87 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">3XL</div><div class="size-chip-info">190–195 cm<br>88–95 kg</div><div class="size-chip-tag">Alleen fan</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">4XL</div><div class="size-chip-info">190–199 cm<br>96–105 kg</div><div class="size-chip-tag">Alleen fan</div></div>
-      </div>
-      <div class="size-chips" id="sizeChipsPlayer" aria-label="Player version — snelle gids" hidden>
-        <div class="size-chip"><div class="size-chip-lbl">S</div><div class="size-chip-info">160–170 cm<br>55–65 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">M</div><div class="size-chip-info">170–175 cm<br>66–70 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">L</div><div class="size-chip-info">175–180 cm<br>71–75 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">XL</div><div class="size-chip-info">180–185 cm<br>76–80 kg</div></div>
-        <div class="size-chip"><div class="size-chip-lbl">XXL</div><div class="size-chip-info">185–190 cm<br>81–87 kg</div></div>
-      </div>
-    </div>
-  </div>
-
-  <details class="maten-more" id="maten-volledig">
-  <summary>Volledige maattabel in cm <span>fan, player en kids</span></summary>
-  <div class="maten-table-wrap maten-fan-player-wrap">
-    <div class="vtpanel on" id="mp-fan" role="tabpanel" aria-labelledby="mt-fan">
-      <div class="maten-table-scroll">
-        <table class="maten-table" aria-label="Maattabel fan-versie">
-          <thead><tr><th>Maat</th><th>Lengte</th><th>Borst</th><th>Mouw Kort</th><th>Manchet</th><th>Mouw Lang</th></tr></thead>
-          <tbody>
-            <tr><td>XS</td><td>69 cm</td><td>48 cm</td><td>35 cm</td><td>16 cm</td><td>74 cm</td></tr>
-            <tr><td>S</td><td>71 cm</td><td>50 cm</td><td>36.5 cm</td><td>16.5 cm</td><td>75.5 cm</td></tr>
-            <tr><td>M</td><td>73 cm</td><td>52 cm</td><td>38 cm</td><td>17.5 cm</td><td>77 cm</td></tr>
-            <tr><td>L</td><td>75 cm</td><td>54 cm</td><td>39.5 cm</td><td>18.5 cm</td><td>78.5 cm</td></tr>
-            <tr><td>XL</td><td>77 cm</td><td>56 cm</td><td>41 cm</td><td>19.5 cm</td><td>80 cm</td></tr>
-            <tr><td>XXL</td><td>81 cm</td><td>59 cm</td><td>42 cm</td><td>20.5 cm</td><td>81 cm</td></tr>
-            <tr><td>3XL</td><td>83 cm</td><td>61 cm</td><td>43 cm</td><td>21.5 cm</td><td>82 cm</td></tr>
-            <tr><td>4XL</td><td>85 cm</td><td>63 cm</td><td>44 cm</td><td>22.5 cm</td><td>83 cm</td></tr>
-          </tbody>
-        </table>
-        <p class="maten-scroll-hint" aria-hidden="true">← Veeg voor alle kolommen →</p>
-      </div>
-    </div>
-    <div class="vtpanel" id="mp-player" role="tabpanel" aria-labelledby="mt-player">
-      <div class="maten-table-scroll">
-        <table class="maten-table" aria-label="Maattabel player-versie">
-          <thead><tr><th>Maat</th><th>Lengte</th><th>Borst</th><th>Schouder</th><th>Mouw</th><th>Hoogte</th><th>Gewicht</th></tr></thead>
-          <tbody>
-            <tr><td>S</td><td>70 cm</td><td>46 cm</td><td>40.5 cm</td><td>24 cm</td><td>160–165</td><td>55–60 kg</td></tr>
-            <tr><td>M</td><td>72 cm</td><td>48 cm</td><td>41.9 cm</td><td>24.8 cm</td><td>165–170</td><td>60–70 kg</td></tr>
-            <tr><td>L</td><td>74 cm</td><td>50 cm</td><td>43.3 cm</td><td>25.6 cm</td><td>170–175</td><td>70–80 kg</td></tr>
-            <tr><td>XL</td><td>76 cm</td><td>52 cm</td><td>44.7 cm</td><td>26.4 cm</td><td>175–185</td><td>80–92.5 kg</td></tr>
-            <tr><td>XXL</td><td>78 cm</td><td>54 cm</td><td>46.1 cm</td><td>27.2 cm</td><td>185–190</td><td>85–95 kg</td></tr>
-          </tbody>
-        </table>
-        <p class="maten-scroll-hint" aria-hidden="true">← Veeg voor alle kolommen →</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="maten-kids-jersey" id="sizeguide-kids">
-    <div class="maten-table-wrap">
-      <div class="kids-maten-banner">
-        <h3 class="kids-maten-title">Maattabel kids jersey</h3>
-        <p class="kids-maten-remark">Let op: door rek in de stof kan de afwijking ongeveer 1–2 cm zijn.</p>
-      </div>
-      <div class="kids-maten-scroll">
-        <table class="maten-table" aria-label="Maattabel kids">
-          <thead>
-            <tr>
-              <th>Maat</th>
-              <th>16</th><th>18</th><th>20</th><th>22</th><th>24</th><th>26</th><th>28</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Leeftijd</td><td>2-3</td><td>4-5</td><td>5-6</td><td>7-8</td><td>8-9</td><td>10-11</td><td>12-13</td></tr>
-            <tr><td>Lichaamslengte (cm)</td><td>95-105</td><td>105-115</td><td>115-125</td><td>125-135</td><td>135-145</td><td>145-155</td><td>155-165</td></tr>
-            <tr><td>Lengte shirt (cm)</td><td>44</td><td>47</td><td>50</td><td>53</td><td>56</td><td>59</td><td>62</td></tr>
-            <tr><td>½ borst (cm)</td><td>35</td><td>37</td><td>39</td><td>41</td><td>43</td><td>45</td><td>47</td></tr>
-            <tr><td>Lengte short (cm)</td><td>32</td><td>34</td><td>36</td><td>38</td><td>39</td><td>40</td><td>43</td></tr>
-            <tr><td>½ taille (cm)</td><td>20-37</td><td>21-39</td><td>22-41</td><td>23-42</td><td>24-44</td><td>25-47</td><td>26-50</td></tr>
-          </tbody>
-        </table>
-        <p class="maten-scroll-hint maten-scroll-hint--kids" aria-hidden="true">← Veeg voor alle maten →</p>
-      </div>
-    </div>
-  </div>
-  </details>
-
-  <div class="maten-cta">
-      <button type="button" class="btn-sec" onclick="scrollToAlleTenues()">Alle tenues</button>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="faq-sec reveal" id="faq">
-  <div class="section-header">
-    <h2 class="section-title">Veelgestelde vragen</h2>
-    <p class="section-sub">De vragen die we het vaakst krijgen.</p>
-  </div>
-
-  <div class="faq-cols">
-    <div>
-      <div class="faqitem" id="fi1">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi1')">
-          <div class="faq-q-wrap"><span class="faq-n">01</span><span class="faq-q-lbl">Hoe plaats ik een bestelling?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">Kies je tenue en maat en klik op <strong>Bestellen via WhatsApp</strong>. Vul je gegevens in; je hoort snel van ons.</div></div>
-      </div>
-      <div class="faqitem" id="fi2">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi2')">
-          <div class="faq-q-wrap"><span class="faq-n">02</span><span class="faq-q-lbl">Hoe betaal ik?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">Betaling verloopt via <strong>Tikkie</strong>. Na je bestelling via WhatsApp sturen we je een betaallink die je gewoon in je browser opent en betaalt.</div></div>
-      </div>
-      <div class="faqitem" id="fi3">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi3')">
-          <div class="faq-q-wrap"><span class="faq-n">03</span><span class="faq-q-lbl">Wat is de levertijd?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner"><strong>Op voorraad:</strong> meestal <strong>1–2 werkdagen</strong>. <strong>Nabestelling:</strong> <strong>7–12 werkdagen</strong>. Voor de actuele status kun je altijd WhatsAppen.</div></div>
-      </div>
-      <div class="faqitem" id="fi4">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi4')">
-          <div class="faq-q-wrap"><span class="faq-n">04</span><span class="faq-q-lbl">Wat zijn de verzendkosten?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">Verzenden kost <strong>€4,99</strong> via PostNL. Vanaf <strong>€40</strong> is verzending gratis, automatisch bij afrekenen.</div></div>
-      </div>
-      <div class="faqitem" id="fi5">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi5')">
-          <div class="faq-q-wrap"><span class="faq-n">05</span><span class="faq-q-lbl">Is er een kortingscode?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner" id="faqPromoAnswer">Ja! Gebruik code <strong>KITSBYELBA</strong> bij het afrekenen voor <strong>10% korting</strong> op je bestelling.</div></div>
-      </div>
-      <div class="faqitem" id="fi6">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi6')">
-          <div class="faq-q-wrap"><span class="faq-n">06</span><span class="faq-q-lbl">Hoe volg ik mijn pakket?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">Zodra je bestelling verstuurd is, sturen we de <strong>PostNL track &amp; trace</strong> via WhatsApp.</div></div>
-      </div>
-    </div>
-    <div>
-      <div class="faqitem" id="fi7">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi7')">
-          <div class="faq-q-wrap"><span class="faq-n">07</span><span class="faq-q-lbl">Zijn dit originele shirts?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">Het zijn <strong>replica’s</strong> met dezelfde uitstraling als de officiële tenues, tegen een scherpere prijs.</div></div>
-      </div>
-      <div class="faqitem" id="fi8">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi8')">
-          <div class="faq-q-wrap"><span class="faq-n">08</span><span class="faq-q-lbl">Kloppen alle logo’s op het shirt?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">Ja, logo’s, clubbadges en sponsors worden <strong>correct en nauwkeurig</strong> aangebracht, zoals op de officiële tenues.</div></div>
-      </div>
-      <div class="faqitem" id="fi9">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi9')">
-          <div class="faq-q-wrap"><span class="faq-n">09</span><span class="faq-q-lbl">Verschil fan- en player version?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">De <strong>fan version</strong> heeft een ruimere pasvorm voor dagelijks dragen. De <strong>player version</strong> valt slanker. Vaak één maat groter bij player. Zie de <a href="#sizeguide">maattabel</a>.</div></div>
-      </div>
-      <div class="faqitem" id="fi10">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi10')">
-          <div class="faq-q-wrap"><span class="faq-n">10</span><span class="faq-q-lbl">Kan ik naam en nummer laten bedrukken?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">Ja! Kies <strong>bedrukking</strong> bij je bestelling. <strong>Naam én/of nummer samen</strong> is één vaste meerprijs van <strong>+€<span id="faqPrintPrice">5,00</span> per shirt</strong> (niet apart per regel). Een <strong>badge/patch</strong> (Champions League, eigen competitie, enz.) kost <strong>+€<span id="faqBadgePrice">3,00</span> extra per shirt</strong> (los van de bedrukking).</div></div>
-      </div>
-      <div class="faqitem" id="fi11">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi11')">
-          <div class="faq-q-wrap"><span class="faq-n">11</span><span class="faq-q-lbl">Kan ik retourneren?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">Wij accepteren geen retouren. Uitzondering: als er een fout aan onze kant is (bijv. verkeerd product gestuurd), lossen we dat gratis op.</div></div>
-      </div>
-      <div class="faqitem" id="fi12">
-        <button type="button" class="faqbtn" aria-expanded="false" onclick="toggleFi('fi12')">
-          <div class="faq-q-wrap"><span class="faq-n">12</span><span class="faq-q-lbl">Hoe neem ik contact op?</span></div>
-          <div class="faq-ico">+</div>
-        </button>
-        <div class="faq-ans"><div class="faq-ans-inner">We zijn <strong>bereikbaar via WhatsApp</strong>. Stuur een bericht, we reageren zo snel mogelijk.</div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="faq-bottom">
-    <div class="faq-bottom-text">
-      <h3>Staat je vraag er niet bij?</h3>
-      <p>App ons — we reageren zo snel mogelijk.</p>
-    </div>
-    <a class="faq-wa-btn" href="https://wa.me/31684446255" target="_blank" rel="noopener noreferrer">
-      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Stuur ons een WhatsApp
-    </a>
-  </div>
-</section>
-
 <!-- Server-side SEO-tekst: geeft de homepage echte, keyword-rijke inhoud voor
      zoekmachines (voetbalshirts, tenues, bedrukking, clubs, landen). -->
 <section class="seo-content" aria-label="Over KitsByElbaa">
   <div class="seo-content-inner">
     <h2>Voetbalshirts en tenues kopen met naam en nummer</h2>
-    <p>Bij <strong>KitsByElbaa</strong> koop je voetbalshirts en complete tenues van clubs en landen — thuisshirts, uitshirts, special editions, retro-klassiekers, sets, kids-tenues en hemdsetjes. Elk shirt kun je laten <strong>bedrukken met je eigen naam en nummer</strong>, of je kiest de player-versie met de naam van je favoriete speler.</p>
-    <p>De <strong>foto bij elk shirt is het échte exemplaar</strong> dat je krijgt — geen stockbeeld. Het zijn replica&#39;s met dezelfde uitstraling als de officiële tenues, voor een scherpere prijs. Betalen gaat veilig via <strong>Tikkie</strong>, en je bereikt ons altijd persoonlijk via <strong>WhatsApp</strong>.</p>
-    <p>Staat je shirt <strong>op voorraad</strong>, dan heb je het binnen 1–2 werkdagen in huis. Een nabestelling duurt 7–12 werkdagen. Vanaf €40 is de <strong>verzending gratis</strong>. De maten lopen van kindermaat tot 4XL, en per shirt kies je zelf of er een naam, een nummer of een badge op komt.</p>
+    <p>Bij KitsByElbaa koop je voetbalshirts en complete tenues van clubs en landen: thuis- en uitshirts, special editions, retro-klassiekers, sets, kids-tenues en hemdsetjes. Elk shirt laat je bedrukken met je eigen naam en nummer, of je kiest de player-versie met de naam van je favoriete speler.</p>
+    <p>De foto bij elk shirt is het exemplaar dat je krijgt, geen stockbeeld. Het zijn replica&#39;s met dezelfde uitstraling als de officiële tenues, voor een scherpere prijs. De maten lopen van kindermaat tot 4XL.</p>
   </div>
 </section>
 
 </main>
-<?php /* Shared footer — single source of truth: includes/footer.php. Homepage: local #anchors. */
-$footerAnchorPrefix = '';
+<?php /* Shared footer — single source of truth: includes/footer.php. */
 include __DIR__ . '/includes/footer.php';
 ?>
 

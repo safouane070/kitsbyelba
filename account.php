@@ -185,13 +185,7 @@ a{text-decoration:none;color:inherit}
 .modal p{font-size:13px;color:var(--ink3);margin-bottom:20px;line-height:1.65}
 .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink3)}
 /* Footer */
-footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
-.foot-inner{max-width:1280px;margin:0 auto;padding:56px 24px 32px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px}
-.foot-logo{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
-footer p,footer a{display:block;font-size:13px;color:rgba(250,248,244,.5);text-decoration:none;margin-bottom:10px;line-height:1.7;transition:color .18s}
-footer a:hover{color:var(--cream)}
-footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
-.foot-bottom{max-width:1280px;margin:0 auto;padding:20px 24px;border-top:1px solid rgba(250,248,244,.1);display:flex;justify-content:space-between;font-size:12px;color:rgba(250,248,244,.55)}
+
 /* Responsive */
 @media(max-width:1024px){
   .logo-img{height:68px}
@@ -203,7 +197,7 @@ footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   .dash-nav a.on{border-bottom-color:var(--ink);border-left:none;background:transparent;color:var(--ink)}
   .stat-row{grid-template-columns:1fr 1fr}
   .form-row{grid-template-columns:1fr}
-  .foot-inner{grid-template-columns:1fr 1fr;gap:32px}
+  
 }
 @media(max-width:480px){
   .stat-row{grid-template-columns:1fr}
@@ -211,6 +205,7 @@ footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 }
 </style>
 <?php require_once __DIR__ . '/includes/asset.php'; // versie = bestandsdatum → nooit oude CSS uit de cache ?>
+<link rel="stylesheet" href="<?= kits_asset('css/footer.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/app.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/responsive-global.css') ?>">
 <script defer src="<?= kits_asset('js/kbe-ios-helpers.js') ?>"></script>
@@ -508,7 +503,6 @@ include __DIR__ . '/includes/nav-search.php';
 
 </main>
 <?php
-$footerAnchorPrefix   = 'index.html';
 $footerHideAlleTenues = false;
 include __DIR__ . '/includes/footer.php';
 ?>

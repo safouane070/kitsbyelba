@@ -35,6 +35,10 @@ try {
         $r['player_price'] = isset($r['player_price']) && $r['player_price'] !== null ? (float)$r['player_price'] : null;
         $r['player_stock_sizes'] = !empty($r['player_stock_sizes']) ? json_decode((string)$r['player_stock_sizes'], true) : null;
     }
+    unset($r);
+    // "Populair" volgt de echte verkoop, niet een handmatig vinkje (dat stond op bijna alles).
+    require_once __DIR__ . '/../includes/catalog_signals.php';
+    $rows = kits_apply_popular_badges($rows, kits_popular_product_ids($pdo));
     echo json_encode(array_values($rows));
 } catch (Throwable $e) {
     error_log('[products] ' . $e->getMessage());

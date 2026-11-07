@@ -277,9 +277,6 @@ main,
     right: max(14px, env(safe-area-inset-right));
     bottom: max(18px, env(safe-area-inset-bottom));
   }
-
-  /* Op mobiel alleen de WhatsApp-knop laten zweven — minder rommel. */
-  .back-to-top { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -808,12 +805,6 @@ main,
 @media (max-width: 1240px) { .nav-cart { width: 44px !important; } }
 
 @media (max-width: 560px) {
-  /* Footer mobiel: merkblok en contact over de volle breedte, Shop | Info naast elkaar (was één lange kolom) */
-  footer .foot-inner { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }
-  footer .foot-inner > div:first-child,
-  footer .foot-inner > div:last-child { grid-column: 1 / -1; }
-  /* Ruimte voor de zwevende WhatsApp-knop, zodat de copyrightregel niet bedekt wordt */
-  footer .foot-bottom { padding-bottom: 96px !important; }
 
   /* Horizontaal scrollende competitie-pills: geen grijze scrollbalk */
   .filter-pills { scrollbar-width: none; }

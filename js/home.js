@@ -50,8 +50,6 @@ function applyPromoTextsFromConfig() {
   if (CONFIG.promoBanner) {
     document.querySelectorAll('.announce-promo').forEach(el => { el.innerHTML = CONFIG.promoBanner; });
   }
-  const faq = document.getElementById('faqPromoAnswer');
-  if (faq && CONFIG.promoFaqAnswer) faq.innerHTML = CONFIG.promoFaqAnswer;
 }
 const CART_STORAGE_KEY = 'kbe_cart_main';
 const COUPON_STORAGE_KEY = 'kbe_coupon_main';
@@ -88,21 +86,16 @@ Promise.all([
   const printPriceEl = document.getElementById('printCustomPrice');
   const printHintEl = document.getElementById('printCustomPriceHint');
   const printBadgeHintEl = document.getElementById('printBadgePriceHint');
-  const faqPrintEl = document.getElementById('faqPrintPrice');
-  const faqBadgeEl = document.getElementById('faqBadgePrice');
   const priceStr = pPrint.toFixed(2).replace('.', ',');
   const badgeStr = pBadge.toFixed(2).replace('.', ',');
   if (printPriceEl) printPriceEl.textContent = priceStr;
   if (printHintEl) printHintEl.textContent = priceStr;
   if (printBadgeHintEl) printBadgeHintEl.textContent = badgeStr;
-  if (faqPrintEl) faqPrintEl.textContent = priceStr;
-  if (faqBadgeEl) faqBadgeEl.textContent = badgeStr;
   if (currentDetailId && currentPrinting === 'custom') {
     refreshDetailDrawerPrice();
   }
   const waF = document.getElementById('waFloat');
   if (waF) waF.href = 'https://wa.me/' + kbeWaDigits();
-  renderHeroShots();
   renderHero();
   initShopFromUrl();
   populateCategoryImages();
@@ -121,17 +114,6 @@ Promise.all([
 // Run immediately — does NOT need product data
 initRevealAnimations();
 
-// ── BACK TO TOP ──
-(function(){
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'back-to-top';
-  btn.title = 'Back to top';
-  btn.innerHTML = '↑';
-  btn.onclick = () => kbeScrollToTop();
-  document.body.appendChild(btn);
-  window.addEventListener('scroll', () => btn.classList.toggle('on', window.scrollY > 400), {passive:true});
-})();
 
 // ── HOME PRODUCT ALLOCATION ──
 // One shared set so the same kit never shows twice on the homepage
@@ -150,63 +132,26 @@ function pickHomeDiverse(pool, n) {
   return out;
 }
 
-// ── HERO SHOTS (recognisable star shirts from the live catalogue) ──
-function renderHeroShots() {
-  const wrap = document.getElementById('heroShots');
-  if (!wrap) return;
-  const shirts = PRODUCTS.filter(p => homeHasImg(p) && detectProductType(p) === 'shirts');
-  const stars = shirts.filter(homeIsStar);
-  const pool = stars.length >= 4 ? stars : shirts;
-  // Curated feature kits first (Brazil beige, Argentinië away, Zuid-Korea, Barcelona roze),
-  // then fill any gap with diverse unused shirts so it still works if a pinned id is gone.
-  const HERO_PIN = [513, 524, 528, 531];
-  let pick = HERO_PIN.map(id => PRODUCTS.find(p => Number(p.id) === id && homeHasImg(p))).filter(Boolean);
-  if (pick.length < 4) pick = pick.concat(pickHomeDiverse(pool.filter(p => homeUnused(p) && !pick.includes(p)), 4 - pick.length));
-  pick = pick.slice(0, 4);
-  if (!pick.length) { wrap.style.display = 'none'; return; }
-  pick.forEach(homeMarkUsed);
-  wrap.style.display = '';
-  wrap.innerHTML = pick.map(p => {
-    // Decoratieve showcase-tegels: geen badge en geen prijs — de "Populaire tenues"-grid hieronder draagt die info.
-    return `<a class="hero-shot" href="${productHref(p)}" title="${esc(p.name)}" aria-label="${esc(p.name)}">
-      <img src="${productThumbSrc(p.image || p.image2 || p.image3)}" data-full="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" loading="eager" fetchpriority="high" decoding="async" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=this.getAttribute('data-full');}else{this.closest('.hero-shot').style.display='none';}">
-      <span class="hero-shot-tag">${esc(p.name)}</span>
-    </a>`;
-  }).join('');
-}
-
 // Legacy banner-slider was replaced by the single hero; keep no-op stubs in case
 // an old inline handler still references these.
 function goBanner() {}
 function moveBanner() {}
 
 // ── OP VOORRAAD (homepage) ──
-// Voorraadshirts heten "Portugal Thuistenue WK 2026 Ronaldo #7": tenue | speler | nummer.
-// De speler staat na het laatste tenue-woord (jaar/seizoen/thuis/uit/kleur…).
-// ponytail: woordenlijst-heuristiek; nieuwe tenue-woorden (bv. "Derde") hier toevoegen, anders valt de speler in de tenue-regel.
-const HOME_KIT_WORD = /^(\d{4}|\d{2}\/\d{2}|thuistenue|uittenue|derdetenue|zomertenue|zomershirt|kit|special|roze|beige|wit|zwart|donkerblauw|blauw|rood|groen|geel)$/i;
-function homeSplitPlayer(name) {
-  const m = String(name || '').match(/^(.*\S)\s*#\s*(\d{1,2})\s*$/);
-  if (!m) return { kit: String(name || ''), player: '', num: '' };
-  const w = m[1].split(/\s+/);
-  let i = w.length - 1;
-  while (i > 0 && !HOME_KIT_WORD.test(w[i])) i--;
-  if (i <= 0 || i === w.length - 1) return { kit: m[1], player: '', num: m[2] };
-  return { kit: w.slice(0, i + 1).join(' '), player: w.slice(i + 1).join(' '), num: m[2] };
-}
+// Speler/nummer uit de productnaam: splitPlayerName() in js/shop-core.js (gedeeld met de shop-kaarten).
 const homeStockSizes = p => (p.stock_sizes && typeof p.stock_sizes === 'object')
   ? Object.keys(p.stock_sizes).filter(k => Number(p.stock_sizes[k]) > 0) : [];
 const homeInStock = p => productInVoorraad(p) && homeHasImg(p);
 
 function homeStockCard(p) {
-  const s = homeSplitPlayer(p.name);
+  const s = splitPlayerName(p.name);
   const img = p.image || p.image2 || p.image3;
   const sizes = homeStockSizes(p);
   return `
     <a class="hcard" href="${productHref(p)}">
       <div class="hcard-img">
         <img src="${productThumbSrc(img)}" data-full="${productImgSrc(img)}" alt="${esc(p.name)}" width="320" height="405" loading="lazy" decoding="async" onerror="thumbErr(this)">
-        ${s.num ? `<span class="hcard-print" aria-hidden="true"><b>${esc(s.num)}</b>${esc(s.player)}</span>` : ''}
+        ${kitPrintHtml(s)}
       </div>
       <div class="hcard-info">
         <div class="hcard-name">${esc(s.kit)}</div>
@@ -241,7 +186,7 @@ function renderHero() {
   base.forEach(homeMarkUsed);
   const draw = (q) => {
     const list = q
-      ? pool.map(p => ({ p, s: getProductSearchScore(p, q) })).filter(x => x.s > 0).sort((a, b) => b.s - a.s).map(x => x.p)
+      ? searchProducts(pool, q)
       : base;
     el.classList.toggle('is-searching', !!q);
     el.innerHTML = list.length
@@ -318,10 +263,7 @@ function updateLeaguePillCounts() {
   if (currentVoorraadFilter === 'in_stock') base = base.filter(productInVoorraad);
   else if (currentVoorraadFilter === 'out_of_stock') base = base.filter(p => !productInVoorraad(p));
   if (currentSearchTerm) {
-    base = base
-      .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
-      .filter((x) => x.score > 0)
-      .map((x) => x.p);
+    base = searchProducts(base, currentSearchTerm);
   }
   document.querySelectorAll('#leaguePills .fpill').forEach((pill) => {
     const oc = pill.getAttribute('onclick') || '';
@@ -376,11 +318,7 @@ function _doRenderGrid(cat) {
   }
 
   if (currentSearchTerm) {
-    list = list
-      .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
-      .filter((x) => x.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map((x) => x.p);
+    list = searchProducts(list, currentSearchTerm);
   }
   if (currentSortMode === 'price_asc') list.sort((a,b) => a.price - b.price);
   if (currentSortMode === 'price_desc') list.sort((a,b) => b.price - a.price);

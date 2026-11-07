@@ -64,10 +64,10 @@ $__leagues = [
 <?php endforeach; ?>
       <li><a href="voorraad" id="navType-voorraad"<?= $__active === 'voorraad' ? ' class="active"' : '' ?>>Voorraad</a></li>
       <li><a href="wishlist.php"<?= $__active === 'wishlist' ? ' class="active"' : '' ?>>Wishlist</a></li>
-      <?php /* Uit de nav gehaald op verzoek (balk te vol): Maattabel (#sizeguide) en FAQ (#faq)
-             staan al als sectie op de pagina EN in de footer; Inloggen/registreren voorlopig
+      <?php /* Uit de nav gehaald op verzoek (balk te vol): Maattabel (maattabel.php) en FAQ (faq.php)
+             staan als eigen pagina in de footer; Inloggen/registreren voorlopig
              verborgen (account.php blijft gewoon bestaan, alleen geen nav-ingang). Terugzetten =
-             hier weer 3 <li>-links plaatsen: index.html#sizeguide, index.html#faq, account.php. */ ?>
+             hier weer 3 <li>-links plaatsen: maattabel.php, faq.php, account.php. */ ?>
     </ul>
     <div class="nav-right">
       <label for="kbeNavToggle" class="ham" id="ham" role="button" tabindex="0" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></label>

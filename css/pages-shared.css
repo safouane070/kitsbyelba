@@ -217,7 +217,6 @@
 
 .pbadge.hot{background:var(--ink);color:var(--cream)}
 
-
 .fpill .fpill-count{opacity:.7;font-weight:600}
 
 .pbody{padding:16px 16px 18px;flex:1;display:flex;flex-direction:column}
@@ -227,7 +226,9 @@
 .pname{
   font-family:var(--font-display);font-size:20px;font-weight:600;
   color:var(--ink);line-height:1.18;margin-bottom:4px;flex:1;
+  overflow-wrap:anywhere;text-wrap:balance;
 }
+@media(max-width:560px){.pname{font-size:16px;line-height:1.25}}
 
 .pseason{font-size:11px;color:var(--ink4);margin-bottom:8px}
 
@@ -574,7 +575,6 @@
 }
 
 /* ── FOOTER ── */
-footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
 
 .cats-inner{max-width:1200px;margin:0 auto}
 
@@ -663,21 +663,6 @@ footer{background:var(--ink);color:rgba(250,248,244,.6);margin-top:0}
   border-radius:8px;background:var(--white);
 }
 
-.foot-inner{
-  max-width:1360px;margin:0 auto;padding:64px 48px 40px;
-  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;
-}
-
-.foot-logo{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--cream);margin-bottom:16px}
-
-footer p,footer a{display:block;font-size:13px;color:rgba(250,248,244,.5);text-decoration:none;margin-bottom:10px;line-height:1.7;transition:color .18s}
-
-footer a:hover{color:var(--cream)}
-
-footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.16em;color:var(--cream);margin-bottom:20px;opacity:.8}
-
-.foot-bottom{border-top:1px solid rgba(250,248,244,.08);padding:20px 48px;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;font-size:11px;color:rgba(250,248,244,.55);letter-spacing:.06em}
-
 @media(max-width:480px){
   .sz{padding:14px 16px;min-width:52px;font-size:13px}
   .padd-btn{width:48px;height:48px}
@@ -709,76 +694,10 @@ footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 
 .section-sub{font-size:14px;color:var(--ink3);max-width:480px;margin:0 auto;line-height:1.7}
 
-.maten-grid{
-  max-width:1100px;margin:0 auto 40px;
-  display:grid;grid-template-columns:1.1fr 1fr;gap:24px;
-}
-
-.maten-card{
-  background:var(--cream);border:1px solid var(--line);padding:32px;
-}
-
-.maten-card-title{
-  font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--ink2);margin-bottom:24px;padding-bottom:14px;
-  border-bottom:1px solid var(--line);
-}
-
-.size-chips{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
-}
-
-.size-chip{
-  background:var(--cream2);border:1px solid var(--line2);
-  padding:14px 10px;text-align:center;
-  transition:border-color .2s,background .2s;
-}
-
-.size-chip:hover{border-color:var(--ink3);background:var(--cream3)}
-
-.maten-info-block{margin-bottom:22px}
-
-.maten-info-block:last-child{margin-bottom:0}
-
-.maten-info-heading{
-  display:flex;align-items:center;gap:10px;
-  font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink2);margin-bottom:10px;
-}
-
-.maten-info-heading::before{content:'';width:3px;height:14px;background:var(--accent);flex-shrink:0}
-
-.maten-info-text{font-size:13px;color:var(--ink3);line-height:1.75}
-
-.maten-note{
-  display:inline-flex;align-items:center;gap:6px;
-  margin-top:12px;background:var(--cream2);border:1px solid var(--line2);
-  padding:6px 12px;font-size:11px;color:var(--ink3);
-}
-
-.maten-note::before{content:'●';color:var(--gold);font-size:9px}
-
 .maten-table-wrap{
   max-width:1100px;margin:0 auto 40px;
   background:var(--cream);border:1px solid var(--line);overflow:hidden;
 }
-
-.vtabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--line)}
-
-.vtab{
-  padding:16px 24px;text-align:center;
-  font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--ink4);cursor:pointer;border:none;background:transparent;
-  font-family:var(--font-body);transition:background-color .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s,opacity .2s;
-}
-
-.vtab:first-child{border-right:1px solid var(--line)}
-
-.vtab:not(.on):hover{background:var(--cream2);color:var(--ink3)}
-
-.vtpanel{display:none}
-
-.vtpanel.on{display:block}
 
 .maten-scroll-hint{
   display:none;font-size:11px;font-weight:600;color:var(--ink2);text-align:center;
@@ -800,8 +719,6 @@ footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
   position:sticky;left:0;z-index:3;background:var(--cream2);box-shadow:1px 0 0 var(--line);
 }
 
-.maten-kids-jersey .maten-table-wrap{margin-bottom:0}
-
 .kids-maten-banner{
   text-align:center;background:var(--cream2);border-bottom:1px solid var(--line);
   padding:16px 20px 14px;
@@ -815,24 +732,7 @@ footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 
 .kids-maten-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;position:relative}
 
-.maten-cta{text-align:center}
-
 /* ── FAQ SECTION ── */
-.faq-sec{
-  padding:96px 48px;
-  background:var(--ink);
-}
-
-.faq-sec .section-eyebrow{color:var(--gold2)}
-
-.faq-sec .section-title{color:var(--cream)}
-
-.faq-sec .section-sub{color:rgba(250,248,244,.5)}
-
-.faq-cols{
-  max-width:1100px;margin:0 auto;
-  display:grid;grid-template-columns:1fr 1fr;gap:16px;
-}
 
 .faqitem{
   border:1px solid rgba(250,248,244,.1);
@@ -850,17 +750,6 @@ footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 
 .faqitem.on .faqbtn,.faqbtn:hover{background:rgba(250,248,244,.08)}
 
-.faq-q-wrap{display:flex;align-items:flex-start;gap:14px}
-
-.faq-n{
-  font-size:11px;font-weight:700;letter-spacing:.08em;
-  color:rgba(250,248,244,.3);flex-shrink:0;padding-top:1px;
-}
-
-.faq-q-lbl{
-  font-size:14px;font-weight:600;color:var(--cream);text-align:left;line-height:1.4;
-}
-
 .faq-ico{
   width:26px;height:26px;border:1px solid rgba(250,248,244,.2);
   display:flex;align-items:center;justify-content:center;
@@ -870,59 +759,20 @@ footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 
 .faqitem.on .faq-ico{background:var(--gold2);border-color:var(--gold2);color:var(--ink)}
 
-.faq-ans{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)}
-
-.faqitem.on .faq-ans{max-height:300px}
-
-.faq-ans-inner{
-  padding:0 24px 22px 52px;
-  font-size:13px;color:rgba(250,248,244,.55);line-height:1.8;
-}
-
-.faq-ans-inner strong{color:var(--cream);font-weight:600}
-
-.faq-ans-inner a{color:var(--gold2);text-decoration:underline}
-
-.faq-bottom{
-  max-width:1100px;margin:48px auto 0;
-  display:flex;align-items:center;justify-content:space-between;
-  padding-top:40px;border-top:1px solid rgba(250,248,244,.1);
-  flex-wrap:wrap;gap:20px;
-}
-
-.faq-bottom-text h3{
-  font-family:var(--font-display);font-size:22px;font-weight:700;
-  color:var(--cream);margin-bottom:6px;
-}
-
-.faq-bottom-text p{font-size:13px;color:rgba(250,248,244,.45)}
-
-.faq-wa-btn{
-  display:inline-flex;align-items:center;gap:10px;
-  background:var(--wa);color:var(--ink);padding:14px 28px;
-  font-family:var(--font-body);font-size:12px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;border:none;
-  cursor:pointer;text-decoration:none;transition:filter .2s;flex-shrink:0;
-}
-
-.faq-wa-btn:hover{filter:brightness(1.1)}
-
-.faq-wa-btn svg{width:18px;height:18px;fill:currentColor}
-
 @media (max-width:560px){
   .pgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .pgrid.pgrid-view-list{grid-template-columns:1fr !important}
   .drawer{border-radius:16px 16px 0 0}
   .drawer-body{padding:18px 14px 20px}
   .cpanel{width:100%}
-  .shop-page-head,.faq-page-head{padding-left:16px !important;padding-right:16px !important}
+  .shop-page-head{padding-left:16px !important;padding-right:16px !important}
   .shop-header{gap:8px}
   .sh-title{font-size:34px}
 }
 
 /* Very small screens (iPhone SE, Galaxy A series) */
 @media(max-width:375px){
-  .size-chips{grid-template-columns:1fr}
+  
   .nav-top .logo{font-size:19px}
   .logo-img{height:68px}
   .logo-mark{width:28px;height:28px;font-size:12px}
@@ -935,28 +785,34 @@ footer h2{font-family:var(--font-body);font-size:11px;font-weight:700;text-trans
 }
 
 /* ── SEO-tekstsectie (server-side per-categorie tekst + homepage) ────────────
-   Donkere "over ons"-band die naadloos in de footer overloopt (footer + FAQ zijn
-   ook var(--ink)). Full-bleed donker met lichte tekst + gouden accenten. Gedeeld
-   door shop.html + index.html. */
+   Licht vlak op de gedeelde paginarand, zodat alleen de footer donker afsluit.
+   Gedeeld door shop.html + index.html. */
 .seo-content{
-  background:var(--ink);
-  border-top:1px solid rgba(255,255,255,.08);
-  padding:46px 24px 52px;
+  background:var(--cream2);
+  border-top:1px solid var(--line);
+  padding:56px 0 64px;
 }
-.seo-content-inner{max-width:60rem;margin:0 auto}
+.seo-content-inner{max-width:var(--container);margin:0 auto;padding:0 var(--gutter);box-sizing:border-box}
 .seo-content-inner h2{
   font-family:var(--font-display);font-size:23px;font-weight:700;
-  color:#fff;margin:0 0 16px;line-height:1.25;
+  color:var(--ink);margin:0 0 16px;line-height:1.25;max-width:32ch;text-wrap:balance;
 }
 .seo-content-inner h2 + p{margin-top:0}
 .seo-content-inner p{
-  font-size:15px;line-height:1.75;color:rgba(255,255,255,.78);
-  margin:0 0 14px;
+  font-size:15px;line-height:1.75;color:var(--ink2);
+  margin:0 0 14px;max-width:68ch;
 }
 .seo-content-inner p:last-child{margin-bottom:0}
-.seo-content-inner strong{color:var(--gold);font-weight:700}
+/* Breed scherm: kop links, tekst rechts — zo gebruikt het blok de breedte en blijven de regels kort */
+@media (min-width:900px){
+  .seo-content-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);column-gap:clamp(40px,6vw,96px);align-items:start}
+  .seo-content-inner>h2{grid-column:1;grid-row:1 / span 20;margin:0}
+  .seo-content-inner>:not(h2){grid-column:2}
+  .seo-content-inner p{max-width:64ch}
+}
+.seo-content-inner strong{color:inherit;font-weight:inherit} /* geen vet in lopende SEO-tekst: oogt als trucje en het oog springt */
 @media (max-width:600px){
-  .seo-content{padding:34px 16px 40px}
+  .seo-content{padding:40px 0 48px}
   .seo-content-inner h2{font-size:19px}
   .seo-content-inner p{font-size:14px}
 }
@@ -1013,10 +869,10 @@ a.hcard,a.hero-shot{display:block;color:inherit;text-decoration:none}
   .banner-arrow{display:none}
   .upsell-grid{grid-template-columns:1fr 1fr}
   .maten{padding:64px 24px}
-  .faq-sec{padding:64px 24px}
-  .faq-cols{grid-template-columns:1fr}
-  .faq-bottom{flex-direction:column;align-items:flex-start}
-  .size-chips{grid-template-columns:repeat(2,1fr)}
+  
+  
+  
+  
   .shop-header{justify-content:center;text-align:center;margin-bottom:14px}
   .shop-mobile-filter-btn{display:inline-flex;align-items:center;justify-content:center}
   .shop-view-toggle{display:flex}
@@ -1030,11 +886,11 @@ a.hcard,a.hero-shot{display:block;color:inherit;text-decoration:none}
   .wa-float{width:52px;height:52px;right:14px;bottom:18px}
 }
 @media(max-width:480px){
-  .faq-ans-inner{padding-left:24px}
+  
   /* Hero buttons: stack */
   .hero-btns{flex-direction:column;align-items:flex-start;gap:10px}
   /* Size guide cards */
-  .maten-card{padding:20px}
+  
   /* Drawer font sizes */
   .d-name{font-size:26px}
   .d-price{font-size:32px}
@@ -1054,3 +910,13 @@ a.hcard,a.hero-shot{display:block;color:inherit;text-decoration:none}
   }
   .kids-maten-scroll::-webkit-scrollbar{display:none}
 }
+
+/* Rugbedrukking: nummer + spelersnaam, zoals op het shirt (homepage-voorraad + shop-kaarten) */
+.kit-print{
+  position:absolute;left:10px;bottom:10px;max-width:calc(100% - 20px);
+  display:flex;align-items:baseline;gap:7px;padding:6px 11px 6px 9px;border-radius:8px;
+  background:rgba(24,26,23,.84);color:var(--cream);
+  font-family:var(--font-display);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.kit-print b{font-size:19px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--gold2);font-variant-numeric:tabular-nums}

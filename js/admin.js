@@ -1634,7 +1634,6 @@ async function applyBulkAction() {
     if (action === 'activate') payload.active = 1;
     if (action === 'hide') payload.active = 0;
     if (action === 'badge_new') payload.badge = 'new';
-    if (action === 'badge_hot') payload.badge = 'hot';
     if (action === 'badge_none') payload.badge = '';
 
     await api('save_product', payload);

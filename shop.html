@@ -150,6 +150,7 @@ $__e = static fn(string $s): string => htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
 </script>
 <link rel="stylesheet" href="<?= kits_asset('css/pages-shared.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/shop.css') ?>">
+<link rel="stylesheet" href="<?= kits_asset('css/footer.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/app.css') ?>">
 <link rel="stylesheet" href="<?= kits_asset('css/responsive-global.css') ?>">
 </head>
@@ -839,10 +840,7 @@ function updateLeaguePillCounts() {
   if (currentVoorraadFilter === 'in_stock') base = base.filter(productInVoorraad);
   else if (currentVoorraadFilter === 'out_of_stock') base = base.filter(p => !productInVoorraad(p));
   if (currentSearchTerm) {
-    base = base
-      .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
-      .filter((x) => x.score > 0)
-      .map((x) => x.p);
+    base = searchProducts(base, currentSearchTerm);
   }
   document.querySelectorAll('#leaguePills .fpill').forEach((pill) => {
     const oc = pill.getAttribute('onclick') || '';
@@ -905,12 +903,7 @@ function renderGrid(cat = currentFilterCat) {
   }
 
   if (currentSearchTerm) {
-    const ranked = list
-      .map((p) => ({ p, score: getProductSearchScore(p, currentSearchTerm) }))
-      .filter((x) => x.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map((x) => x.p);
-    list = ranked;
+    list = searchProducts(list, currentSearchTerm);
   }
   if (currentSortMode === 'price_asc') list.sort((a,b) => a.price - b.price);
   if (currentSortMode === 'price_desc') list.sort((a,b) => b.price - a.price);
@@ -966,12 +959,14 @@ function renderGrid(cat = currentFilterCat) {
   }
   document.getElementById('grid').innerHTML = list.map((p, idx) => {
     const stock = getStockState(p.stock);
+    const nm = splitPlayerName(p.name);
     return `
     <div class="pcard card-enter" style="animation-delay:${Math.min(idx * 35, 280)}ms">
       <div class="pimg-wrap">
         ${(p.image || p.image2 || p.image3)
           ? `<img src="${productThumbSrc(p.image || p.image2 || p.image3)}" data-full="${productImgSrc(p.image || p.image2 || p.image3)}" alt="${esc(p.name)}" loading="lazy" decoding="async" width="320" height="400" onerror="thumbErr(this)">`
           : `<div class="pnoimg"><span class="icon" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"><path d="M4 4l4-2 4 2 4-2 4 2v4l-3 1v11H7V9L4 8z"></path></svg></span><span>Foto volgt</span></div>`}
+        ${kitPrintHtml(nm)}
         <button type="button" class="pwish-btn ${isWishlisted(p.id) ? 'on' : ''}" onclick="event.stopPropagation();toggleWishlist(${p.id},this)" aria-label="Wishlist">♥</button>
         ${['new','hot'].includes(String(p.badge || '').toLowerCase())
           ? `<span class="pbadge ${String(p.badge).toLowerCase()}">${String(p.badge).toLowerCase() === 'new' ? 'Nieuw' : 'Populair'}</span>`
@@ -979,7 +974,7 @@ function renderGrid(cat = currentFilterCat) {
       </div>
       <div class="pbody">
         <p class="pleague">${esc(p.league)}</p>
-        <p class="pname"><a class="pcard-link" href="${productHref(p)}">${esc(p.name)}</a></p>
+        <p class="pname"><a class="pcard-link" href="${productHref(p)}">${esc(nm.kit)}${nm.num ? `<span class="sr-only"> ${esc(nm.player)} #${esc(nm.num)}</span>` : ''}</a></p>
         ${productHasPlayer(p) ? '<span style="display:block;width:max-content;margin:0 0 8px;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);background:var(--accent-light);border:1px solid var(--line2);padding:3px 9px;border-radius:100px">Ook als Player</span>' : ''}
         <span class="stock-pill ${stock.key}">${stock.label}</span>
         <div class="pfooter">

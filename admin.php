@@ -368,7 +368,6 @@ if ($auth) {
             <option value="activate">Actief zetten</option>
             <option value="hide">Verbergen</option>
             <option value="badge_new">Badge: Nieuw</option>
-            <option value="badge_hot">Badge: Hot</option>
             <option value="badge_none">Badge: geen</option>
             <option value="delete">Geselecteerde verwijderen</option>
           </select>
@@ -707,8 +706,8 @@ if ($auth) {
           <select class="fselect" id="p-badge">
             <option value="">Geen</option>
             <option value="new">Nieuw</option>
-            <option value="hot">Populair</option>
           </select>
+          <div style="margin-top:6px;font-size:12px;color:var(--ink3)">'Populair' gaat automatisch: de best verkochte shirts van de laatste 90 dagen.</div>
         </div>
         <div class="fg"><label class="flabel">Sorteervolgorde</label><input class="finput" id="p-sort" type="number" min="0" placeholder="0"></div>
         <div class="fg full" style="display:flex;gap:28px;flex-wrap:wrap;padding-top:18px;border-top:1px solid var(--line);margin-top:4px">

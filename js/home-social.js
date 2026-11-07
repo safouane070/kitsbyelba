@@ -50,6 +50,24 @@
   new MutationObserver(function(){ if (!lb.open) cleanup(); }).observe(lb, {attributes: true, attributeFilter: ['open']});
   lb.addEventListener('cancel', function(e){ e.preventDefault(); closeLb(); });
 
+  // Slider-pijlen: alleen zichtbaar als niet alle tegels in beeld passen; uit aan het begin/einde.
+  var reel = document.querySelector('.social-reel'), nav = document.querySelector('.social-nav');
+  if (reel && nav) {
+    var arrows = nav.querySelectorAll('.social-arrow');
+    var sync = function(){
+      var max = reel.scrollWidth - reel.clientWidth;
+      nav.hidden = max <= parseFloat(getComputedStyle(reel).paddingRight) + 2; // alleen de randmarge: alles past
+      arrows[0].disabled = reel.scrollLeft < 4;
+      arrows[1].disabled = reel.scrollLeft > max - 4;
+    };
+    arrows.forEach(function(b){ b.addEventListener('click', function(){
+      reel.scrollBy({left: +b.dataset.dir * reel.clientWidth * .8, behavior: calm ? 'auto' : 'smooth'});
+    }); });
+    reel.addEventListener('scroll', sync, {passive: true});
+    if ('ResizeObserver' in window) new ResizeObserver(sync).observe(reel); else addEventListener('resize', sync);
+    sync();
+  }
+
   cards.forEach(function(c){ c.addEventListener('click', function(){ open(+c.dataset.i); }); });
   lb.querySelector('.social-lb-close').addEventListener('click', closeLb);
   lb.querySelector('.social-lb-prev').addEventListener('click', function(){ show(cur - 1); });
