@@ -3,17 +3,17 @@
 // de rest wacht rechts in de rij). De stapelvolgorde (CSS) loopt vast van links naar rechts, dus tijdens
 // het schuiven springt er nooit een shirt door een ander heen. De server kiest welke shirts er zijn
 // (alleen producten die te koop zijn, zie includes/hero_kits.php).
-// Stopt buiten beeld, in een verborgen tab, bij hover/focus en bij "minder beweging".
+// Stopt na één volledige ronde, buiten beeld, in een verborgen tab, bij hover/focus en bij "minder beweging".
 (function(){
   var kits = Array.prototype.slice.call(document.querySelectorAll('.hero-kit'));
   var VISIBLE = 7, N = kits.length;
   if (N < VISIBLE + 1 || matchMedia('(prefers-reduced-motion: reduce)').matches) return; // te weinig: waaier staat stil
   var wrap = kits[0].parentNode;
   var pos = kits.map(function(_, i){ return i; }); // 0–6 zichtbaar, 7..N-1 wachten rechts
-  var timer = null, inView = true, hover = false;
+  var timer = null, inView = true, hover = false, ticks = 0, done = false;
 
   function show(k, slot){
-    var hidden = slot === 'in' || slot === 'out';
+    var hidden = !(slot === '2' || slot === '3' || slot === '4'); // alleen de drie shirts in beeld zijn bereikbaar
     k.dataset.slot = slot;
     if (hidden) { k.tabIndex = -1; k.setAttribute('aria-hidden', 'true'); }
     else { k.removeAttribute('tabindex'); k.removeAttribute('aria-hidden'); }
@@ -29,9 +29,11 @@
       var p = pos[i];
       show(k, p < VISIBLE ? String(p) : p === N - 1 ? 'out' : 'in');
     });
+    // Na één volledige ronde (elk shirt één keer in de spotlight) blijft de waaier staan: rust naast kop en knoppen
+    if (++ticks >= N) { done = true; sync(); }
   }
   function sync(){
-    var run = inView && !hover && !document.hidden;
+    var run = !done && inView && !hover && !document.hidden;
     if (run && !timer) timer = setInterval(tick, 4000);
     if (!run && timer) { clearInterval(timer); timer = null; }
   }

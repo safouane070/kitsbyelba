@@ -49,11 +49,11 @@
    de beweging: er springt dus nooit een mouw door een ander shirt heen. De posities liggen zo ver uit elkaar
    dat een buur alleen mouw en zijkant bedekt, nooit het nummer.
    Alleen transform-eigenschappen (soepel op de GPU); de schaduw zit in de afbeelding (48px rand),
-   48.3cqw = 42cqw shirt + rand. */
+   Alle shirts staan op hetzelfde vierkante canvas, geschaald op dezelfde lijfbreedte (zie images/hero), dus 56cqw is voor elk shirt even groot. */
 .hero-kit{
-  position:absolute;left:50%;bottom:-3.15cqw;width:48.3cqw;height:auto;z-index:var(--z,1);opacity:var(--o,1);
+  position:absolute;left:50%;bottom:-3.4cqw;width:56cqw;height:auto;z-index:var(--z,1);opacity:var(--o,1);
   translate:calc(-50% + var(--x,0cqw)) calc(-1 * var(--y,0cqw));scale:var(--s,1);rotate:var(--r,0deg);
-  transform-origin:50% 93%;will-change:translate,scale,rotate;
+  transform-origin:50% 94%;will-change:translate,scale,rotate;
   /* Alleen schuiven + een kleine schaalstap, geen draaiing: hoe minder er tegelijk verandert, hoe rustiger */
   --ease-slide:cubic-bezier(.76,0,.24,1);
   transition:translate .9s var(--ease-slide),scale .9s var(--ease-slide),opacity .5s ease;
@@ -65,8 +65,8 @@
    komt springt nooit door een ander heen. Alle andere plekken zijn onzichtbaar en liggen net binnen het vlak:
    een nieuw shirt verschijnt zacht terwijl het naar binnen schuift, het vertrekkende vervaagt. */
 .hero-kit[data-slot="3"]{--x:0cqw;  --y:10cqw;--s:1;  --z:9}
-.hero-kit[data-slot="2"]{--x:-31cqw;--y:3cqw; --s:.72;--z:3}
-.hero-kit[data-slot="4"]{--x:31cqw; --y:3cqw; --s:.72;--z:3}
+.hero-kit[data-slot="2"]{--x:-31cqw;--y:3cqw; --s:.76;--z:3}
+.hero-kit[data-slot="4"]{--x:31cqw; --y:3cqw; --s:.76;--z:3}
 .hero-kit[data-slot="0"],.hero-kit[data-slot="1"],.hero-kit[data-slot="out"]{--x:-40cqw;--y:2cqw;--s:.6;--z:1;--o:0}
 .hero-kit[data-slot="5"],.hero-kit[data-slot="6"],.hero-kit[data-slot="in"]{--x:40cqw;--y:2cqw;--s:.6;--z:1;--o:0}
 /* Binnenkomst bij laden: van het midden naar buiten, elk shirt een tik later */
@@ -80,6 +80,8 @@
 @keyframes kitIn{from{opacity:0;transform:translateY(28px)}}
 @keyframes heroRise{from{opacity:0;transform:translateY(12px)}}
 @media (prefers-reduced-motion:reduce){.hero-kit{transition:none}}
+/* Desktop: de waaier staat een fractie links van het midden van zijn kolom, zodat de rechterbuur lucht houdt tot de rand van het vlak */
+@media(min-width:901px){.hero-kit{left:47%}}
 /* Middelgroot scherm: de tekstkolom is smal, dus de buitenste linker plek blijft leeg (anders valt een shirt onder de tekst) */
 @media(max-width:900px){
   /* Gestapeld: waaier boven, tekst eronder in hetzelfde vlak */
@@ -94,8 +96,8 @@
   .hero-kits{aspect-ratio:3/2}
   /* Telefoon: zelfde drie hele shirts, iets kleiner zodat de buren volledig binnen beeld vallen */
   .hero-kit[data-slot="3"]{--y:8cqw;--s:1.05}
-  .hero-kit[data-slot="2"]{--x:-31cqw;--s:.66}
-  .hero-kit[data-slot="4"]{--x:31cqw; --s:.66}
+  .hero-kit[data-slot="2"]{--x:-31cqw;--s:.68}
+  .hero-kit[data-slot="4"]{--x:31cqw; --s:.68}
   .hero-copy{padding:4px 20px 22px}
   .hero .hero-h1{font-size:28px;margin-bottom:10px}
   .hero-sub{font-size:15px;margin-bottom:18px}
