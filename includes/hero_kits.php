@@ -47,6 +47,13 @@ function kits_hero_kits(?PDO $pdo, string $manifestPath, int $max = 12): array
         ];
         if (count($out) >= $max) break;
     }
+    // Terugval: staat geen enkel pool-product (tijdelijk) aan, toon dan toch de waaier i.p.v. een leeg vlak,
+    // maar laat de shirts naar het overzicht linken — nooit naar een productpagina die 404 geeft.
+    if (!$out) {
+        foreach (array_slice($pool, 0, $max) as $k) {
+            $out[] = ['id' => (int)$k['id'], 'file' => (string)$k['file'], 'label' => (string)($k['label'] ?? ''), 'href' => 'shirts'];
+        }
+    }
     return $out;
 }
 

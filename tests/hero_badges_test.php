@@ -71,6 +71,14 @@ test('hero: verwijderd product (niet in catalogus) valt weg, maximum wordt geres
     assert_eq(['a', 'b'], array_column($kits, 'file'));
 });
 
+test('hero: staat geen enkel pool-product aan, dan toch de waaier, gelinkt naar het overzicht', function (): void {
+    [$file, $pdo] = hero_fixture([['id' => 1, 'file' => 'a'], ['id' => 2, 'file' => 'b']], [[1, 'A', 0]]);
+    $kits = kits_hero_kits($pdo, $file);
+    unlink($file);
+    assert_eq(['a', 'b'], array_column($kits, 'file'));
+    assert_eq(['shirts', 'shirts'], array_column($kits, 'href'), 'nooit naar een 404-productpagina');
+});
+
 test('hero: zonder database toont hij de pool (liever vol dan leeg), onveilige bestandsnamen vallen weg', function (): void {
     [$file] = hero_fixture([['id' => 1, 'file' => 'a'], ['id' => 2, 'file' => '../x'], ['id' => 0, 'file' => 'c']], []);
     $kits = kits_hero_kits(null, $file);
