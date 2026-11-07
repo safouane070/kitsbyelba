@@ -5,6 +5,8 @@
   --blue:#3b82f6;--orange:#f59e0b;--green:#10b981;--purple:#8b5cf6;--red:#ef4444;--teal:#06b6d4;
   --ink:#1c1a17;--ink2:#374151;--ink3:#6b7280;--line:#e5e7eb;
   --shadow:0 1px 8px rgba(0,0,0,.08);--shadow-md:0 4px 20px rgba(0,0,0,.12);
+  /* tokens die de gedeelde knoppenlaag (responsive-global.css) verwacht; zonder --cream werd de tekst van .btn-primary onleesbaar grijs op zwart */
+  --cream:#fff;--line2:#d1d5db;--r-control:8px;
 }
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink2);min-height:100vh;-webkit-text-size-adjust:100%}
 body.admin-sidebar-open{overflow:hidden;touch-action:none}
@@ -491,3 +493,7 @@ textarea.finput{resize:vertical;min-height:72px}
 @supports (padding: max(0px)){
   .login-wrap{padding-left:max(16px, env(safe-area-inset-left));padding-right:max(16px, env(safe-area-inset-right));padding-bottom:max(24px, env(safe-area-inset-bottom));padding-top:max(24px, env(safe-area-inset-top))}
 }
+
+/* Gedeelde knoppenlaag (responsive-global.css) maakt .btn-primary zwart met !important; in de admin blijft hij groen. */
+body .btn-primary{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important}
+body .btn-primary:hover{background:var(--accent2)!important;border-color:var(--accent2)!important}

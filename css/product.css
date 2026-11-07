@@ -192,9 +192,7 @@ a{text-decoration:none;color:inherit}
 }
 .reco-viewport::-webkit-scrollbar{display:none}
 .reco-track{display:flex;gap:16px;padding:4px 0 12px 0;width:max-content;box-sizing:border-box;margin:0}
-.reco-track::after{
-  content:'';flex:0 0 16px;width:16px;align-self:stretch;flex-shrink:0;
-}
+/* geen extra ruimte achter de laatste kaart: de eindstand moet op een kaartrand uitkomen (zie fitRecoCards) */
 .reco-track .card{
   border:1px solid var(--line);background:var(--white);cursor:pointer;display:flex;flex-direction:column;min-height:0;
   text-decoration:none;color:inherit;overflow:hidden;box-shadow:var(--shadow-sm);

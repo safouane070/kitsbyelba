@@ -1076,6 +1076,19 @@ function updateRecoArrows(){
   next.disabled = cards.length ? left >= max - 2 : true;
 }
 
+// Breedte van de kaarten zo kiezen dat er een heel aantal in beeld past: dan staat de laatste stand precies op een
+// kaartrand en blijft er geen half afgesneden kaart links hangen. Op een smal scherm (1 kaart) blijft de CSS-breedte
+// met een stukje van de volgende kaart in beeld, daar veeg je.
+function fitRecoCards(){
+  const vp = document.getElementById('recoViewport');
+  if (!vp) return;
+  const gap = 16, ideal = 268;
+  const n = Math.floor((vp.clientWidth + gap) / (ideal + gap));
+  const cards = vp.querySelectorAll('.reco-track .card');
+  const w = n >= 2 ? (vp.clientWidth - (n - 1) * gap) / n : 0;
+  cards.forEach(c => { c.style.width = w ? w + 'px' : ''; c.style.maxWidth = w ? 'none' : ''; });
+}
+
 let __recoSliderBound = false;
 function initRecoSlider(){
   const vp = document.getElementById('recoViewport');
@@ -1106,8 +1119,9 @@ function initRecoSlider(){
     prev.addEventListener('click', () => go(-1));
     next.addEventListener('click', () => go(1));
     vp.addEventListener('scroll', updateRecoArrows, { passive: true });
-    window.addEventListener('resize', () => { window.requestAnimationFrame(updateRecoArrows); });
+    window.addEventListener('resize', () => { fitRecoCards(); window.requestAnimationFrame(updateRecoArrows); });
   }
+  fitRecoCards();
   window.requestAnimationFrame(() => {
     vp.scrollLeft = 0;
     window.requestAnimationFrame(() => {
