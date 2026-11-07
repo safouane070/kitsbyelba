@@ -12,9 +12,9 @@
   // Kopie van navSearchEmptyHtml in js/shop-core.js.
   function emptyHtml(q) {
     var wa = typeof window.kbeWaDigits === 'function' ? window.kbeWaDigits() : '31684446255';
-    var msg = 'Hoi! Ik zoek een shirt van ' + q + '. Kunnen jullie dat bestellen?';
+    var msg = 'Hoi! Ik zoek een shirt van ' + q + '. Hebben jullie dat?';
     return '<div class="nav-search-empty"><strong>Niet gevonden: “' + esc(q) + '”</strong>'
-      + '<span>We bestellen bijna elk shirt voor je na (7–12 werkdagen).</span>'
+      + '<span>Niet elk shirt staat online. Vraag het ons gerust.</span>'
       + '<a class="nav-search-wa" href="https://wa.me/' + wa + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">Vraag het via WhatsApp</a></div>';
   }
   function esc(s) {

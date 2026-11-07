@@ -1,11 +1,11 @@
 /* shop-core.js — gedeelde, byte-identieke functies uit index.html + shop.html.
    Gegenereerd door dedup (finding A). Page-specifieke/divergerende functies blijven inline. */
-// Niets gevonden? We bestellen bijna alles na — stuur de klant naar WhatsApp i.p.v. een doodlopende weg.
+// Niets gevonden? Geen doodlopende weg: stuur de klant naar WhatsApp.
 // Kopie staat in js/nav-search.js (pagina's zonder shop-core).
 function navSearchEmptyHtml(q, waDigits) {
-  const msg = 'Hoi! Ik zoek een shirt van ' + q + '. Kunnen jullie dat bestellen?';
+  const msg = 'Hoi! Ik zoek een shirt van ' + q + '. Hebben jullie dat?';
   return '<div class="nav-search-empty"><strong>Niet gevonden: “' + esc(q) + '”</strong>'
-    + '<span>We bestellen bijna elk shirt voor je na (7–12 werkdagen).</span>'
+    + '<span>Niet elk shirt staat online. Vraag het ons gerust.</span>'
     + '<a class="nav-search-wa" href="https://wa.me/' + waDigits + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">Vraag het via WhatsApp</a></div>';
 }
 

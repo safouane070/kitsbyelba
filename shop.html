@@ -929,9 +929,9 @@ function renderGrid(cat = currentFilterCat) {
     // Lege catalogus is geen filterprobleem: geen filtertips, wel een uitweg
     document.getElementById('grid').innerHTML = `
       <div class="no-results">
-        <strong>De collectie wordt bijgewerkt</strong>
-        <p>Zoek je een shirt? We bestellen bijna elk shirt voor je na (7–12 werkdagen).</p>
-        <a class="nav-search-wa" href="https://wa.me/${kbeWaDigits()}?text=${encodeURIComponent('Hoi! Ik zoek een shirt. Kunnen jullie dat bestellen?')}" target="_blank" rel="noopener">Vraag het via WhatsApp</a>
+        <strong>Even geen shirts online</strong>
+        <p>We zetten de collectie zo weer online. Zoek je een bepaald shirt? Vraag het ons gerust.</p>
+        <a class="nav-search-wa" href="https://wa.me/${kbeWaDigits()}?text=${encodeURIComponent('Hoi! Ik zoek een shirt. Hebben jullie dat?')}" target="_blank" rel="noopener">Vraag het via WhatsApp</a>
       </div>`;
     updateShopVoorraadLede();
     return;

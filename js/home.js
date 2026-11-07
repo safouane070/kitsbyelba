@@ -176,7 +176,7 @@ function renderHero() {
     const wa = 'https://wa.me/' + kbeWaDigits() + '?text=' + encodeURIComponent('Hoi! Ik zoek een shirt. Hebben jullie dat?');
     el.innerHTML = `<div class="hero-grid-empty"><p>${failed
       ? 'De voorraad laadt even niet. Vernieuw de pagina over een moment.'
-      : 'De voorraad wordt bijgewerkt. Zoek je een shirt? We bestellen bijna elk shirt voor je na (7–12 werkdagen).'}</p>
+      : 'Er staan nu geen shirts op voorraad online. Zoek je een bepaald shirt? Vraag het ons gerust.'}</p>
       <a class="nav-search-wa" href="${wa}" target="_blank" rel="noopener">Vraag het via WhatsApp</a></div>`;
     return;
   }
