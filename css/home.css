@@ -258,15 +258,12 @@
 
 .cats-head{text-align:left;margin-bottom:40px}
 .cats-grid{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:16px;
+  display:grid;grid-template-columns:repeat(6,1fr);gap:16px;
 }
 .catcard{
-  /* 3 per rij; een niet-volle laatste rij (bv. 5 kaarten → 3 + 2) centreert
-     netjes i.p.v. een gat rechts te laten vallen. */
-  flex:0 1 calc((100% - 32px) / 3);
+  /* 3 per rij; een niet-volle laatste rij vult de breedte (5 kaarten → 3 + 2 brede) zodat beide rijen op
+     dezelfde linker- en rechterrand eindigen, i.p.v. een gecentreerd restant. */
+  grid-column:span 2;
   position:relative;overflow:hidden;cursor:pointer;
   background:var(--ink2);aspect-ratio:4/3;
   border:1px solid var(--line);
@@ -274,6 +271,8 @@
   transition:transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s ease, border-color .25s ease;
 }
 a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;display:block}
+.catcard:nth-child(4):nth-last-child(2),.catcard:nth-child(5):last-child{grid-column:span 3;aspect-ratio:2/1}
+.catcard:nth-child(4):last-child{grid-column:span 6;aspect-ratio:3/1}
 .catcard:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--line2)}
 
 .ftab-player{color:var(--accent)!important;font-weight:700;border-color:var(--line2)}

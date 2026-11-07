@@ -12,8 +12,9 @@
  * truth" in shop.html (detectProductType + LEAGUE_KEYWORDS + productMatchesLeague).
  * Wijzig je die daar → pas 'm hier ook aan.
  *
- * Fallback: als de productlijst niet geladen kan worden, blijft ALLES staan
- * (liever alle leagues tonen dan per ongeluk alles verbergen).
+ * Fallback: kan de productlijst niet geladen worden (netwerk- of serverfout, de API geeft dan 503), dan blijft
+ * ALLES staan. Een geladen maar lege lijst telt wél: dan verdwijnen alle categorieën en leagues, zodat
+ * niemand op een pagina zonder shirts belandt.
  */
 (function () {
   'use strict';
@@ -101,9 +102,9 @@
 
   function init() {
     fetch('api/products.php')
-      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (r) { if (!r.ok) throw new Error('products ' + r.status); return r.json(); })
       .then(function (list) {
-        if (!Array.isArray(list) || !list.length) return;
+        if (!Array.isArray(list)) return;
         prune(list);          // lege leagues uit de mega-menu
         hideEmptyCats(list);  // lege categorieën volledig verbergen
       })

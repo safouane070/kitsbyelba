@@ -458,11 +458,9 @@ function populateCategoryImages() {
          || inCat.find(homeUnused)
          || inCat.find(pp => pp.cat_cover)
          || inCat[0];
-    // Categories with no own products yet (e.g. kids): show an unused recognisable shirt.
-    if (!p && cat === 'kids') {
-      const shirts = PRODUCTS.filter(x => homeHasImg(x) && detectProductType(x) === 'shirts');
-      p = shirts.filter(homeIsStar).find(homeUnused) || shirts.find(homeUnused) || shirts.filter(homeIsStar)[0];
-    }
+    // Categorie zonder eigen producten (bv. kids): kaart weg i.p.v. een lege of geleende foto. Alleen als de
+    // catalogus zelf geladen is; een lege catalogus (API-storing) laat alle kaarten staan.
+    if (!p && PRODUCTS.length) { const card = el.closest('.catcard'); if (card) card.remove(); return; }
     if (p) { homeMarkUsed(p); setCardBg(el, p.image||p.image2||p.image3); }
   });
   // Player Version tile

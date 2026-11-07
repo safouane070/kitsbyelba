@@ -1,11 +1,11 @@
 [
   {"id": 507, "file": "hakimi",         "label": "Hakimi 2"},
   {"id": 504, "file": "leao",           "label": "Rafa Leão 17"},
-  {"id": 524, "file": "messi-swirl",    "label": "Messi 10"},
-  {"id": 536, "file": "madrid-ronaldo", "label": "Ronaldo 7"},
   {"id": 522, "file": "neymar-jungle",  "label": "Neymar Jr 10"},
   {"id": 531, "file": "yamal",          "label": "Lamine Yamal 10"},
-  {"id": 539, "file": "cherki",         "label": "Cherki 18"},
+  {"id": 528, "file": "son",            "label": "Son 7"},
+  {"id": 524, "file": "messi-swirl",    "label": "Messi 10"},
   {"id": 511, "file": "doku",           "label": "Doku 22"},
-  {"id": 528, "file": "son",            "label": "Son 7"}
+  {"id": 539, "file": "cherki",         "label": "Cherki 18"},
+  {"id": 536, "file": "madrid-ronaldo", "label": "Ronaldo 7"}
 ]
