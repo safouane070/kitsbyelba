@@ -30,78 +30,86 @@
    Posities in cqw: de waaier schaalt mee met zijn eigen breedte, op elk scherm dezelfde compositie. ── */
 .hero{max-width:var(--container);margin:0 auto;box-sizing:border-box;padding:clamp(16px,2vw,28px) var(--gutter) 0}
 .hero-frame{
-  position:relative;overflow:hidden;border-radius:var(--r-lg);background:var(--cream3);
+  position:relative;overflow:hidden;border-radius:var(--r-lg);
+  /* Dieper zand achter de shirts: witte shirts (Ronaldo, Hakimi, Leão) krijgen een scherpe rand, donkere blijven staan.
+     --glow = waar de gloed zit (bij gestapelde hero lager, achter de waaier) */
+  background:radial-gradient(60% 90% at var(--glow,64% 62%),rgba(150,128,92,.45),rgba(150,128,92,0) 74%),var(--cream3);
   display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center;
-  min-height:clamp(440px,calc(100svh - 260px),540px);
+  /* Lager dan voorheen: de shirts vullen het vlak, en de eerste voorraadkaarten komen eerder in beeld */
+  min-height:clamp(400px,calc(100svh - 300px),460px);
 }
 .hero-copy{padding:clamp(28px,4vw,64px);padding-right:0;position:relative;z-index:2}
 .hero .hero-h1{
   margin:0 0 14px;font-family:var(--font-display);font-weight:700;color:var(--ink);
   font-size:clamp(30px,3.4vw,48px);line-height:1.04;letter-spacing:-.03em;text-wrap:balance;
 }
+/* Goud markeerstreep onder het onderscheidende deel van de belofte */
+.hero-mark{
+  background:linear-gradient(transparent 64%,rgba(212,171,56,.6) 64% 92%,transparent 92%);
+  padding:0 .06em;-webkit-box-decoration-break:clone;box-decoration-break:clone;
+}
 .hero-sub{margin:0 0 24px;font-size:16px;line-height:1.55;color:var(--ink2);max-width:40ch;text-wrap:pretty}
 .hero-btns{flex-wrap:wrap;gap:10px}
 .hero-btns a{display:inline-flex;align-items:center;justify-content:center;width:auto;min-height:48px;padding:0 24px;text-decoration:none}
 
 .hero-kits{position:relative;align-self:stretch;container-type:inline-size;min-height:100%}
-/* Schuivende waaier. Stapelvolgorde staat vast van links naar rechts (elk shirt ligt op zijn linker buur,
-   zoals een waaier speelkaarten). Omdat alles dezelfde kant op schuift verandert die volgorde nooit tijdens
-   de beweging: er springt dus nooit een mouw door een ander shirt heen. De posities liggen zo ver uit elkaar
-   dat een buur alleen mouw en zijkant bedekt, nooit het nummer.
-   Alleen transform-eigenschappen (soepel op de GPU); de schaduw zit in de afbeelding (48px rand),
-   Alle shirts staan op hetzelfde vierkante canvas, geschaald op dezelfde lijfbreedte (zie images/hero), dus 56cqw is voor elk shirt even groot. */
+/* Spotlight-waaier: drie hele shirts in beeld (midden groter, buren raken het met de mouw), de rest wacht links/rechts
+   buiten beeld en schuift elke paar seconden één plek op (js/home-hero.js). De stapelvolgorde staat vast van links naar
+   rechts, dus tijdens het schuiven springt nooit een mouw door een ander shirt. Alle shirts staan op hetzelfde vierkante
+   canvas, geschaald op dezelfde lijfbreedte (zie images/hero), dus 56cqw is voor elk shirt even groot; de schaduw zit
+   in de afbeelding. Dezelfde --y voor alle plekken: zomen op één lijn, het schuiven is puur horizontaal. */
 .hero-kit{
   position:absolute;left:50%;bottom:-3.4cqw;width:56cqw;height:auto;z-index:var(--z,1);opacity:var(--o,1);
-  translate:calc(-50% + var(--x,0cqw)) calc(-1 * var(--y,0cqw));scale:var(--s,1);rotate:var(--r,0deg);
-  transform-origin:50% 94%;will-change:translate,scale,rotate;
-  /* Alleen schuiven + een kleine schaalstap, geen draaiing: hoe minder er tegelijk verandert, hoe rustiger */
+  translate:calc(-50% + var(--x,0cqw)) calc(-1 * var(--y,7cqw));scale:var(--s,1);transform-origin:50% 94%;
+  will-change:translate,scale;
   --ease-slide:cubic-bezier(.76,0,.24,1);
   transition:translate .9s var(--ease-slide),scale .9s var(--ease-slide),opacity .5s ease;
 }
 .hero-kit.no-t{transition:none}
-/* Plek 3 = midden en het grootst; "out" = links weg, "in" = rechts klaar om binnen te komen (beide onzichtbaar) */
-/* Spotlight: drie hele shirts in beeld — het middelste groter en hoger, links en rechts één buur, nooit
-   een half shirt aan de rand. Tussen het midden en de buren zit geen overlap, dus het shirt dat naar voren
-   komt springt nooit door een ander heen. Alle andere plekken zijn onzichtbaar en liggen net binnen het vlak:
-   een nieuw shirt verschijnt zacht terwijl het naar binnen schuift, het vertrekkende vervaagt. */
-.hero-kit[data-slot="3"]{--x:0cqw;  --y:10cqw;--s:1;  --z:9}
-.hero-kit[data-slot="2"]{--x:-31cqw;--y:3cqw; --s:.76;--z:3}
-.hero-kit[data-slot="4"]{--x:31cqw; --y:3cqw; --s:.76;--z:3}
-.hero-kit[data-slot="0"],.hero-kit[data-slot="1"],.hero-kit[data-slot="out"]{--x:-40cqw;--y:2cqw;--s:.6;--z:1;--o:0}
-.hero-kit[data-slot="5"],.hero-kit[data-slot="6"],.hero-kit[data-slot="in"]{--x:40cqw;--y:2cqw;--s:.6;--z:1;--o:0}
-/* Binnenkomst bij laden: van het midden naar buiten, elk shirt een tik later */
+.hero-kit[data-slot="3"]{--s:1.1; --z:9}
+.hero-kit[data-slot="2"]{--x:-30cqw;--s:.82;--z:3}
+.hero-kit[data-slot="4"]{--x:30cqw; --s:.82;--z:3}
+.hero-kit[data-slot="0"],.hero-kit[data-slot="1"],.hero-kit[data-slot="out"]{--x:-40cqw;--s:.6;--z:1;--o:0}
+.hero-kit[data-slot="5"],.hero-kit[data-slot="6"],.hero-kit[data-slot="in"]{--x:40cqw;--s:.6;--z:1;--o:0}
+/* Binnenkomst bij laden: eerst het midden, dan de buren */
 @media (prefers-reduced-motion:no-preference){
-  .hero-kit{animation:kitIn .7s var(--ease-out) both;animation-delay:calc(var(--d,0) * 70ms + 80ms)}
-  .hero-kit[data-slot="2"],.hero-kit[data-slot="4"]{--d:1}
-  .hero-kit[data-slot="1"],.hero-kit[data-slot="5"]{--d:2}
-  .hero-kit[data-slot="0"],.hero-kit[data-slot="6"]{--d:3}
+  .hero-kit{animation:kitIn .7s var(--ease-out) both;animation-delay:80ms}
+  .hero-kit[data-slot="2"],.hero-kit[data-slot="4"]{animation-delay:150ms}
   .hero-copy{animation:heroRise .5s var(--ease-out) both}
 }
 @keyframes kitIn{from{opacity:0;transform:translateY(28px)}}
 @keyframes heroRise{from{opacity:0;transform:translateY(12px)}}
 @media (prefers-reduced-motion:reduce){.hero-kit{transition:none}}
-/* Desktop: de waaier staat een fractie links van het midden van zijn kolom, zodat de rechterbuur lucht houdt tot de rand van het vlak */
+/* Muis erop: het shirt licht een stukje op (de waaier pauzeert dan, zie home-hero.js) */
+@media (hover:hover) and (prefers-reduced-motion:no-preference){
+  .hero-kit img{transition:transform .4s var(--ease-out)}
+  .hero-kit:hover img{transform:translateY(-3cqw) rotate(-1.5deg)}
+}
+/* Desktop: de shirts staan een fractie links van het midden van zijn kolom, zodat de rechterbuur lucht houdt tot de rand van het vlak */
 @media(min-width:901px){.hero-kit{left:47%}}
-/* Middelgroot scherm: de tekstkolom is smal, dus de buitenste linker plek blijft leeg (anders valt een shirt onder de tekst) */
 @media(max-width:900px){
-  /* Gestapeld: waaier boven, tekst eronder in hetzelfde vlak */
-  .hero-frame{grid-template-columns:minmax(0,1fr);min-height:0}
-  .hero-kits{order:-1;aspect-ratio:5/3;min-height:0}
+  /* Gestapeld: kop en tekst, dan de shirts, dan de knoppen. display:contents maakt de tekstblokken losse
+     gridkinderen zodat de knoppen onder de shirts kunnen staan. */
+  .hero-frame{grid-template-columns:minmax(0,1fr);min-height:0;--glow:50% 72%}
+  .hero-copy{display:contents}
+  .hero .hero-h1{order:1;padding:32px 28px 0}
+  .hero-sub{order:2;padding:0 28px}
+  /* Boven en onder de shirts evenveel lucht (~28px): zomen op de onderrand van het vlak, bovenrand strak om het middelste shirt */
+  .hero-kits{order:3;aspect-ratio:2.3/1;min-height:0;margin-top:10px}
+  .hero-kit{--y:0cqw}
+  .hero .hero-btns{order:4;padding:26px 28px 32px}
   .hero-kit{left:50%}
-  .hero-copy{padding:8px 28px 32px}
 }
 @media(max-width:560px){
   .hero{padding-top:12px}
-  /* Telefoon: vijf zichtbare plekken, grotere shirts; de buitenste twee plekken vallen weg */
-  .hero-kits{aspect-ratio:3/2}
+  .hero-kits{aspect-ratio:2.4/1;margin-top:12px}
   /* Telefoon: zelfde drie hele shirts, iets kleiner zodat de buren volledig binnen beeld vallen */
-  .hero-kit[data-slot="3"]{--y:8cqw;--s:1.05}
-  .hero-kit[data-slot="2"]{--x:-31cqw;--s:.68}
-  .hero-kit[data-slot="4"]{--x:31cqw; --s:.68}
-  .hero-copy{padding:4px 20px 22px}
-  .hero .hero-h1{font-size:28px;margin-bottom:10px}
-  .hero-sub{font-size:15px;margin-bottom:18px}
-  .hero .hero-btns{flex-direction:row;align-items:stretch}
+  .hero-kit[data-slot="3"]{--s:1.05}
+  .hero-kit[data-slot="2"]{--x:-30cqw;--s:.72}
+  .hero-kit[data-slot="4"]{--x:30cqw; --s:.72}
+  .hero .hero-h1{font-size:28px;margin-bottom:10px;padding:24px 20px 0}
+  .hero-sub{font-size:15px;margin-bottom:0;padding:0 20px}
+  .hero .hero-btns{flex-direction:row;align-items:stretch;padding:19px 20px 22px}
   .hero-btns a{flex:1 1 0;padding:0 14px}
 }
 /* Elk shirt is een link naar zijn product */
@@ -113,6 +121,8 @@
 /* ── FEATURED PRODUCTS ── */
 .featured{max-width:1360px;margin:0 auto;padding:72px 48px 8px}
 .featured-inner{position:relative}
+/* Sectiekop kleiner dan de hero-kop (48px): anders concurreren ze */
+.featured .section-title{font-size:clamp(26px,2.6vw,34px)}
 .featured-head{
   display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
   margin-bottom:32px;
@@ -588,7 +598,10 @@ a.catcard,a.catcard:visited{color:inherit;text-decoration:none;-webkit-tap-highl
 .social-reel{flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:var(--gutter);
   padding:8px var(--gutter) 28px;margin-bottom:-14px;scrollbar-width:none;overscroll-behavior-x:contain}
 .social-reel::-webkit-scrollbar{display:none}
-.social-card{scroll-snap-align:start}
+/* Passen alle tegels in de rij, dan groeien ze (tot 300px) en vullen de breedte van het raster; bij meer tegels
+   blijven ze op hun basisbreedte en schuif je. Bij weinig tegels staan ze gecentreerd in plaats van links. */
+.social-card{scroll-snap-align:start;flex:1 0 auto;max-width:300px}
+.social-reel{justify-content:safe center}
 .social-head>*{grid-column:1}
 .social-head>.social-nav{grid-column:2;grid-row:1 / span 2;display:flex;gap:8px}
 .social-head>.social-nav[hidden]{display:none}

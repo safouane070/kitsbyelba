@@ -5,6 +5,8 @@ declare(strict_types=1);
  * Shirts voor de hero-waaier. Bron: images/hero/manifest.json (uitgeknipte rugfoto's, in volgorde van voorkeur).
  * Alleen shirts waarvan het product nog actief (= te koop) is komen erin; staat een product uit of is het
  * verwijderd, dan schuift automatisch het volgende uit de pool door. Elk shirt linkt naar zijn productpagina.
+ * De waaier begint (en eindigt) met plek 2, 3, 4 in beeld: zet daar de rustigste, best leesbare shirts
+ * (4e = midden). De rest komt tijdens het schuiven langs.
  *
  * Valt de database weg, dan tonen we de pool zoals hij is (liever een volle hero dan een lege).
  *
