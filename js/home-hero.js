@@ -32,7 +32,7 @@
   }
   function sync(){
     var run = inView && !hover && !document.hidden;
-    if (run && !timer) timer = setInterval(tick, 3400);
+    if (run && !timer) timer = setInterval(tick, 4000);
     if (!run && timer) { clearInterval(timer); timer = null; }
   }
   if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ inView = es[0].isIntersecting; sync(); }).observe(wrap);

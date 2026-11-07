@@ -54,20 +54,23 @@
   position:absolute;left:56%;bottom:-3.15cqw;width:48.3cqw;height:auto;z-index:var(--z,1);opacity:var(--o,1);
   translate:calc(-50% + var(--x,0cqw)) calc(-1 * var(--y,0cqw));scale:var(--s,1);rotate:var(--r,0deg);
   transform-origin:50% 93%;will-change:translate,scale,rotate;
-  --ease-slide:cubic-bezier(.5,0,.15,1);
-  transition:translate 1.1s var(--ease-slide),scale 1.1s var(--ease-slide),rotate 1.1s var(--ease-slide),opacity .8s var(--ease-slide);
+  /* Alleen schuiven + een kleine schaalstap, geen draaiing: hoe minder er tegelijk verandert, hoe rustiger */
+  --ease-slide:cubic-bezier(.76,0,.24,1);
+  transition:translate .9s var(--ease-slide),scale .9s var(--ease-slide),opacity .5s ease;
 }
 .hero-kit.no-t{transition:none}
 /* Plek 3 = midden en het grootst; "out" = links weg, "in" = rechts klaar om binnen te komen (beide onzichtbaar) */
-.hero-kit[data-slot="0"]{--x:-51cqw;--y:22cqw;--s:.56;--r:-11deg;--z:1}
-.hero-kit[data-slot="1"]{--x:-38cqw;--y:16cqw;--s:.68;--r:-7deg; --z:2}
-.hero-kit[data-slot="2"]{--x:-21cqw;--y:10cqw;--s:.82;--r:-3.5deg;--z:3}
-.hero-kit[data-slot="3"]{--x:0cqw;  --y:6cqw; --s:1;  --r:0deg;  --z:4}
-.hero-kit[data-slot="4"]{--x:21cqw; --y:10cqw;--s:.82;--r:3.5deg;--z:5}
-.hero-kit[data-slot="5"]{--x:38cqw; --y:16cqw;--s:.68;--r:7deg;  --z:6}
-.hero-kit[data-slot="6"]{--x:51cqw; --y:22cqw;--s:.56;--r:11deg; --z:7}
-.hero-kit[data-slot="out"]{--x:-62cqw;--y:28cqw;--s:.46;--r:-15deg;--z:0;--o:0}
-.hero-kit[data-slot="in"]{--x:62cqw; --y:28cqw;--s:.46;--r:15deg; --z:8;--o:0}
+/* Ruime posities: een buur raakt alleen de mouw, nooit het nummer. Plek 0 en 6 liggen buiten beeld,
+   zodat shirts er gewoon in- en uitschuiven. Vlakke boog, geen draaiing. */
+.hero-kit[data-slot="0"]{--x:-65cqw;--y:12cqw;--s:.64;--z:1}
+.hero-kit[data-slot="1"]{--x:-45cqw;--y:9cqw; --s:.74;--z:2}
+.hero-kit[data-slot="2"]{--x:-22cqw;--y:6cqw; --s:.86;--z:3}
+.hero-kit[data-slot="3"]{--x:0cqw;  --y:4cqw; --s:1;  --z:4}
+.hero-kit[data-slot="4"]{--x:22cqw; --y:6cqw; --s:.86;--z:5}
+.hero-kit[data-slot="5"]{--x:45cqw; --y:9cqw; --s:.74;--z:6}
+.hero-kit[data-slot="6"]{--x:65cqw; --y:12cqw;--s:.64;--z:7}
+.hero-kit[data-slot="out"]{--x:-82cqw;--y:14cqw;--s:.6;--z:0;--o:0}
+.hero-kit[data-slot="in"]{--x:82cqw; --y:14cqw;--s:.6;--z:8;--o:0}
 /* Binnenkomst bij laden: van het midden naar buiten, elk shirt een tik later */
 @media (prefers-reduced-motion:no-preference){
   .hero-kit{animation:kitIn .7s var(--ease-out) both;animation-delay:calc(var(--d,0) * 70ms + 80ms)}
@@ -80,7 +83,8 @@
 @keyframes heroRise{from{opacity:0;transform:translateY(12px)}}
 @media (prefers-reduced-motion:reduce){.hero-kit{transition:none}}
 /* Middelgroot scherm: de tekstkolom is smal, dus de buitenste linker plek blijft leeg (anders valt een shirt onder de tekst) */
-@media(min-width:901px) and (max-width:1240px){.hero-kit[data-slot="0"]{--o:0}}
+/* Desktop: links van de waaier staat de tekst, dus plek 0 (buiten beeld links) vervaagt in plaats van onder de tekst door te schuiven */
+@media(min-width:901px){.hero-kit[data-slot="0"]{--o:0}}
 @media(max-width:900px){
   /* Gestapeld: waaier boven, tekst eronder in hetzelfde vlak */
   .hero-frame{grid-template-columns:minmax(0,1fr);min-height:0}
@@ -92,12 +96,13 @@
   .hero{padding-top:12px}
   /* Telefoon: vijf zichtbare plekken, grotere shirts; de buitenste twee plekken vallen weg */
   .hero-kits{aspect-ratio:3/2}
-  .hero-kit[data-slot="0"],.hero-kit[data-slot="6"]{--o:0}
-  .hero-kit[data-slot="3"]{--y:5cqw; --s:1.29}
-  .hero-kit[data-slot="2"]{--x:-27cqw;--y:10cqw;--s:1}
-  .hero-kit[data-slot="4"]{--x:27cqw; --y:10cqw;--s:1}
-  .hero-kit[data-slot="1"]{--x:-47cqw;--y:16cqw;--s:.81}
-  .hero-kit[data-slot="5"]{--x:47cqw; --y:16cqw;--s:.81}
+  .hero-kit[data-slot="3"]{--y:4cqw; --s:1.29}
+  .hero-kit[data-slot="2"]{--x:-27cqw;--y:6cqw; --s:1}
+  .hero-kit[data-slot="4"]{--x:27cqw; --y:6cqw; --s:1}
+  .hero-kit[data-slot="1"]{--x:-55cqw;--y:9cqw; --s:.8}
+  .hero-kit[data-slot="5"]{--x:55cqw; --y:9cqw; --s:.8}
+  .hero-kit[data-slot="0"]{--x:-80cqw}
+  .hero-kit[data-slot="6"]{--x:80cqw}
   .hero-copy{padding:4px 20px 22px}
   .hero .hero-h1{font-size:28px;margin-bottom:10px}
   .hero-sub{font-size:15px;margin-bottom:18px}
