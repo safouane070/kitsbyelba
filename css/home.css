@@ -51,7 +51,7 @@
    Alleen transform-eigenschappen (soepel op de GPU); de schaduw zit in de afbeelding (48px rand),
    48.3cqw = 42cqw shirt + rand. */
 .hero-kit{
-  position:absolute;left:56%;bottom:-3.15cqw;width:48.3cqw;height:auto;z-index:var(--z,1);opacity:var(--o,1);
+  position:absolute;left:50%;bottom:-3.15cqw;width:48.3cqw;height:auto;z-index:var(--z,1);opacity:var(--o,1);
   translate:calc(-50% + var(--x,0cqw)) calc(-1 * var(--y,0cqw));scale:var(--s,1);rotate:var(--r,0deg);
   transform-origin:50% 93%;will-change:translate,scale,rotate;
   /* Alleen schuiven + een kleine schaalstap, geen draaiing: hoe minder er tegelijk verandert, hoe rustiger */
@@ -60,17 +60,15 @@
 }
 .hero-kit.no-t{transition:none}
 /* Plek 3 = midden en het grootst; "out" = links weg, "in" = rechts klaar om binnen te komen (beide onzichtbaar) */
-/* Ruime posities: een buur raakt alleen de mouw, nooit het nummer. Plek 0 en 6 liggen buiten beeld,
-   zodat shirts er gewoon in- en uitschuiven. Vlakke boog, geen draaiing. */
-.hero-kit[data-slot="0"]{--x:-65cqw;--y:12cqw;--s:.64;--z:1}
-.hero-kit[data-slot="1"]{--x:-45cqw;--y:9cqw; --s:.74;--z:2}
-.hero-kit[data-slot="2"]{--x:-22cqw;--y:6cqw; --s:.86;--z:3}
-.hero-kit[data-slot="3"]{--x:0cqw;  --y:4cqw; --s:1;  --z:4}
-.hero-kit[data-slot="4"]{--x:22cqw; --y:6cqw; --s:.86;--z:5}
-.hero-kit[data-slot="5"]{--x:45cqw; --y:9cqw; --s:.74;--z:6}
-.hero-kit[data-slot="6"]{--x:65cqw; --y:12cqw;--s:.64;--z:7}
-.hero-kit[data-slot="out"]{--x:-82cqw;--y:14cqw;--s:.6;--z:0;--o:0}
-.hero-kit[data-slot="in"]{--x:82cqw; --y:14cqw;--s:.6;--z:8;--o:0}
+/* Spotlight: drie hele shirts in beeld — het middelste groter en hoger, links en rechts één buur, nooit
+   een half shirt aan de rand. Tussen het midden en de buren zit geen overlap, dus het shirt dat naar voren
+   komt springt nooit door een ander heen. Alle andere plekken zijn onzichtbaar en liggen net binnen het vlak:
+   een nieuw shirt verschijnt zacht terwijl het naar binnen schuift, het vertrekkende vervaagt. */
+.hero-kit[data-slot="3"]{--x:0cqw;  --y:10cqw;--s:1;  --z:9}
+.hero-kit[data-slot="2"]{--x:-31cqw;--y:3cqw; --s:.72;--z:3}
+.hero-kit[data-slot="4"]{--x:31cqw; --y:3cqw; --s:.72;--z:3}
+.hero-kit[data-slot="0"],.hero-kit[data-slot="1"],.hero-kit[data-slot="out"]{--x:-40cqw;--y:2cqw;--s:.6;--z:1;--o:0}
+.hero-kit[data-slot="5"],.hero-kit[data-slot="6"],.hero-kit[data-slot="in"]{--x:40cqw;--y:2cqw;--s:.6;--z:1;--o:0}
 /* Binnenkomst bij laden: van het midden naar buiten, elk shirt een tik later */
 @media (prefers-reduced-motion:no-preference){
   .hero-kit{animation:kitIn .7s var(--ease-out) both;animation-delay:calc(var(--d,0) * 70ms + 80ms)}
@@ -83,12 +81,10 @@
 @keyframes heroRise{from{opacity:0;transform:translateY(12px)}}
 @media (prefers-reduced-motion:reduce){.hero-kit{transition:none}}
 /* Middelgroot scherm: de tekstkolom is smal, dus de buitenste linker plek blijft leeg (anders valt een shirt onder de tekst) */
-/* Desktop: links van de waaier staat de tekst, dus plek 0 (buiten beeld links) vervaagt in plaats van onder de tekst door te schuiven */
-@media(min-width:901px){.hero-kit[data-slot="0"]{--o:0}}
 @media(max-width:900px){
   /* Gestapeld: waaier boven, tekst eronder in hetzelfde vlak */
   .hero-frame{grid-template-columns:minmax(0,1fr);min-height:0}
-  .hero-kits{order:-1;aspect-ratio:16/9;min-height:0}
+  .hero-kits{order:-1;aspect-ratio:5/3;min-height:0}
   .hero-kit{left:50%}
   .hero-copy{padding:8px 28px 32px}
 }
@@ -96,13 +92,10 @@
   .hero{padding-top:12px}
   /* Telefoon: vijf zichtbare plekken, grotere shirts; de buitenste twee plekken vallen weg */
   .hero-kits{aspect-ratio:3/2}
-  .hero-kit[data-slot="3"]{--y:4cqw; --s:1.29}
-  .hero-kit[data-slot="2"]{--x:-27cqw;--y:6cqw; --s:1}
-  .hero-kit[data-slot="4"]{--x:27cqw; --y:6cqw; --s:1}
-  .hero-kit[data-slot="1"]{--x:-55cqw;--y:9cqw; --s:.8}
-  .hero-kit[data-slot="5"]{--x:55cqw; --y:9cqw; --s:.8}
-  .hero-kit[data-slot="0"]{--x:-80cqw}
-  .hero-kit[data-slot="6"]{--x:80cqw}
+  /* Telefoon: zelfde drie hele shirts, iets kleiner zodat de buren volledig binnen beeld vallen */
+  .hero-kit[data-slot="3"]{--y:8cqw;--s:1.05}
+  .hero-kit[data-slot="2"]{--x:-31cqw;--s:.66}
+  .hero-kit[data-slot="4"]{--x:31cqw; --s:.66}
   .hero-copy{padding:4px 20px 22px}
   .hero .hero-h1{font-size:28px;margin-bottom:10px}
   .hero-sub{font-size:15px;margin-bottom:18px}
